@@ -33,7 +33,7 @@ auth = GraphQLAuth(app)
 # https://docs.graphene-python.org/en/latest/types/mutations/
 class User(graphene.ObjectType):
     username = graphene.String()
-    password = graphene.String()
+    # password = graphene.String()
 
 class CreateUser(graphene.Mutation):
     class Arguments:
@@ -44,7 +44,7 @@ class CreateUser(graphene.Mutation):
     person = graphene.Field(lambda: User)
 
     def mutate(root, info, username, password):
-        person = User(username=username, password=password)
+        person = User(username=username)
         #call db
         ok = True
         return CreateUser(person=person, ok=ok)
@@ -54,7 +54,7 @@ class MessageField(graphene.ObjectType):
 
 class ProtectedUnion(graphene.Union):
     class Meta:
-        types = (MessageField, CreateUser, AuthInfoField)
+        types = (MessageField, AuthInfoField)
 
     @classmethod
     def resolve_type(cls, instance, info):
@@ -116,6 +116,8 @@ class Mutation(graphene.ObjectType):
     auth = AuthMutation.Field()
     refresh = RefreshMutation.Field()
     protected = ProtectedMutation.Field()
+
+    createUser = CreateUser.Field()
 
 
 class Query(graphene.ObjectType):
