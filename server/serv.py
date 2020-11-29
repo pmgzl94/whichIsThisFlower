@@ -2,13 +2,13 @@ from flask import Flask
 import graphene
 from flask_graphql_auth import GraphQLAuth
 from flask_graphql import GraphQLView
+from flask_jwt import JWT
 from graphql import GraphQLError
 import SessionManager
 
 from schema import schema
 
 app = Flask(__name__)
-
 app.config["JWT_SECRET_KEY"] = "aaaaaaaaaa"  # change this!
 app.config["REFRESH_EXP_LENGTH"] = 30
 app.config["ACCESS_EXP_LENGTH"] = 10
