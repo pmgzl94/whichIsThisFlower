@@ -11,10 +11,11 @@ class dbManager():
         self.collection = self.db.user
         self.userPosts = self.db.userPosts
         self.imagePosts = self.db.imagePosts
+        self.userImagePosts = self.db.userImagePosts
         self.debug = debug
 
 
-
+# userPosts
     def addUser(self, userName, password):
         if self.debug == True:
             print("[DBMANAGER]: [addUser]: user : {}, password : {}".format(userName, password), file=sys.stderr)
@@ -22,13 +23,23 @@ class dbManager():
             raise Exception("[DBMANAGER]: [addUser]: user alredy exist")
 
         doc = {"username": userName,
-               "password": password}
+               "password": password,
+               "images": []}
         post_id = self.userPosts.insert_one(doc).inserted_id
         if self.debug == True:
             print("[DBMANAGER]: [addUser]: id : {}".format(post_id), file=sys.stderr)
             print("[DBMANAGER]: [addUser]: END", file=sys.stderr)
         return post_id
 
+    def deleteUser(self, user):
+        if self.debug == True:
+            print("[DBMANAGER]: [deleteUser]: user {}".format(user), file=sys.stderr)
+        self.userPosts.delete_many({"username": user})
+
+        if self.debug == True:
+            print("[DBMANAGER]: [deleteUser]: END", file=sys.stderr)
+
+    
     def getUser(self, name):
         if self.debug == True:
             print("[DBMANAGER]: [getUser]: user : {}".format(name), file=sys.stderr)
@@ -50,7 +61,6 @@ class dbManager():
             print("[DBMANAGER]: [getUsers]: END", file=sys.stderr)
         return users
 
-
     def getNbUser(self):
         if self.debug == True:
             print("[DBMANAGER]: [getNbUsers]", file=sys.stderr)
@@ -63,6 +73,9 @@ class dbManager():
 
 
 
+
+
+# imagePosts
     def addImage(self, imageName, user, image, flowerName, comment):
         if self.debug == True:
             print("[DBMANAGER]: [addImage]: imageName : {}, flower : {}, user : {}, comment : {}".format(imageName, flowerName, user, comment), file=sys.stderr)
@@ -80,6 +93,15 @@ class dbManager():
             print("[DBMANAGER]: [addImage]: END", file=sys.stderr)
         return post_id
 
+    def deleteImage(self, image):
+        if self.debug == True:
+            print("[DBMANAGER]: [deleteImages]: image {}".format(image), file=sys.stderr)
+        self.imagePosts.delete_many({"imageName": image})
+
+        if self.debug == True:
+            print("[DBMANAGER]: [deleteImages]: END", file=sys.stderr)
+
+            
     def getImage(self, name):
         if self.debug == True:
             print("[DBMANAGER]: [getImage]: image : {}".format(name), file=sys.stderr)
@@ -112,6 +134,11 @@ class dbManager():
             print("[DBMANAGER]: [getNbImages]: END", file=sys.stderr)
         return nb
 
+
+
+
+    
+
 # dbMan = dbManager("localhost", 27017)
 dbMan = dbManager("localhost", 27017, True)
 
@@ -127,6 +154,3 @@ dbMan.getUser("toto")
 dbMan.getUser("titi")
 # dbMan.getUsers()
 dbMan.getNbUser()
-
-
-
