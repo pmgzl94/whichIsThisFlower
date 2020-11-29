@@ -9,6 +9,7 @@ from flask_graphql_auth import (
     mutation_jwt_required,
 )
 import SessionManager
+import db
 
 #mutation object
 # https://docs.graphene-python.org/en/latest/types/mutations/
@@ -24,6 +25,10 @@ class CreateUser(graphene.Mutation):
 
     def mutate(root, info, username, password):
         person = User(username=username)
+        try:
+            dbMan.addUser(username, password)
+        except Exception as e:
+            print(e, file=sys.stderr)
         #call db
         ok = True
         return CreateUser(person=person, ok=ok)
@@ -40,6 +45,11 @@ class AuthMutation(graphene.Mutation):
     @classmethod
     def mutate(cls, _, info, username, password):
         print("here")
+        try:
+            if password != dbMan.getUser(username)["password"]:
+                raise Exception("[MUTATION]: [AuthMutation]: wrong password")#raise or print?
+        except Exception as e:
+            print(e, file=sys.stderr)
         #call db or raise event
         tok = create_access_token(username)
         refrshTok = create_refresh_token(username)

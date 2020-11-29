@@ -30,3 +30,7 @@ vgcore.*
 # VSCODE
 *.vscode
 .vs
+
+
+#python
+__pycache__/
