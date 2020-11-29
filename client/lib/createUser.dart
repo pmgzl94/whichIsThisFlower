@@ -1,4 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+
+String createUser = """
+  mutation CreateUser(\$username: String!, \$password: String!) {
+      createUser(input: {username: \$username, password: \$password}) {
+        ok
+      }
+  }
+""";
+
+// class CreateUserQuery extends StatelessWidget {
+//   final String username;
+//   final String password;
+
+//   CreateUserQuery({@required this.username, @required this.password});
+  
+//   @override
+//   Widget build(BuildContext context) {
+//     return Mutation(
+//       options: MutationOptions(
+//           documentNode: gql(createUser),
+//           variables: {"username": username, "password": password}
+//       ),
+//       builder: (RunMutation result, QueryResult,
+//         FetchMore fetchMore}) {
+//         if (result.hasException) {
+//           return Text(result.exception.toString());
+//         }
+//         if (result.loading && result.data == null) {
+//           return const Center(
+//             child: CircularProgressIndicator(),
+//           );
+//         }
+//         if (result.data["ok"] == false) {
+//           return Text("Username already exists");
+//         }
+//         else {
+//           //pop Navigator to get back to login page
+//           return Text("User sucessfully created");
+
+//         }
+//       }
+//     );
+//   }
+// }
+
 
 class CreateUser extends StatelessWidget {
   
@@ -37,7 +83,23 @@ class CreateUserForm extends StatefulWidget {
 class CreateUserFormState extends State<CreateUserForm>
 {
     final _id = GlobalKey<FormState>();
+    bool state = false;
     
+    void hasClicked() {
+      this.state = true;
+    }
+
+    final mc1 = TextEditingController();
+    final mc2 = TextEditingController();
+
+    @override
+    void dispose() {
+    // Clean up the controller when the widget is disposed.
+      mc1.dispose();
+      mc2.dispose();
+      super.dispose();
+    }
+
     @override
     Widget build(BuildContext context) {
       return Form(
@@ -54,6 +116,7 @@ class CreateUserFormState extends State<CreateUserForm>
                     }
                     return null;
                   },
+                  controller: mc1,
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -65,22 +128,35 @@ class CreateUserFormState extends State<CreateUserForm>
                     }
                     return null;
                   },
+                  controller: mc2,
                 ),
                 
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Validate will return true if the form is valid, or false if
-                      // the form is invalid.
-                      if (_id.currentState.validate()) {
-                        // call gql request
-                      }
+                Mutation(
+                  options: MutationOptions(
+                    documentNode: gql(createUser),
+                    update: (Cache cache, QueryResult result) {
+                      return cache;
                     },
-                    child: Text('Create Account'),
+                    onCompleted: (dynamic resultData) {
+                      print(resultData);
+                    },
                   ),
-                ),
-
+                  builder: (RunMutation runMutation, QueryResult result) {
+                    return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: ElevatedButton(
+                        onPressed: () => runMutation({"username": mc1.text, "password": mc2.text}),
+                        child: Text('Create Account'),
+                        // Validate will return true if the form is valid, or false if
+                        // the form is invalid.
+                        // if (_id.currentState.validate()) {
+                        // this.hasClicked();
+                        // // call gql request
+                        // }
+                        )
+                    );
+                  }
+                )
               ]
             )
           );
