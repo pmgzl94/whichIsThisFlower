@@ -31,6 +31,25 @@ class dbManager():
             print("[DBMANAGER]: [addUser]: END", file=sys.stderr)
         return post_id
 
+    def addImageToUser(self, user, image):
+        if self.debug == True:
+            print("[DBMANAGER]: [addImageToUser]: user : {}, image : {}".format(user, image), file=sys.stderr)
+        userInfo = self.getUser(user)
+        if userInfo == None:
+            raise Exception("[DBMANAGER]: [addImageToUser]: user not found")
+
+        arr = userInfo["images"]
+        arr.append(image)
+        result = self.userPosts.update_one(
+            {"username" : user},
+            {"$set":
+             {"images": arr}
+            }, upsert=True)
+        if self.debug == True:
+            print("[DBMANAGER]: [addImageToUser]: END", file=sys.stderr)
+        if result.acknowledged != True:
+            raise Exception("[DBMANAGER]: [addImageToUser]: set images failed")
+
     def deleteUser(self, user):
         if self.debug == True:
             print("[DBMANAGER]: [deleteUser]: user {}".format(user), file=sys.stderr)
@@ -76,7 +95,7 @@ class dbManager():
 
 
 # imagePosts
-    def addImage(self, imageName, user, image, flowerName, comment):
+    def addImage(self, imageName, image, user, flowerName, comment):
         if self.debug == True:
             print("[DBMANAGER]: [addImage]: imageName : {}, flower : {}, user : {}, comment : {}".format(imageName, flowerName, user, comment), file=sys.stderr)
         if self.getImage(imageName) != None:
@@ -91,6 +110,7 @@ class dbManager():
         if self.debug == True:
             print("[DBMANAGER]: [addImage]: id : {}".format(post_id), file=sys.stderr)
             print("[DBMANAGER]: [addImage]: END", file=sys.stderr)
+        self.addImageToUser(user, imageName)
         return post_id
 
     def deleteImage(self, image):
@@ -154,3 +174,8 @@ dbMan.getUser("toto")
 dbMan.getUser("titi")
 # dbMan.getUsers()
 dbMan.getNbUser()
+
+dbMan.addImage("best pic", "content", "toto", "rose", "no comment")
+dbMan.getNbImage()
+dbMan.getImages()
+dbMan.getUsers()
