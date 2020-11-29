@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './createUser.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 void main() {
@@ -13,17 +14,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demeau(is the widget title)',
+      title: 'What is this Flower',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
       home: Scaffold(
         appBar: AppBar(title: Text('Login')),
-        body: Container(
-          child: Align (
-            alignment: Alignment(0.0, -0.75),
-            child: RawWords(),
-          )
+        body: Column(
+          children: [
+            Align (
+              alignment: Alignment(0.0, -0.75),
+              child: RawWords(),
+            ),
+            Align (alignment: Alignment(-1.0, 1),
+            child: ButtonCreateUser(),
+            )
+          ]
         ),
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
         // body: Center(child: RawWords()),
@@ -41,7 +47,6 @@ class RawWords extends StatefulWidget {
 class RawWordState extends State<RawWords>
 {
   final _username = GlobalKey<FormState>();
-  final _mdp = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     // final word = "on est laaaa";
@@ -79,8 +84,7 @@ class RawWordState extends State<RawWords>
               onPressed: () {
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
-                if (_username.currentState.validate() 
-                  && _mdp.currentState.validate()) {
+                if (_username.currentState.validate()) {
                   // call gql request
                 }
               },
