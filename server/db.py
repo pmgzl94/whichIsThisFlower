@@ -64,8 +64,9 @@ class dbManager():
             print("[DBMANAGER]: [getUser]: user : {}".format(name), file=sys.stderr)
         user = self.userPosts.find_one({"username": name})
 
-        if self.debug == True and user != None:
-            print (user, file=sys.stderr)
+        if self.debug == True:
+            if user != None:
+                print (user, file=sys.stderr)
             print("[DBMANAGER]: [getUser]: END", file=sys.stderr)
         return user
 
@@ -74,9 +75,10 @@ class dbManager():
             print("[DBMANAGER]: [getUsers]", file=sys.stderr)
         users = self.userPosts.find()
 
-        if self.debug == True and users != None:
-            for user in users:
-                print (user, file=sys.stderr)
+        if self.debug == True:
+            if users != None:
+                for user in users:
+                    print (user, file=sys.stderr)
             print("[DBMANAGER]: [getUsers]: END", file=sys.stderr)
         return users
 
@@ -127,8 +129,9 @@ class dbManager():
             print("[DBMANAGER]: [getImage]: image : {}".format(name), file=sys.stderr)
         image = self.imagePosts.find_one({"imagename": name})
 
-        if self.debug == True and image != None:
-            print (image, file=sys.stderr)
+        if self.debug == True:
+            if image != None:
+                print (image, file=sys.stderr)
             print("[DBMANAGER]: [getImage]: END", file=sys.stderr)
         return image
 
@@ -137,9 +140,22 @@ class dbManager():
             print("[DBMANAGER]: [getImages]", file=sys.stderr)
         images = self.imagePosts.find()
 
-        if self.debug == True and images != None:
-            for image in images:
-                print (image, file=sys.stderr)
+        if self.debug == True:
+            if images != None:
+                for image in images:
+                    print (image, file=sys.stderr)
+            print("[DBMANAGER]: [getImages]: END", file=sys.stderr)
+        return images
+    
+    def getUserImages(self, name):
+        if self.debug == True:
+            print("[DBMANAGER]: [getUserImages]: user : {}".format(name), file=sys.stderr)
+        images = self.imagePosts.find({"user": name})
+
+        if self.debug == True:
+            if images != None:
+                for image in images:
+                    print (image, file=sys.stderr)
             print("[DBMANAGER]: [getImages]: END", file=sys.stderr)
         return images
 
@@ -179,3 +195,4 @@ dbMan.addImage("best pic", "content", "toto", "rose", "no comment")
 dbMan.getNbImage()
 dbMan.getImages()
 dbMan.getUsers()
+dbMan.getUserImages("toto")
