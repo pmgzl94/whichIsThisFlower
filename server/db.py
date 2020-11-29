@@ -9,40 +9,107 @@ class dbManager():
         self.client = MongoClient(addr, port)
         self.db = self.client.db
         self.collection = self.db.user
-        self.posts = self.db.posts
+        self.userPosts = self.db.userPosts
+        self.imagePosts = self.db.imagePosts
         self.debug = debug
 
 
 
     def addUser(self, userName, password):
         if self.debug == True:
-            print("[DBMANAGER]: [addUser]: user : {}, password : {} ".format(userName, password), file=sys.stderr)
+            print("[DBMANAGER]: [addUser]: user : {}, password : {}".format(userName, password), file=sys.stderr)
+        if self.getUser(userName) != None:
+            raise Exception("[DBMANAGER]: [addUser]: user alredy exist")
+
         doc = {"username": userName,
                "password": password}
-        post_id = self.posts.insert_one(doc).inserted_id
+        post_id = self.userPosts.insert_one(doc).inserted_id
         if self.debug == True:
             print("[DBMANAGER]: [addUser]: id : {}".format(post_id), file=sys.stderr)
             print("[DBMANAGER]: [addUser]: END", file=sys.stderr)
+        return post_id
 
     def getUser(self, name):
         if self.debug == True:
-            print("[DBMANAGER]: [getUsers]: user : {}".format(name), file=sys.stderr)
+            print("[DBMANAGER]: [getUser]: user : {}".format(name), file=sys.stderr)
+        user = self.userPosts.find_one({"username": name})
 
-        user = self.posts.find_one({"username": name})
-        if self.debug == True:
+        if self.debug == True and user != None:
             print (user, file=sys.stderr)
-            print("[DBMANAGER]: [getUsers]: END")
+            print("[DBMANAGER]: [getUser]: END", file=sys.stderr)
         return user
+
+    def getUsers(self):
+        if self.debug == True:
+            print("[DBMANAGER]: [getUsers]", file=sys.stderr)
+        users = self.userPosts.find()
+
+        if self.debug == True and users != None:
+            for user in users:
+                print (user, file=sys.stderr)
+            print("[DBMANAGER]: [getUsers]: END", file=sys.stderr)
+        return users
 
 
     def getNbUser(self):
         if self.debug == True:
-            print("[DBMANAGER]: [getUsers]", file=sys.stderr)
+            print("[DBMANAGER]: [getNbUsers]", file=sys.stderr)
+        nb = self.userPosts.count_documents({})
 
-        nb = self.posts.count_documents({})
         if self.debug == True:
-            print (nb)
-            print("[DBMANAGER]: [getUsers]: END", file=sys.stderr)
+            print("[DBMANAGER]: [getNbUsers]: nb: {}".format(nb), file=sys.stderr)
+            print("[DBMANAGER]: [getNbUsers]: END", file=sys.stderr)
+        return nb
+
+
+
+    def addImage(self, imageName, user, image, flowerName, comment):
+        if self.debug == True:
+            print("[DBMANAGER]: [addImage]: imageName : {}, flower : {}, user : {}, comment : {}".format(imageName, flowerName, user, comment), file=sys.stderr)
+        if self.getImage(imageName) != None:
+            raise Exception("[DBMANAGER]: [addImage]: image alredy exist")
+
+        doc = {"imageName": imageName,
+               "image": image,
+               "user": user,
+               "flowerName": flowerName,
+               "comment": comment}
+        post_id = self.imagePosts.insert_one(doc).inserted_id
+        if self.debug == True:
+            print("[DBMANAGER]: [addImage]: id : {}".format(post_id), file=sys.stderr)
+            print("[DBMANAGER]: [addImage]: END", file=sys.stderr)
+        return post_id
+
+    def getImage(self, name):
+        if self.debug == True:
+            print("[DBMANAGER]: [getImage]: image : {}".format(name), file=sys.stderr)
+        image = self.imagePosts.find_one({"imagename": name})
+
+        if self.debug == True and image != None:
+            print (image, file=sys.stderr)
+            print("[DBMANAGER]: [getImage]: END", file=sys.stderr)
+        return image
+
+    def getImages(self):
+        if self.debug == True:
+            print("[DBMANAGER]: [getImages]", file=sys.stderr)
+        images = self.imagePosts.find()
+
+        if self.debug == True and images != None:
+            for image in images:
+                print (image, file=sys.stderr)
+            print("[DBMANAGER]: [getImages]: END", file=sys.stderr)
+        return images
+
+
+    def getNbImage(self):
+        if self.debug == True:
+            print("[DBMANAGER]: [getNbImages]", file=sys.stderr)
+        nb = self.imagePosts.count_documents({})
+
+        if self.debug == True:
+            print("[DBMANAGER]: [getNbImages]: nb: {}".format(nb), file=sys.stderr)
+            print("[DBMANAGER]: [getNbImages]: END", file=sys.stderr)
         return nb
 
 # dbMan = dbManager("localhost", 27017)
@@ -57,6 +124,8 @@ dbMan.addUser("toto", "PPPPassword")
 dbMan.addUser("tata", "PPP")
 dbMan.getUser("tata")
 dbMan.getUser("toto")
+dbMan.getUser("titi")
+# dbMan.getUsers()
 dbMan.getNbUser()
 
 
