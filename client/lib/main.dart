@@ -43,9 +43,9 @@ ValueNotifier<GraphQLClient> clientFor({
 
   return ValueNotifier<GraphQLClient>(
     GraphQLClient(
-      // cache: cache,
-      cache: InMemoryCache(),
-      link: link,
+      cache: cache,
+      // cache: InMemoryCache(),
+      link: HttpLink(uri: uri),
     ),
   );
 }

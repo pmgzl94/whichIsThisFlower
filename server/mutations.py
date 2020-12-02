@@ -25,9 +25,10 @@ class CreateUser(graphene.Mutation):
     person = graphene.Field(lambda: ObjectTypes.User)
 
     def mutate(root, info, username, password):
-        person = User(username=username)
+        print("here2")
+        person = ObjectTypes.User(username=username)
         try:
-            dbMan.addUser(username, password)
+            db.dbMan.addUser(username, password)
         except Exception as e:
             print(e, file=sys.stderr)
             GraphQLError(e)

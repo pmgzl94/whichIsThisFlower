@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-String createUser = """
+final String createUser = """
   mutation CreateUser(\$username: String!, \$password: String!) {
-      createUser(input: {username: \$username, password: \$password}) {
+      createUser(username: \$username, password: \$password) {
         ok
       }
   }
@@ -137,15 +137,23 @@ class CreateUserFormState extends State<CreateUserForm>
                     update: (Cache cache, QueryResult result) {
                       return cache;
                     },
+                    onError: (result) {
+                      print("error");
+                      print(result);
+                    },
                     onCompleted: (dynamic resultData) {
-                      print(resultData);
+                      print("on completed");
+                      print(resultData.data);
                     },
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {
                     return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
-                        onPressed: () => runMutation({"username": mc1.text, "password": mc2.text}),
+                        onPressed: () {
+                          runMutation({"username": mc1.text, "password": mc2.text});
+                          print(result.data);
+                        },
                         child: Text('Create Account'),
                         // Validate will return true if the form is valid, or false if
                         // the form is invalid.
