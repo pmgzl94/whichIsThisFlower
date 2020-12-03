@@ -10,6 +10,7 @@ from flask_graphql_auth import (
 )
 import SessionManager
 import db
+import sys
 from graphql import GraphQLError
 
 #mutation object
@@ -49,7 +50,7 @@ class AuthMutation(graphene.Mutation):
     def mutate(cls, _, info, username, password):
         print("here")
         try:
-            if password != dbMan.getUser(username)["password"]:
+            if password != db.dbMan.getUser(username)["password"]:
                 raise GraphQLError("[MUTATION]: [AuthMutation]: wrong password")#raise or print?
         except Exception as e:
             print(e, file=sys.stderr)
