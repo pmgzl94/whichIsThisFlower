@@ -79,7 +79,8 @@ class MyApp extends StatelessWidget {
     //       );
     
     return GraphQLProvider(
-      client: clientFor(uri: "http://localhost:5000/graphql"),
+      // client: clientFor(uri: "http://localhost:5000/graphql"),
+      client: clientFor(uri: "http://10.0.2.2:5000/graphql"),
       child: MaterialApp(
             title: 'What is this Flower',
             theme: ThemeData(
