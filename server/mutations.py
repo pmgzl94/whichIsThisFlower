@@ -20,13 +20,14 @@ class CreateUser(graphene.Mutation):
     class Arguments:
         username = graphene.String()
         password = graphene.String()
-    
+
     # fields to return
     ok = graphene.Boolean()
     person = graphene.Field(lambda: ObjectTypes.User)
 
     def mutate(root, info, username, password):
-        print("here2")
+        print("[MUTATION]: [CreateUser]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
+
         person = ObjectTypes.User(username=username)
         try:
             db.dbMan.addUser(username, password)
@@ -48,9 +49,11 @@ class AuthMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, _, info, username, password):
-        print("here")
+        print("[MUTATION]: [AuthMutation]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
+
         try:
-            if password != db.dbMan.getUser(username)["password"]:
+            dbUser = db.dbMan.getUser(username)
+            if dbUser == None or password != dbUser["password"]:
                 raise GraphQLError("[MUTATION]: [AuthMutation]: wrong password")#raise or print?
         except Exception as e:
             print(e, file=sys.stderr)
@@ -76,6 +79,7 @@ class ProtectedMutation(graphene.Mutation):
     @classmethod
     @mutation_jwt_required
     def mutate(cls, _, info):
+        print("[MUTATION]: [ProtectedMutation]: mutate", file=sys.stderr)
         #check jwt
         
         return ProtectedMutation(
@@ -86,11 +90,12 @@ class ProtectedMutation(graphene.Mutation):
 class OtherProtectedMutation(graphene.Mutation):
     class Arguments(object):
         token = graphene.String()
+
     otherObj = graphene.Field(ObjectTypes.ProtectedUnion)
     @classmethod
     @mutation_jwt_required
     def mutate(cls, _, info):
-        print("here")
+        print("[MUTATION]: [OtherProtectedMutation]: mutate", file=sys.stderr)
         print(get_jwt_identity())
         return OtherProtectedMutation(otherObj=ObjectTypes.OtherObject(value=5))
 
@@ -98,11 +103,13 @@ class OtherProtectedMutation(graphene.Mutation):
 class RefreshMutation(graphene.Mutation):
     class Arguments(object):
         refresh_token = graphene.String()
+    
 
     new_token = graphene.String()
 
     @classmethod
     @mutation_jwt_refresh_token_required
     def mutate(self, _):
+        print("[MUTATION]: [RefreshMutation]: mutate", file=sys.stderr)
         current_user = get_jwt_identity() #get the user
         return RefreshMutation(new_token=create_access_token(identity=current_user))

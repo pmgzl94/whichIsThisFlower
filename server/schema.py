@@ -17,6 +17,7 @@ class Query(graphene.ObjectType):
 
     @query_jwt_required
     def resolve_protected(self, info):
+        print("QUERYYYYYYYYYYYYYYYYYYYYY")
         
         # raise GraphQLError('That email already exists')
         
