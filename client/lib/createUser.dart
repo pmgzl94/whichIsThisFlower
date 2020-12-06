@@ -45,17 +45,30 @@ final String createUser = """
 //   }
 // }
 
-
+AlertDialog a(context, mssg) {return AlertDialog(
+  title: Text('Error occured'),
+  content: SingleChildScrollView(
+    child: ListBody(
+      children: <Widget>[
+        Text(mssg),
+      ],
+    ),
+  ),
+  actions: <Widget>[
+    TextButton(
+      child: Text("Close"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    ),
+  ],
+);
+}
 class CreateUser extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'WITF: Create User',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(title: Text('Create User')),
         body: Column(
           children: [
@@ -67,7 +80,6 @@ class CreateUser extends StatelessWidget {
         ),
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
         // body: Center(child: RawWords()),
-      ),
       // home: MyHomePage(title: 'Flutter Demeau Home Page'),
     );
     
@@ -76,6 +88,7 @@ class CreateUser extends StatelessWidget {
 }
 
 class CreateUserForm extends StatefulWidget {
+  
   @override
   CreateUserFormState createState() => CreateUserFormState();
 }
@@ -87,6 +100,10 @@ class CreateUserFormState extends State<CreateUserForm>
     
     void hasClicked() {
       this.state = true;
+    }
+
+    void quit(context) {
+      Navigator.pop(context);
     }
 
     final mc1 = TextEditingController();
@@ -129,8 +146,8 @@ class CreateUserFormState extends State<CreateUserForm>
                     return null;
                   },
                   controller: mc2,
+                  obscureText: true,
                 ),
-                
                 Mutation(
                   options: MutationOptions(
                     documentNode: gql(createUser),
@@ -144,23 +161,28 @@ class CreateUserFormState extends State<CreateUserForm>
                     onCompleted: (dynamic resultData) {
                       print("on completed");
                       print(resultData.data);
-                    },
+                      if (resultData != null && resultData.data["createUser"]["ok"] == true) {
+                        print(resultData.data["createUser"]["ok"]);
+                        quit(context);
+                      }
+                      else if (resultData != null && resultData.data["createUser"]["ok"] == false) {
+                        print("icci");
+                        showDialog<AlertDialog>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return a(context, "User already exists");
+                        });
+                      }
+                    }
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {
                     return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
-                        onPressed: () {
-                          runMutation({"username": mc1.text, "password": mc2.text});
-                          print(result.data);
-                        },
-                        child: Text('Create Account'),
-                        // Validate will return true if the form is valid, or false if
-                        // the form is invalid.
-                        // if (_id.currentState.validate()) {
-                        // this.hasClicked();
-                        // // call gql request
-                        // }
+                          onPressed: () {
+                            runMutation({"username": mc1.text, "password": mc2.text}); 
+                          },
+                          child: Text('Create Account'),
                         )
                     );
                   }
