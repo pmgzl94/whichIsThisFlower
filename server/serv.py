@@ -8,10 +8,19 @@ import SessionManager
 
 from schema import schema
 
+############################ TODO comment, only used to test on browser
+from flask import Flask
+from flask_cors import CORS
+#######################################################
+
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = "aaaaaaaaaa"  # change this!
 app.config["REFRESH_EXP_LENGTH"] = 30
 app.config["ACCESS_EXP_LENGTH"] = 10
+
+############################ TODO comment, only used to test on browser
+CORS(app) # This will enable CORS for all routes
+#####################################################################
 
 auth = GraphQLAuth(app)
 
