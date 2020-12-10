@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './createUser.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import './client.dart';
+import './login.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -29,10 +30,11 @@ class MyApp extends StatelessWidget {
                 children: [
                   Align (
                     alignment: Alignment(0.0, -0.75),
-                    child: RawWords(),
+                    child: CreateLogin(),
                   ),
-                  Align (alignment: Alignment(-1.0, 1),
-                  child: ButtonCreateUser(),
+                  Align (
+                    alignment: Alignment(-1.0, 1),
+                    child: ButtonCreateUser(),
                   )
                 ]
               ),
