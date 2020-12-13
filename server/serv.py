@@ -19,7 +19,7 @@ app.config["REFRESH_EXP_LENGTH"] = 30
 app.config["ACCESS_EXP_LENGTH"] = 10
 
 ############################ TODO comment, only used to test on browser
-CORS(app) # This will enable CORS for all routes
+# CORS(app) # This will enable CORS for all routes
 #####################################################################
 
 auth = GraphQLAuth(app)

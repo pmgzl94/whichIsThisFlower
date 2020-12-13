@@ -1,6 +1,9 @@
 from flask_graphql_auth import AuthInfoField
 import graphene
 
+class IsOk(graphene.ObjectType):
+    ok=graphene.Boolean()
+
 class MessageField(graphene.ObjectType):
     message=graphene.String()
 
@@ -10,7 +13,7 @@ class OtherObject(graphene.ObjectType):
 
 class ProtectedUnion(graphene.Union):
     class Meta:
-        types = (MessageField, OtherObject, AuthInfoField)
+        types = (IsOk, MessageField, OtherObject, AuthInfoField)
 
     @classmethod
     def resolve_type(cls, instance, info):

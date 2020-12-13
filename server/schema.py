@@ -4,12 +4,14 @@ import ObjectTypes
 from flask_graphql_auth import query_jwt_required
 
 class Mutation(graphene.ObjectType):
+    createUser = mutations.CreateUser.Field()
+
     auth = mutations.AuthMutation.Field()
     refresh = mutations.RefreshMutation.Field()
     protected = mutations.ProtectedMutation.Field()
     getOtherObj = mutations.OtherProtectedMutation.Field() #tested protected query
 
-    createUser = mutations.CreateUser.Field()
+    logout = mutations.LogoutMutation.Field()
 
 
 class Query(graphene.ObjectType):

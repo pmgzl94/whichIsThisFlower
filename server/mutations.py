@@ -81,10 +81,26 @@ class ProtectedMutation(graphene.Mutation):
     def mutate(cls, _, info):
         print("[MUTATION]: [ProtectedMutation]: mutate", file=sys.stderr)
         #check jwt
-        
+
         return ProtectedMutation(
             message=ObjectTypes.MessageField(message="Protected mutation works")
         )
+
+
+#example of protected mutation
+class LogoutMutation(graphene.Mutation):
+    class Arguments(object):
+        token = graphene.String()
+
+    ok = graphene.Field(ObjectTypes.ProtectedUnion)
+
+    @classmethod
+    @mutation_jwt_required
+    def mutate(cls, _, info):
+        print("[MUTATION]: [LogoutMutation]: mutate", file=sys.stderr)
+        #check jwt
+
+        return LogoutMutation(ok=ObjectTypes.IsOk(ok=True))
 
 
 class OtherProtectedMutation(graphene.Mutation):
@@ -103,7 +119,7 @@ class OtherProtectedMutation(graphene.Mutation):
 class RefreshMutation(graphene.Mutation):
     class Arguments(object):
         refresh_token = graphene.String()
-    
+
 
     new_token = graphene.String()
 
