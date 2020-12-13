@@ -24,8 +24,8 @@ ValueNotifier<GraphQLClient> clientFor({
     final WebSocketLink websocketLink = WebSocketLink(
       url: subscriptionUri,
       config: SocketClientConfig(
-        autoReconnect: true,
-        inactivityTimeout: Duration(seconds: 30),
+	autoReconnect: true,
+	inactivityTimeout: Duration(seconds: 30),
       ),
     );
 
@@ -42,10 +42,10 @@ ValueNotifier<GraphQLClient> clientFor({
 }
 
 String getUri() {
-  if (Platform.isAndroid) {
-    return "http://10.0.2.2:5000/graphql";
-  }
-  else {
+  // if (Platform.isAndroid) {
+  //   return "http://10.0.2.2:5000/graphql";
+  // }
+  // else {
     return "http://localhost:5000/graphql";
-  }
+  // }
 }

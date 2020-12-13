@@ -20,33 +20,33 @@ class MyApp extends StatelessWidget {
       // client: clientFor(uri: "http://10.0.2.2:5000/graphql"),
       client: clientFor(uri: getUri()),
       child: MaterialApp(
-            title: 'What is this Flower',
-            theme: ThemeData(
-              primarySwatch: Colors.green,
-            ),
-            home: Scaffold(
-              appBar: AppBar(title: Text('Login')),
-              body: Column(
-                children: [
-                  Align (
-                    alignment: Alignment(0.0, -0.75),
-                    child: CreateLogin(),
-                  ),
-                  Align (
-                    alignment: Alignment(-1.0, 1),
-                    child: ButtonCreateUser(),
-                  )
-                ]
-              ),
-              backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
-              // body: Center(child: RawWords()),
-            ),
-          )
+	    title: 'What is this Flower',
+	    theme: ThemeData(
+	      primarySwatch: Colors.green,
+	    ),
+	    home: Scaffold(
+	      appBar: AppBar(title: Text('Login')),
+	      body: Column(
+		children: [
+		  Align (
+		    alignment: Alignment(0.0, -0.75),
+		    child: CreateLogin(),
+		  ),
+		  Align (
+		    alignment: Alignment(-1.0, 1),
+		    child: ButtonCreateUser(),
+		  )
+		]
+	      ),
+	      backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+	      // body: Center(child: RawWords()),
+	    ),
+	  )
     );
-    
-    
-    
-    
+
+
+
+
   }
 }
 
@@ -89,7 +89,7 @@ class MyApp extends StatelessWidget {
 //             },
 //             obscureText: true
 //           ),
-          
+
 //           Padding(
 //             padding: const EdgeInsets.symmetric(vertical: 16.0),
 //             child: ElevatedButton(
@@ -105,11 +105,10 @@ class MyApp extends StatelessWidget {
 //           ),
 //         ]
 //       )
-        
+
 //     );
 
 //   }
 // }
 
 //Stateless widgets are immutable, meaning that their properties can’t change—all values are final.
-
