@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-// final String logout = """
-//   mutation logout {
-//       logout(username: \$username) {
-//         ok
-//       }
-//   }
-// """;
+final String logout = """
+  mutation logout {
+      logout(username: \$username) {
+        ok
+      }
+  }
+""";
 
 AlertDialog a(context, mssg) {return AlertDialog(
   title: Text('Error occured'),
@@ -87,7 +87,7 @@ class CreateMenuButtonState extends State<CreateMenuButton>
               children: <Widget> [
                Mutation(
                   options: MutationOptions(
-                    documentNode: gql(createUser),
+                    documentNode: gql(logout),
                     update: (Cache cache, QueryResult result) {
                       return cache;
                     },

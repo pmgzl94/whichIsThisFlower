@@ -23,6 +23,7 @@ environment:
 dependencies:
   graphql_flutter: ^3.1.0
   path_provider: ^1.6.24
+  shared_preferences: ^0.5.12+4
   flutter:
     sdk: flutter
 

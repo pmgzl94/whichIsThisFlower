@@ -49,7 +49,6 @@ AlertDialog dialog(context, mssg) {return AlertDialog(
 }
 
 class CreateLogin extends StatefulWidget {
-  
   @override
   CreateLoginState createState() => CreateLoginState();
 }
@@ -86,7 +85,7 @@ class CreateLoginState extends State<CreateLogin>
                     hintText: 'username',
                   ),
                   validator: (value) {
-                    if (value.isEmpty)
+                    if (value.isEmpty) {
                       return 'Please enter your username';
                     }
                     return null;
