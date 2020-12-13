@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'sharedPref.dart';
 import './menu.dart';
 
 //  mutation login(\$username: String!, \$password: String!) {
