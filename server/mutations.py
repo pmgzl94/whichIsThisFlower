@@ -33,7 +33,7 @@ class CreateUser(graphene.Mutation):
             db.dbMan.addUser(username, password)
         except Exception as e:
             print(e, file=sys.stderr)
-            GraphQLError(e)
+            raise GraphQLError(e)
         #call db
         ok = True
         return CreateUser(person=person, ok=ok)
