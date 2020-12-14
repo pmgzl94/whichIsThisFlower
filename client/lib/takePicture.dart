@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import './seePictures.dart';
-import './takePicture.dart';
 
-final String logout = """
+final String takePic = """
   mutation logout(\$token: String!) {
       logout(token: \$token) {
           ok {
@@ -15,47 +13,16 @@ final String logout = """
   }
 """;
 
-class CreateMenu extends StatelessWidget {
-  final String token;
-  CreateMenu({Key key, @required this.token}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Menu')),
-        body: Column(
-          children: [
-            Align (
-              alignment: Alignment(0.0, -0.75),
-              child: CreateTakePictureButton(token: token),
-            ),
-            Align (
-              alignment: Alignment(0.0, -0.75),
-              child: CreateSeePictureButton(token: token),
-            ),
-            Align (
-              alignment: Alignment(0.0, -0.75),
-              child: CreateMenuButton(token: token),
-            ),
-          ]
-        ),
-        backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
-        // body: Center(child: RawWords()),
-      // home: MyHomePage(title: 'Flutter Demeau Home Page'),
-    );
-  }
-}
-
-class CreateMenuButton extends StatefulWidget
+class CreateTakePictureButton extends StatefulWidget
 {
   final String token;
-  CreateMenuButton({Key key, @required this.token}) : super(key: key);
+  CreateTakePictureButton({Key key, @required this.token}) : super(key: key);
 
   @override
-  CreateMenuButtonState createState() => CreateMenuButtonState();
+  CreateTakePictureButtonState createState() => CreateTakePictureButtonState();
 }
 
-class CreateMenuButtonState extends State<CreateMenuButton>
+class CreateTakePictureButtonState extends State<CreateTakePictureButton>
 {
     final _id = GlobalKey<FormState>();
     bool state = false;
@@ -84,7 +51,7 @@ class CreateMenuButtonState extends State<CreateMenuButton>
               children: <Widget> [
                Mutation(
                   options: MutationOptions(
-                    documentNode: gql(logout),
+                    documentNode: gql(takePic),
                     update: (Cache cache, QueryResult result) {
                       return cache;
                     },
@@ -95,7 +62,7 @@ class CreateMenuButtonState extends State<CreateMenuButton>
                     onCompleted: (dynamic resultData) {
                       print("on completed");
                       print(resultData.data);
-                      print("LOGOUT");
+                      print("takePICTURE");
                       Navigator.pop(context);
                     }
                   ),
@@ -109,7 +76,7 @@ class CreateMenuButtonState extends State<CreateMenuButton>
                             print("GET ENDED");
                             runMutation({"token": widget.token});
                           },
-                          child: Text('Logout'),
+                          child: Text('Take Picture'),
                         )
                     );
                   }
