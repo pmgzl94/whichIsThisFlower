@@ -29,13 +29,14 @@ class CreateUser(graphene.Mutation):
         print("[MUTATION]: [CreateUser]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
 
         person = ObjectTypes.User(username=username)
+        ok = True
         try:
             db.dbMan.addUser(username, password)
         except Exception as e:
             print(e, file=sys.stderr)
+            ok = False
             raise GraphQLError(e)
         #call db
-        ok = True
         return CreateUser(person=person, ok=ok)
 
 
