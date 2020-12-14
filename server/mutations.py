@@ -98,8 +98,7 @@ class LogoutMutation(graphene.Mutation):
     @mutation_jwt_required
     def mutate(cls, _, info):
         print("[MUTATION]: [LogoutMutation]: mutate", file=sys.stderr)
-        #check jwt
-
+        SessionManager.session.removeSession(get_jwt_identity())
         return LogoutMutation(ok=ObjectTypes.IsOk(ok=True))
 
 
