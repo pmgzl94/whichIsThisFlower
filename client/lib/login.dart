@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'sharedPref.dart';
 import './menu.dart';
 
 //  mutation login(\$username: String!, \$password: String!) {
@@ -12,43 +11,29 @@ final String login = """
   }
 """;
 
-setToken(String token) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  print('SET Token = $token');
-  await prefs.setString('token', token);
-}
-
-// to call : str = await getToken()
-Future<String> getToken() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString('token');
-
-  print('GET Token = $token');
-  return token;
-}
-
-AlertDialog dialog(context, mssg) {return AlertDialog(
-  title: Text('Error occured'),
-  content: SingleChildScrollView(
-    child: ListBody(
-      children: <Widget>[
-	Text(mssg),
-      ],
+AlertDialog dialog(context, mssg) {
+  return AlertDialog(
+    title: Text('Error occured'),
+    content: SingleChildScrollView(
+        child: ListBody(
+      	    children: <Widget>[
+	        Text(mssg),
+      	    ],
+     	),
     ),
-  ),
-  actions: <Widget>[
-    TextButton(
-      child: Text("Close"),
-      onPressed: () {
-	Navigator.of(context).pop();
-      },
-    ),
-  ],
-);
+    actions: <Widget>[
+        TextButton(
+      	    child: Text("Close"),
+      	    onPressed: () {
+	        Navigator.of(context).pop();
+      	    },
+    	),
+     ],
+  );
 }
 
-class CreateLogin extends StatefulWidget {
+class CreateLogin extends StatefulWidget
+{
   @override
   CreateLoginState createState() => CreateLoginState();
 }
@@ -118,22 +103,11 @@ class CreateLoginState extends State<CreateLogin>
 		    onCompleted: (dynamic resultData) {
 		      print("on completed");
 		      print(resultData.data);
-		      print("print 1");
-		      print(resultData.data["auth"]);
-		      print("print 2");
-		      print(resultData.data["auth"]["accessToken"]);
-		      print("print 3");
 		      if (resultData != null) {
-		      	print("print INSIDE");
 			print(resultData.data["auth"]["accessToken"]);
-			print("OUAIS OUAIS OUAIS CA SET ICI");
-			setToken(resultData.data["auth"]["accessToken"]);
-			print("SET FINI LOL");
-			print(getToken());
-			print("GET ENDED");
 			Navigator.push(
 			  context,
-			  MaterialPageRoute(builder: (context) => CreateMenu()),
+			  MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"])),
 			);
 		      } else {
 			print("User doesn't exist");
@@ -160,10 +134,7 @@ class CreateLoginState extends State<CreateLogin>
 	      ]
 	    )
 	  );
-
     }
-
-
 }
 
 class ButtonCreateLogin extends StatelessWidget {
