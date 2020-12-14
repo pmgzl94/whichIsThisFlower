@@ -6,38 +6,18 @@ final String takePic = """
       logout(token: \$token) {
           ok {
             ... on IsOk {
-      		ok
-    	      }
-	  }
+                ok
+              }
+          }
       }
   }
 """;
-
-AlertDialog a(context, mssg) {return AlertDialog(
-  title: Text('Error occured'),
-  content: SingleChildScrollView(
-    child: ListBody(
-      children: <Widget>[
-	Text(mssg),
-      ],
-    ),
-  ),
-  actions: <Widget>[
-    TextButton(
-      child: Text("Close"),
-      onPressed: () {
-	Navigator.of(context).pop();
-      },
-    ),
-  ],
-);
-}
 
 class CreateTakePictureButton extends StatefulWidget
 {
   final String token;
   CreateTakePictureButton({Key key, @required this.token}) : super(key: key);
-  
+
   @override
   CreateTakePictureButtonState createState() => CreateTakePictureButtonState();
 }
@@ -66,43 +46,43 @@ class CreateTakePictureButtonState extends State<CreateTakePictureButton>
     @override
     Widget build(BuildContext context) {
       return Form(
-	    key: _id,
-	    child: Column(
-	      children: <Widget> [
-	       Mutation(
-		  options: MutationOptions(
-		    documentNode: gql(takePic),
-		    update: (Cache cache, QueryResult result) {
-		      return cache;
-		    },
-		    onError: (result) {
-		      print("error");
-		      print(result);
-		    },
-		    onCompleted: (dynamic resultData) {
-		      print("on completed");
-		      print(resultData.data);
-		      print("takePICTURE");
-		      Navigator.pop(context);
-		    }
-		  ),
-		  builder: (RunMutation runMutation, QueryResult result) {
-		    return Padding(
-			padding: const EdgeInsets.symmetric(vertical: 16.0),
-			child: ElevatedButton(
-			  onPressed: () async {
-		      	    print("GET TOKENNNNNNN");
-		      	    print(widget.token);
-		      	    print("GET ENDED");
-			    runMutation({"token": widget.token});
-			  },
-			  child: Text('Take Picture'),
-			)
-		    );
-		  }
-		)
-	      ]
-	    )
-	  );
+            key: _id,
+            child: Column(
+              children: <Widget> [
+               Mutation(
+                  options: MutationOptions(
+                    documentNode: gql(takePic),
+                    update: (Cache cache, QueryResult result) {
+                      return cache;
+                    },
+                    onError: (result) {
+                      print("error");
+                      print(result);
+                    },
+                    onCompleted: (dynamic resultData) {
+                      print("on completed");
+                      print(resultData.data);
+                      print("takePICTURE");
+                      Navigator.pop(context);
+                    }
+                  ),
+                  builder: (RunMutation runMutation, QueryResult result) {
+                    return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            print("GET TOKENNNNNNN");
+                            print(widget.token);
+                            print("GET ENDED");
+                            runMutation({"token": widget.token});
+                          },
+                          child: Text('Take Picture'),
+                        )
+                    );
+                  }
+                )
+              ]
+            )
+          );
     }
 }

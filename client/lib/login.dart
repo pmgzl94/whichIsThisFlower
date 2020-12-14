@@ -6,7 +6,7 @@ import './menu.dart';
 final String login = """
   mutation Login(\$username: String!, \$password: String!) {
       auth(username: \$username, password: \$password) {
-	accessToken
+        accessToken
       }
   }
 """;
@@ -16,18 +16,18 @@ AlertDialog dialog(context, mssg) {
     title: Text('Error occured'),
     content: SingleChildScrollView(
         child: ListBody(
-      	    children: <Widget>[
-	        Text(mssg),
-      	    ],
-     	),
+            children: <Widget>[
+                Text(mssg),
+            ],
+        ),
     ),
     actions: <Widget>[
         TextButton(
-      	    child: Text("Close"),
-      	    onPressed: () {
-	        Navigator.of(context).pop();
-      	    },
-    	),
+            child: Text("Close"),
+            onPressed: () {
+                Navigator.of(context).pop();
+            },
+        ),
      ],
   );
 }
@@ -62,78 +62,78 @@ class CreateLoginState extends State<CreateLogin>
     @override
     Widget build(BuildContext context) {
       return Form(
-	    key: _id,
-	    child: Column(
-	      children: <Widget> [
-		TextFormField(
-		  decoration: const InputDecoration(
-		    hintText: 'username',
-		  ),
-		  validator: (value) {
-		    if (value.isEmpty) {
-		      return 'Please enter your username';
-		    }
-		    return null;
-		  },
-		  controller: mc1,
-		),
-		TextFormField(
-		  decoration: const InputDecoration(
-		    hintText: 'password',
-		  ),
-		  validator: (value) {
-		    if (value.isEmpty) {
-		      return 'Please enter your password';
-		    }
-		    return null;
-		  },
-		  controller: mc2,
-		  obscureText: true,
-		),
-		Mutation(
-		  options: MutationOptions(
-		    documentNode: gql(login),
-		    update: (Cache cache, QueryResult result) {
-		      return cache;
-		    },
-		    onError: (result) {
-		      print("error");
-		      print(result);
-		    },
-		    onCompleted: (dynamic resultData) {
-		      print("on completed");
-		      print(resultData.data);
-		      if (resultData != null) {
-			print(resultData.data["auth"]["accessToken"]);
-			Navigator.push(
-			  context,
-			  MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"])),
-			);
-		      } else {
-			print("User doesn't exist");
-			showDialog<AlertDialog>(
-			  context: context,
-			  builder: (BuildContext context) {
-			    return dialog(context, "User doesn't exist");
-			});
-		      }
-		    }
-		  ),
-		  builder: (RunMutation runMutation, QueryResult result) {
-		    return Padding(
-			padding: const EdgeInsets.symmetric(vertical: 16.0),
-			child: ElevatedButton(
-			  onPressed: () {
-			    runMutation({"username": mc1.text, "password": mc2.text});
-			  },
-			  child: Text('Login'),
-			)
-		    );
-		  }
-		)
-	      ]
-	    )
-	  );
+            key: _id,
+            child: Column(
+              children: <Widget> [
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'username',
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter your username';
+                    }
+                    return null;
+                  },
+                  controller: mc1,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'password',
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                  controller: mc2,
+                  obscureText: true,
+                ),
+                Mutation(
+                  options: MutationOptions(
+                    documentNode: gql(login),
+                    update: (Cache cache, QueryResult result) {
+                      return cache;
+                    },
+                    onError: (result) {
+                      print("error");
+                      print(result);
+                    },
+                    onCompleted: (dynamic resultData) {
+                      print("on completed");
+                      print(resultData.data);
+                      if (resultData != null) {
+                        print(resultData.data["auth"]["accessToken"]);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"])),
+                        );
+                      } else {
+                        print("User doesn't exist");
+                        showDialog<AlertDialog>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return dialog(context, "User doesn't exist");
+                        });
+                      }
+                    }
+                  ),
+                  builder: (RunMutation runMutation, QueryResult result) {
+                    return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            runMutation({"username": mc1.text, "password": mc2.text});
+                          },
+                          child: Text('Login'),
+                        )
+                    );
+                  }
+                )
+              ]
+            )
+          );
     }
 }
 
@@ -142,13 +142,13 @@ class ButtonCreateLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return ElevatedButton(
-	      onPressed: () {
-		Navigator.push(
-		context,
-		MaterialPageRoute(builder: (context) => CreateLogin()),
-		);
-	      },
-	      child: Text('Login'),
-	    );
+              onPressed: () {
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateLogin()),
+                );
+              },
+              child: Text('Login'),
+            );
   }
 }

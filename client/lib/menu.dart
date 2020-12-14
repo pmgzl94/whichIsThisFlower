@@ -8,59 +8,39 @@ final String logout = """
       logout(token: \$token) {
           ok {
             ... on IsOk {
-      		ok
-    	      }
-	  }
+                ok
+              }
+          }
       }
   }
 """;
 
-AlertDialog a(context, mssg) {return AlertDialog(
-  title: Text('Error occured'),
-  content: SingleChildScrollView(
-    child: ListBody(
-      children: <Widget>[
-	Text(mssg),
-      ],
-    ),
-  ),
-  actions: <Widget>[
-    TextButton(
-      child: Text("Close"),
-      onPressed: () {
-	Navigator.of(context).pop();
-      },
-    ),
-  ],
-);
-}
-
 class CreateMenu extends StatelessWidget {
   final String token;
   CreateMenu({Key key, @required this.token}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-	appBar: AppBar(title: Text('Menu')),
-	body: Column(
-	  children: [
-	    Align (
-	      alignment: Alignment(0.0, -0.75),
-	      child: CreateTakePictureButton(token: token),
-	    ),
-	    Align (
-	      alignment: Alignment(0.0, -0.75),
-	      child: CreateSeePictureButton(token: token),
-	    ),
-	    Align (
-	      alignment: Alignment(0.0, -0.75),
-	      child: CreateMenuButton(token: token),
-	    ),
-	  ]
-	),
-	backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
-	// body: Center(child: RawWords()),
+        appBar: AppBar(title: Text('Menu')),
+        body: Column(
+          children: [
+            Align (
+              alignment: Alignment(0.0, -0.75),
+              child: CreateTakePictureButton(token: token),
+            ),
+            Align (
+              alignment: Alignment(0.0, -0.75),
+              child: CreateSeePictureButton(token: token),
+            ),
+            Align (
+              alignment: Alignment(0.0, -0.75),
+              child: CreateMenuButton(token: token),
+            ),
+          ]
+        ),
+        backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+        // body: Center(child: RawWords()),
       // home: MyHomePage(title: 'Flutter Demeau Home Page'),
     );
   }
@@ -70,7 +50,7 @@ class CreateMenuButton extends StatefulWidget
 {
   final String token;
   CreateMenuButton({Key key, @required this.token}) : super(key: key);
-  
+
   @override
   CreateMenuButtonState createState() => CreateMenuButtonState();
 }
@@ -99,43 +79,43 @@ class CreateMenuButtonState extends State<CreateMenuButton>
     @override
     Widget build(BuildContext context) {
       return Form(
-	    key: _id,
-	    child: Column(
-	      children: <Widget> [
-	       Mutation(
-		  options: MutationOptions(
-		    documentNode: gql(logout),
-		    update: (Cache cache, QueryResult result) {
-		      return cache;
-		    },
-		    onError: (result) {
-		      print("error");
-		      print(result);
-		    },
-		    onCompleted: (dynamic resultData) {
-		      print("on completed");
-		      print(resultData.data);
-		      print("LOGOUT");
-		      Navigator.pop(context);
-		    }
-		  ),
-		  builder: (RunMutation runMutation, QueryResult result) {
-		    return Padding(
-			padding: const EdgeInsets.symmetric(vertical: 16.0),
-			child: ElevatedButton(
-			  onPressed: () async {
-		      	    print("GET TOKENNNNNNN");
-		      	    print(widget.token);
-		      	    print("GET ENDED");
-			    runMutation({"token": widget.token});
-			  },
-			  child: Text('Logout'),
-			)
-		    );
-		  }
-		)
-	      ]
-	    )
-	  );
+            key: _id,
+            child: Column(
+              children: <Widget> [
+               Mutation(
+                  options: MutationOptions(
+                    documentNode: gql(logout),
+                    update: (Cache cache, QueryResult result) {
+                      return cache;
+                    },
+                    onError: (result) {
+                      print("error");
+                      print(result);
+                    },
+                    onCompleted: (dynamic resultData) {
+                      print("on completed");
+                      print(resultData.data);
+                      print("LOGOUT");
+                      Navigator.pop(context);
+                    }
+                  ),
+                  builder: (RunMutation runMutation, QueryResult result) {
+                    return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            print("GET TOKENNNNNNN");
+                            print(widget.token);
+                            print("GET ENDED");
+                            runMutation({"token": widget.token});
+                          },
+                          child: Text('Logout'),
+                        )
+                    );
+                  }
+                )
+              ]
+            )
+          );
     }
 }
