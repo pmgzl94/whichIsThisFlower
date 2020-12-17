@@ -1,5 +1,5 @@
 # whatIsThisFlower
-Flutter application + server that recognize flowers
+a client app with flutter, a server that handle requests, it also have to recognize flower once the client uploaded one
 
 we use cnn to recognize flower among: daisy, dandelion, rose, sunflower, tulip
 
