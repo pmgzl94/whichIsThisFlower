@@ -9,4 +9,15 @@ class TensorFileManager():
     def save(self, filename, ndarr):
         numpy.save(self.dir + "/" + filename, ndarr)
     def load(self, filename):
-        return numpy.load(self.dir + "/" + filename + ".npy")
+        return numpy.load(self.dir + "/" + filename + ".npy", allow_pickle=True)
+    def loadNet(self, filename, depth):
+        weights = []
+        biases = []
+        for i in range(0, depth):
+            pathw = f"{filename}.ws{i + 1}"
+            pathb = f"{filename}.bs{i + 1}"
+            w = self.load(pathw)
+            b = self.load(pathb)
+            weights.append(w)
+            biases.append(b)
+        return weights, biases
