@@ -22,16 +22,25 @@ class CreateMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Menu')),
+        appBar: AppBar(
+            title: Text('Menu'),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.add_a_photo,
+                    // color: Colors.white,
+                  ),
+                  onPressed: () {
+                    // do something
+                  },
+                )
+              ],
+            ),
         body: Column(
           children: [
             Align (
               alignment: Alignment(0.0, -0.75),
               child: CreateTakePictureButton(token: token),
-            ),
-            Align (
-              alignment: Alignment(0.0, -0.75),
-              child: CreateSeePictureButton(token: token),
             ),
             Align (
               alignment: Alignment(0.0, -0.75),

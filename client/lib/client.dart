@@ -15,11 +15,11 @@ final OptimisticCache cache = OptimisticCache(
   dataIdFromObject: typenameDataIdFromObject,
 );
 
-ValueNotifier<GraphQLClient> clientFor({
-  @required String uri,
-  String subscriptionUri,
-}) {
+ValueNotifier<GraphQLClient> clientFor(
+                { @required String uri, String subscriptionUri, })
+{
   Link link = HttpLink(uri: uri);
+
   if (subscriptionUri != null) {
     final WebSocketLink websocketLink = WebSocketLink(
       url: subscriptionUri,

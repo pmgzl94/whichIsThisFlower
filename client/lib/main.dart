@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import './createUser.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import './createUser.dart';
 import './client.dart';
 import './login.dart';
 
