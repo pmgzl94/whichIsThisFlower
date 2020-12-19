@@ -1,16 +1,16 @@
 import numpy as np
 from tensor.Tensor import TensorFileManager
-import math
 import os
-# class Forward():
+from layer import LayerInterface
 
+# activation functions
 def sigmoid(z):
     # print(f"z = {z.shape}")
     return np.exp(z)/(1 + np.exp(z))
 
-class FCNetwork():
+class FcLayer(LayerInterface):
     def __init__(self, arch, transfer_learning=None):
-        #unused
+        # unused
         # if transfer_learning is None:
             #create random weight and biases
         # else:
@@ -46,3 +46,5 @@ class FCNetwork():
             x = sigmoid(np.dot(x, self.weights[i].T) + self.biases[i])
             print(x)
         return x
+    def getType(self):
+        return "FCLayer"
