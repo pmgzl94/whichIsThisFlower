@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import './seePictures.dart';
 import './takePicture.dart';
+import './createUser.dart';
 
 final String logout = """
   mutation logout(\$token: String!) {
@@ -27,21 +28,44 @@ class CreateMenu extends StatelessWidget {
               actions: <Widget>[
                 IconButton(
                   icon: Icon(
-                    Icons.add_a_photo,
+                    Icons.photo_camera,
                     // color: Colors.white,
                   ),
                   onPressed: () {
-                    // do something
+		    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CreateUser()),
+                    );
                   },
-                )
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.logout,
+                    // color: Colors.white,
+                  ),
+                  onPressed: () {
+		    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CreateUser()),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.photo_camera,
+                    // color: Colors.white,
+                  ),
+                  onPressed: () {
+		    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CreateUser()),
+                    );
+                  },
+                ),
               ],
             ),
         body: Column(
           children: [
-            Align (
-              alignment: Alignment(0.0, -0.75),
-              child: CreateTakePictureButton(token: token),
-            ),
             Align (
               alignment: Alignment(0.0, -0.75),
               child: CreateMenuButton(token: token),
