@@ -34,9 +34,11 @@ class FcLayer(LayerInterface):
 
         if transfer_learning_file == None:
             for i in range(0, self.nb_set_of_params):
-                set_of_weights = np.random.random([arch[i+1], 2])
+                set_of_weights = np.random.random([arch[i+1], arch[i]])
                 self.weights.append(set_of_weights)
-                self.biases.append(np.random.random([1, arch[i]]))
+                self.biases.append(np.random.random((arch[i+1],)))
+                # print(self.biases[-1].shape)
+                # print(self.weights[-1].shape)
         else:
             self.reload_net(self.nb_layer, transfer_learning_file)
         self.inputshape = (self.weights[0].shape[1],)
