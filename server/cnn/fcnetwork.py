@@ -20,18 +20,26 @@ def basic_cost_derivative(y, a): #where y is the expected result
 
 
 class FcLayer(LayerInterface):
-    def __init__(self, arch):
+    # def __init__(self, *args):
+    #     if len(a) == 1:
+    #         create_net(args)
+    #     elif len(a) == 2:
+    #         reload_net(args)
+    def __init__(self, arch, transfer_learning_file=None):
         self.weights = []
         self.biases  = []
 
         self.nb_layer = len(arch)
         self.nb_set_of_params = self.nb_layer - 1
 
-        for i in range(0, self.nb_set_of_params):
-            set_of_weights = numpy.random.random([arch[i], archi[i+1]])
-            weights.append(set_of_weights)
-            biases.append(numpy.random.random([1, arch[i]]))
-        self.inputshape = (1, arch[0])
+        if transfer_learning_file == None:
+            for i in range(0, self.nb_set_of_params):
+                set_of_weights = np.random.random([arch[i+1], 2])
+                self.weights.append(set_of_weights)
+                self.biases.append(np.random.random([1, arch[i]]))
+        else:
+            self.reload_net(self.nb_layer, transfer_learning_file)
+        self.inputshape = (self.weights[0].shape[1],)
         # self.depth = len(arch)
 
         #learning vars: used for backpropagation
@@ -45,32 +53,14 @@ class FcLayer(LayerInterface):
 
         self.resetLearningVars()
     
-    def __init__(self, nb_layer, transfer_learning_file):
+    def reload_net(self, nb_layer, transfer_learning_file):
         dir = "./tensorfiles"
         if not os.path.exists(dir + "/" + transfer_learning_file + ".ws1.npy"):
             raise Exception("tensor file not exists")
         
-        self.nb_layer = nb_layer
-        self.nb_set_of_params = nb_layer - 1
-        
         tfm = TensorFileManager("./tensorfiles")
         self.weights, self.biases = tfm.loadNet(transfer_learning_file, self.nb_set_of_params)
         
-        self.inputshape = (self.weights[0].shape[1],)
-
-        print(self.weights[0].shape)
-
-        #learning vars: used for backpropagation
-        self.a = []
-        self.z = []
-
-        self.sum_of_nabla_w = []
-        self.sum_of_nabla_b = []
-
-        self.lastDelta = None
-
-        self.resetLearningVars()
-
     def compute(self, input):
         if input.shape != self.inputshape:
             raise Exception("wrong input shape")
@@ -82,6 +72,7 @@ class FcLayer(LayerInterface):
         
         x = input
         for i in range(0, self.nb_set_of_params):
+            print("la")
             z = np.dot(x, self.weights[i].T) + self.biases[i]
             x = sigmoid(z)
             self.z.append(z)
