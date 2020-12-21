@@ -13,7 +13,7 @@ class TestFcNetwork(unittest.TestCase):
         if not os.path.isdir(os.path.join(pathdir, filename + ".bs1.npy")):
             TensorFileManager("./tensorfiles").save(filename + ".bs1", numpy.array([[0.4]]))
             TensorFileManager("./tensorfiles").save(filename + ".ws1", numpy.array([[1.1]]))
-        net = fcn.FcLayer(depth=1, transfer_learning_file=filename)
+        net = fcn.FcLayer(nb_layer=2, transfer_learning_file=filename)
         expected_res = fcn.sigmoid(0.4 + 1.1)
         res = net.compute(numpy.array([1]))
 
@@ -37,7 +37,7 @@ class TestFcNetwork(unittest.TestCase):
             TensorFileManager("./tensorfiles").save(filename + ".bs2", bs2)
             TensorFileManager("./tensorfiles").save(filename + ".ws1", ws1)
             TensorFileManager("./tensorfiles").save(filename + ".ws2", ws2)
-        net = fcn.FcLayer(depth=2, transfer_learning_file=filename)
+        net = fcn.FcLayer(nb_layer=3, transfer_learning_file=filename)
 
         input = numpy.array([0.3, 0.4])
         expected_res = 0.7406534729647368
