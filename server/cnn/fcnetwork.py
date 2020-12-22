@@ -34,7 +34,7 @@ class FcLayer(LayerInterface):
 
         if transfer_learning_file == None:
             for i in range(0, self.nb_set_of_params):
-                set_of_weights = np.random.random([arch[i+1], arch[i]])
+                set_of_weights = np.random.random((arch[i+1], arch[i]))
                 self.weights.append(set_of_weights)
                 self.biases.append(np.random.random((arch[i+1],)))
                 # print(self.biases[-1].shape)
@@ -42,8 +42,7 @@ class FcLayer(LayerInterface):
         else:
             self.reload_net(self.nb_layer, transfer_learning_file)
         self.inputshape = (self.weights[0].shape[1],)
-        # self.depth = len(arch)
-
+        
         #learning vars: used for backpropagation
         self.a = []
         self.z = []
@@ -73,13 +72,12 @@ class FcLayer(LayerInterface):
         self.z = []
         
         x = input
+        self.a = [x] #usefull for the backprop
         for i in range(0, self.nb_set_of_params):
-            print("la")
             z = np.dot(x, self.weights[i].T) + self.biases[i]
             x = sigmoid(z)
             self.z.append(z)
             self.a.append(x)
-            # print(x)
         return x
     def getType(self):
         return "FCLayer"
@@ -88,15 +86,20 @@ class FcLayer(LayerInterface):
     def learn(self, input, expected_res):
         self.forward(input)
         #first delta
-        delta = np.dot(basic_cost_derivative(expected_res, self.a[-1]), sigmoid_derivative(self.z[-1]))
-        nabla_w = [np.dot(delta, self.a[-2])]
+        delta = basic_cost_derivative(expected_res, self.a[-1]) * sigmoid_derivative(self.z[-1])
+        # print(delta.shape)
+        nabla_w = [np.outer(delta, self.a[-2].T)]
+        # print(nabla_w[0].shape)
         nabla_b = [delta]
 
         for idx_layer in range(self.nb_layer - 2, 0, -1): #-2 : -1 for index and -1 for the previous final layer
-            delta = np.dot(delta * self.weights[idx_layer + 1].T, sigmoid_derivative(self.z[indx_layer]))
-            nabla_w.insert(0, np.dot(delta, self.a[idx_layer]))
+            index_set_param = idx_layer - 1
+            delta = np.dot(delta, self.weights[index_set_param + 1]) * sigmoid_derivative(self.z[index_set_param])
+            
+            nabla_w.insert(0, np.outer(delta, self.a[index_set_param - 1].T))
+            # print(nabla_w[0])
             nabla_b.insert(0, delta)
-        self.lastDelta = lastDelta
+        self.lastDelta = delta
         self.sumUpNablas(nabla_w, nabla_b)
         #return error percentage
 
@@ -106,6 +109,9 @@ class FcLayer(LayerInterface):
         for i in range(0, self.nb_set_of_params):
             self.sum_of_nabla_w.append(np.zeros(self.weights[i].shape))
             self.sum_of_nabla_b.append(np.zeros(self.biases[i].shape))
+            # print(f"les wei{self.weights[i].shape}")
+            # print(f"les bias{self.biases[i].shape}")
+        
         self.lastDelta = None
         self.a = []
         self.z = []
@@ -113,5 +119,11 @@ class FcLayer(LayerInterface):
     #use for the sgd
     def sumUpNablas(self, nabla_w, nabla_b):
         for i in range(0, self.nb_set_of_params):
-            self.sum_of_nabla_w = np.sum(self.sum_of_nabla_w[i], nabla_w[i])
-            self.sum_of_nabla_b = np.sum(self.sum_of_nabla_b[i], nabla_b[i])
+            # print(f'shapes {self.sum_of_nabla_w[i].shape}, {nabla_w[i].shape}')
+            self.sum_of_nabla_w[i] + nabla_w[i]
+            self.sum_of_nabla_w[i] = self.sum_of_nabla_w[i] + nabla_w[i]
+            self.sum_of_nabla_b[i] = self.sum_of_nabla_b[i] + nabla_b[i]
+
+a = FcLayer(arch=[2, 3, 2])
+
+a.learn(np.array([1, 2]), np.array([1, 0]))
