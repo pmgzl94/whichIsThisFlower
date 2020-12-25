@@ -85,23 +85,24 @@ class FcLayer(LayerInterface):
 
     def learn(self, input, expected_res):
         self.forward(input)
+        
         #first delta
         delta = basic_cost_derivative(expected_res, self.a[-1]) * sigmoid_derivative(self.z[-1])
-        # print(delta.shape)
         nabla_w = [np.outer(delta, self.a[-2].T)]
-        # print(nabla_w[0].shape)
         nabla_b = [delta]
 
         for idx_layer in range(self.nb_layer - 2, 0, -1): #-2 : -1 for index and -1 for the previous final layer
             index_set_param = idx_layer - 1
             delta = np.dot(delta, self.weights[index_set_param + 1]) * sigmoid_derivative(self.z[index_set_param])
-            
+        
             nabla_w.insert(0, np.outer(delta, self.a[index_set_param - 1].T))
-            # print(nabla_w[0])
             nabla_b.insert(0, delta)
         self.lastDelta = delta
         self.sumUpNablas(nabla_w, nabla_b)
         #return error percentage
+    
+    def getLastDelta(self):
+        return self.lastDelta
 
     def resetLearningVars(self):
         self.sum_of_nabla_w = []
@@ -124,6 +125,6 @@ class FcLayer(LayerInterface):
             self.sum_of_nabla_w[i] = self.sum_of_nabla_w[i] + nabla_w[i]
             self.sum_of_nabla_b[i] = self.sum_of_nabla_b[i] + nabla_b[i]
 
-a = FcLayer(arch=[2, 3, 2])
+# a = FcLayer(arch=[2, 3, 2])
 
-a.learn(np.array([1, 2]), np.array([1, 0]))
+# a.learn(np.array([1, 2]), np.array([1, 0]))
