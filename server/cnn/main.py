@@ -1,11 +1,10 @@
 import conv
+import image_loader as iml
 
 rp_dataset = "./dataset/"
 
-input_img_size = (244, 244)
-# input_img_size = (28, 28)
-image = conv.ImageLoader().getOutputNpArray(rp_dataset + "daisy/" + "5547758_eea9edfd54_n.jpg")
-# iL
+# image = iml.ImageLoader().getOutputNpArray(rp_dataset + "daisy/" + "5547758_eea9edfd54_n.jpg", gray=True)
+image = iml.ImageLoader().getOutputNpArray(rp_dataset + "daisy/" + "5547758_eea9edfd54_n.jpg")
 
 print(image.shape)
 

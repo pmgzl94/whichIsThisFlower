@@ -1,5 +1,4 @@
 # import num∞py as np
-from PIL import Image
 import numpy
 from layer import LayerInterface
 from tensor.Tensor import TensorFileManager
@@ -70,21 +69,3 @@ class ConvLayer(LayerInterface):
 
     def getType(self):
         return "FeatureMap"
-
-class ImageLoader():
-    def __init__(self):
-        return
-
-    def getOutputNpArray(self, image_path):
-        ##
-        ## Find a way to fixed the size of the image: https://arxiv.org/pdf/1406.4729.pdf => ok spp layer
-        ##
-
-        im = Image.open(image_path)
-        print(im.size)
-        pix = im.getdata() # The sequence object is flattened, so that values for line one follow directly after the values of line zero, and so on.
-        data = numpy.asarray(im)
-        # im.show()
-        data = numpy.transpose(data, (2, 0, 1)) #rgb, y, x
-        im.show()
-        return data

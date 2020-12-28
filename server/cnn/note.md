@@ -52,10 +52,12 @@ error rate is measured like that: $(y - a)^2$
 
 ## TODO
 
+
+
 backprop cnn browser's marknotes
 visualizing cnn (notes)
-spp (notes)
-resnet to reco plante 
+spp (notes) => ok
+**resnet to reco plante**
 softmax => have to find the derivative
 
 read deep learning book
