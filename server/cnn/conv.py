@@ -26,7 +26,6 @@ class ConvLayer(LayerInterface):
         self.lastInput = None
 
         if load_path is not None:
-            print("load path")
             tm = TensorFileManager("./tensorfiles")
             self.filters = tm.load(load_path + ".ws1")
             self.biases = tm.load(load_path + ".bs1")
@@ -41,7 +40,7 @@ class ConvLayer(LayerInterface):
                 shape = list(filtershape)
                 shape.insert(0, nb_filters)
                 self.filters = numpy.ndarray(shape)
-                self.biases = numpy.ndarray((shape[0],))
+                self.biases = numpy.ndarray((nb_filters,))
             else:
                 self.filters = numpy.ndarray(filtershape)
                 self.biases = numpy.ndarray((nb_filters,))
@@ -84,7 +83,7 @@ class ConvLayer(LayerInterface):
             
             new_input = numpy.lib.stride_tricks.as_strided(input, shape=std_outputshape, strides=output_stride)
             
-            output = numpy.tensordot(new_input, self.filters, axes=[[2, 3, 4],[1, 2, 3]])
+            output = numpy.tensordot(new_input, self.filters, axes=[[2, 3, 4],[1, 2, 3]]) + self.biases
             output = output.transpose(2, 0, 1)
             return output
 
@@ -95,7 +94,7 @@ class ConvLayer(LayerInterface):
             output_stride.append(strideInput[-2])
             output_stride.append(strideInput[-1])
 
-            new_input = numpy.lib.stride_tricks.as_strided(input, shape=std_outputshape, strides=output_stride)
+            new_input = numpy.lib.stride_tricks.as_strided(input, shape=std_outputshape, strides=output_stride) + self.biases
 
             output = numpy.tensordot(new_input, self.filters)
             return output
@@ -103,6 +102,7 @@ class ConvLayer(LayerInterface):
     #do not forget activation function
     def compute(self, input):
         ## apply padding
+        
         if self.padding != 0:
             input = numpy.pad(input, self.padding)
         # output = self.enhancedSlidingWindow(input)
@@ -113,7 +113,7 @@ class ConvLayer(LayerInterface):
         # if res.shape != layershape:
         #     raise Exception("output shape differ from initial one")
         self.lastInput = output
-        self.lastRes = featuremap
+        self.lastRes = featuremaps
 
         return featuremaps
 
