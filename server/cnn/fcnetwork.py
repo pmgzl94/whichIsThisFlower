@@ -19,7 +19,7 @@ def basic_cost_derivative(y, a): #where y is the expected result
 #cross entropy
 
 
-class FcLayer(LayerInterface):
+class FCLayer(LayerInterface):
     # def __init__(self, *args):
     #     if len(a) == 1:
     #         create_net(args)
