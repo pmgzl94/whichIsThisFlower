@@ -1,6 +1,8 @@
 import conv
 import image_loader as iml
 
+##to change
+
 rp_dataset = "./dataset/"
 
 # image = iml.ImageLoader().getOutputNpArray(rp_dataset + "daisy/" + "5547758_eea9edfd54_n.jpg", gray=True)
