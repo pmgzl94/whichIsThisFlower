@@ -65,7 +65,7 @@ class ConvLayer(LayerInterface):
 
         strideInput = input.strides
 
-        std_outputshape = [(inputshape[-2]-filtershape[-2]+1)//s, (inputshape[-1]-filtershape[-1]+1)//s]
+        std_outputshape = [1+(inputshape[-2]-filtershape[-2])//s, 1+(inputshape[-1]-filtershape[-1])//s]
         output_stride = [s*strideInput[-2], s*strideInput[-1]]
 
         if len(inputshape) == 3: #if 3d
