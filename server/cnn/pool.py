@@ -13,9 +13,7 @@ class PoolLayer(LayerInterface):
 
         s = self.stride_len
         stride_input = input.strides
-        print("la")
-        print(input)
-
+        
         outputshape = [(1 + (input.shape[-2] - self.filter[-2])//s), (1 + (input.shape[-1] - self.filter[-1])//s)]
         outputstride = [s*stride_input[-2], s*stride_input[-1]]
 
@@ -30,7 +28,7 @@ class PoolLayer(LayerInterface):
 
             output = numpy.lib.stride_tricks.as_strided(input, shape=outputshape, strides=outputstride)
             output = numpy.amax(output, axis=(3, 4), keepdims=True)
-            print(output.shape)
+            
             output = output.reshape(outputshape[:3])
             output = output.transpose(2, 0, 1)
             return output
