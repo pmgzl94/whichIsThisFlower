@@ -156,17 +156,14 @@ class ConvLayer(LayerInterface):
 
         # get activation function derivative
         if self.activation_function != None:
-            # print(f"z = {self.z}")
             delta = delta * self.derivative_activation(self.z)
-            # print(f"delta sigmoid{delta}")
 
         if self.pool != None:
             delta = pool.helper_pool_backprop(delta, self.pool)
         
         #have to save the weights to apply sgd
         self.nabla_w = numpy.tensordot(delta, self.slicedInput)
-        print(f"nabla shape: {self.nabla_w.shape}")
-        print(self.nabla_w)
+        # print(self.nabla_w)
         #do something with nabla_b
 
         self.lastDelta = delta
