@@ -2,22 +2,18 @@ import numpy as np
 from tensor.Tensor import TensorFileManager
 import os
 from layer import LayerInterface
+from activation_functions import sigmoid, sigmoid_derivative
 
-# activation functions
-def sigmoid(z):
-    # print(f"z = {z.shape}")
-    return np.exp(z)/(1 + np.exp(z))
-
-def sigmoid_derivative(z):
-    res = sigmoid(z)
-    return res - np.power(res, 2)
+#mean squared error
+def mse(output, expec_o):
+    return np.sum((expec_o - output)**2)/len(output)
 
 #cost functions
 def basic_cost_derivative(y, a): #where y is the expected result
     return a - y
 
 #cross entropy
-
+# ...
 
 class FCLayer(LayerInterface):
     # def __init__(self, *args):
@@ -68,6 +64,13 @@ class FCLayer(LayerInterface):
         return self.forward(input)
 
     def forward(self, input):
+        
+        if len(input.shape) > 1:
+            input = input.flatten()
+        
+        if input.shape[0] != self.weights[0].shape[1]:
+            raise Exception(f"wrong input shape: received shape {input.shape}")
+
         self.a = []
         self.z = []
         
@@ -88,6 +91,7 @@ class FCLayer(LayerInterface):
         
         #first delta
         delta = basic_cost_derivative(expected_res, self.a[-1]) * sigmoid_derivative(self.z[-1])
+        
         nabla_w = [np.outer(delta, self.a[-2].T)]
         nabla_b = [delta]
 
@@ -97,12 +101,15 @@ class FCLayer(LayerInterface):
         
             nabla_w.insert(0, np.outer(delta, self.a[index_set_param - 1].T))
             nabla_b.insert(0, delta)
+
         self.lastDelta = delta
         self.sumUpNablas(nabla_w, nabla_b)
+        
         #return error percentage
-    
+        return mse(self.a[-1], expected_res)
+
     def getLastDelta(self):
-        return self.lastDelta
+        return np.dot(self.lastDelta, self.weights[0])
 
     def resetLearningVars(self):
         self.sum_of_nabla_w = []
@@ -117,8 +124,9 @@ class FCLayer(LayerInterface):
         self.a = []
         self.z = []
     
-    #use for the sgd
+    #used for the sgd
     def sumUpNablas(self, nabla_w, nabla_b):
+        #must be divided by the number of training input within the mini batch
         for i in range(0, self.nb_set_of_params):
             # print(f'shapes {self.sum_of_nabla_w[i].shape}, {nabla_w[i].shape}')
             self.sum_of_nabla_w[i] + nabla_w[i]

@@ -67,16 +67,17 @@ class TestFcNetwork(unittest.TestCase):
 
         input = numpy.array([0.1, 0.2])
         expected_res = numpy.array([1,  0])
-        expected_delta = numpy.array([-0.00601069,  0.00878729,  0.00173201])
+        
+        previous_delta = numpy.array([-0.00601069,  0.00878729,  0.00173201])
+        ws1 = numpy.array([[0.2, 0.3], [0.4, 0.5], [1.1, 0.1]])
+
+        expected_delta = numpy.dot(previous_delta, ws1)
         
         net.learn(input, expected_res)
         returnedDelta = net.getLastDelta()
-
+        
         res  = numpy.isclose(returnedDelta, expected_delta, atol=1e-5)
-        # print(returnedDelta)
-        # print(expected_delta)
-        # print(res.all())
-
+        
         self.assertEqual(res.all(), True)
 
     # def test_list_fraction(self):
