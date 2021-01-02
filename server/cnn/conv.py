@@ -2,7 +2,8 @@
 import numpy
 from layer import LayerInterface
 from tensor.Tensor import TensorFileManager
-
+import pool
+from activation_functions import map_function
 # image getdata return flatter container
 # https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.getdata
 
@@ -12,18 +13,24 @@ from tensor.Tensor import TensorFileManager
 # for as_strided
 # https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.as_strided.html
 
+
 class ConvLayer(LayerInterface):
     # find way to save and load filters 
     # handle padding but not now, specify size
 
-    def __init__(self, load_path=None, padding=0, nb_filters=1, filtershape=(3, 2, 2), stride_length=1, pool=None):
+    def __init__(self, load_path=None, padding=0, nb_filters=1, filtershape=(3, 2, 2), stride_length=1, pool=None, activation_function='relu'):
         self.padding = padding
         self.stride_len = stride_length
-
+        
+        if activation_function != None:
+            self.activation_function, self.derivative_activation = map_function[activation_function]
+            
         self.pool = pool
 
         self.lastRes = None
         self.lastInput = None
+
+        self.z = None
 
         if load_path is not None:
             tm = TensorFileManager("./tensorfiles")
@@ -83,6 +90,8 @@ class ConvLayer(LayerInterface):
             
             new_input = numpy.lib.stride_tricks.as_strided(input, shape=std_outputshape, strides=output_stride)
             
+            self.slicedInput = new_input #used to compute with delta
+
             output = numpy.tensordot(new_input, self.filters, axes=[[2, 3, 4],[1, 2, 3]]) + self.biases
             output = output.transpose(2, 0, 1)
             return output
@@ -96,26 +105,74 @@ class ConvLayer(LayerInterface):
 
             new_input = numpy.lib.stride_tricks.as_strided(input, shape=std_outputshape, strides=output_stride) + self.biases
 
-            output = numpy.tensordot(new_input, self.filters)
+            self.slicedInput = new_input
+            # print(std_outputshape)
+            # print(self.filters.shape)
+
+            output = numpy.tensordot(new_input, self.filters, axes=[[2, 3],[0, 1]]) + self.biases
+            # output = numpy.tensordot(new_input, self.filters, axes=[[2, 3],[1, 2, 3]]) + self.biases
+            # print(output.shape)
             return output
 
     #do not forget activation function
     def compute(self, input):
-        ## apply padding
         
+        ## apply padding
         if self.padding != 0:
             input = numpy.pad(input, self.padding)
-        # output = self.enhancedSlidingWindow(input)
-        # featuremap = numpy.tensordot(output, self.filter)
-
+        
         featuremaps = self.slidingWindow(input)
 
-        # if res.shape != layershape:
-        #     raise Exception("output shape differ from initial one")
-        self.lastInput = output
-        self.lastRes = featuremaps
+        if self.pool is not None:
+            res = self.pool.compute(featuremaps)
+            self.z = res
+            
+            if self.activation_function != None:
+                res = self.activation_function(self.z)
+                self.output_shape = res.shape
+                return res
+            
+            self.output_shape = res.shape
+            return res
 
-        return featuremaps
+        self.z = featuremaps
+
+        if self.activation_function != None:
+            res = self.activation_function(self.z)
+            self.output_shape = res.shape
+            return res
+        self.output_shape = self.z.shape
+        return self.z
 
     def getType(self):
         return "FeatureMap"
+    
+    def learn(self, delta):
+        # in the example it is: maxpool, then sigmoid
+
+        #reshape delta if it come from classifier
+        if len(delta.shape) == 1:
+            delta = delta.reshape(self.output_shape)
+
+        # get activation function derivative
+        if self.activation_function != None:
+            # print(f"z = {self.z}")
+            delta = delta * self.derivative_activation(self.z)
+            # print(f"delta sigmoid{delta}")
+
+        if self.pool != None:
+            delta = pool.helper_pool_backprop(delta, self.pool)
+        
+        #have to save the weights to apply sgd
+        self.nabla_w = numpy.tensordot(delta, self.slicedInput)
+        print(f"nabla shape: {self.nabla_w.shape}")
+        print(self.nabla_w)
+        #do something with nabla_b
+
+        self.lastDelta = delta
+
+    def getLastDelta(self):
+        return np.dot(self.lastDelta, self.filters)
+    
+    def getNablaW(self):
+        return self.nabla_w
