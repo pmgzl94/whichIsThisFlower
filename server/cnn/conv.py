@@ -161,6 +161,11 @@ class ConvLayer(LayerInterface):
         if self.pool != None:
             delta = pool.helper_pool_backprop(delta, self.pool)
         
+        
+        # print(f"sliced input shape = {self.slicedInput.shape}")
+        # print(f"delta = {delta.shape}")
+        # print(f"filter = {self.filters.shape}")
+        
         #have to save the weights to apply sgd
         self.nabla_w = numpy.tensordot(delta, self.slicedInput)
         # print(self.nabla_w)
@@ -169,7 +174,28 @@ class ConvLayer(LayerInterface):
         self.lastDelta = delta
 
     def getLastDelta(self):
-        return np.dot(self.lastDelta, self.filters)
-    
+        # inspired by this link: https://medium.com/@pavisj/convolutions-and-backpropagations-46026a8f5d2c
+        delta = numpy.pad(self.lastDelta, 1)
+        flipped_filter = numpy.flip(self.filters)
+
+        # strides = (delta.strides[-2], delta.strides[-1])
+
+        outputshape   = [flipped_filter.shape[-2], flipped_filter.shape[-1]]
+        outputstrides = [delta.strides[-2], delta.strides[-1]]
+
+        outputshape.insert(0, 1 + (delta.shape[-1] - flipped_filter.shape[-1]) // self.stride_len)
+        outputshape.insert(0, 1 + (delta.shape[-2] - flipped_filter.shape[-2]) // self.stride_len)
+        
+        outputstrides.insert(0, delta.strides[-1]*self.stride_len)
+        outputstrides.insert(0, delta.strides[-2]*self.stride_len)
+
+        resized_delta = numpy.lib.stride_tricks.as_strided(delta, shape=outputshape, strides=outputstrides)
+
+        #print(f"delta = \n{self.lastDelta}")
+        next_delta = numpy.tensordot(resized_delta, flipped_filter)
+        #print("next_delta shape {next_delta.shape}")
+
+        return (next_delta)
+
     def getNablaW(self):
         return self.nabla_w

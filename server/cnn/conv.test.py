@@ -103,6 +103,41 @@ class TestFcNetwork(unittest.TestCase):
 
         # self.assertEqual((result == expected_result).all(), True)
         self.assertEqual(numpy.isclose(result, expected_result, atol=1e-2).all(), True)
+    
+    def test_get_next_delta1(self):
+        # input = (5, 5)
+        # filter = (2, 2)
+
+        pathdir = "./tensorfiles"
+        filename1 = "conv_next_delta_test"
+
+        input = numpy.array([[0.1, 2, 0.11, 0.3, 1], [0, 0.4, 0.4, 0.36, 1], 
+                            [0, 0.12, 0.27, 0.34, -3], [0.62, 0.12, 0.11, 10, 1], 
+                            [0, 56, 11, 23, 44]])
+
+        if not os.path.exists(os.path.join(pathdir, filename1 + ".bs1.npy")):
+            filter = numpy.array([[-0.13,0.15], [-0.51, 0.62]])
+            biases = numpy.zeros((1,))
+            tm = TensorFileManager("./tensorfiles")
+
+            tm.save(filename1 + ".bs1", biases)
+            tm.save(filename1 + ".ws1", filter)
+        
+        l1 = conv.ConvLayer(load_path=filename1, pool=pool.PoolLayer(), activation_function="sigmoid")
+        
+        res1 = l1.compute(input)
+        
+        ws = numpy.array([[0.61,0.82,0.96,-1], [0.02, -0.5, 0.23, 0.17]])
+        
+        prev_delta = numpy.array([0.25, -0.15]) #delta from the link
+
+        delta = numpy.dot(prev_delta, ws)
+
+        l1.learn(delta)
+
+        res = l1.getLastDelta()
+
+        self.assertEqual(numpy.isclose(res[0][0], -0.004527013257), True)
 
 if __name__ == '__main__':
     unittest.main()
