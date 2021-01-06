@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:camera/camera.dart';
 import './seePictures.dart';
 import './takePicture.dart';
 import './createUser.dart';
@@ -18,7 +19,12 @@ final String logout = """
 
 class CreateMenu extends StatelessWidget {
   final String token;
-  CreateMenu({Key key, @required this.token}) : super(key: key);
+  final CameraDescription camera;
+
+  CreateMenu({Key key,
+  		  @required this.token,
+  		  @required this.camera,
+  	     }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +40,9 @@ class CreateMenu extends StatelessWidget {
                   onPressed: () {
 		    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CreateTakePicture()),
+                      MaterialPageRoute(builder: (context) => CreateTakePicture(token: token,
+			  			     camera: camera
+			  )),
                     );
                   },
                 ),
@@ -55,7 +63,9 @@ class CreateMenu extends StatelessWidget {
                   onPressed: () {
 		    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CreateTakePicture()),
+                      MaterialPageRoute(builder: (context) => CreateTakePicture(token: token,
+			  			     camera: camera
+			  )),
                     );
                   },
                 ),

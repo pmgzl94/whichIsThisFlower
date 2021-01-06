@@ -51,129 +51,66 @@ AlertDialog dialog(context, mssg) {
   );
 }
 
-class CreateTakePicture extends StatelessWidget {
-  final String token;
-  CreateTakePicture({Key key, @required this.token}) : super(key: key);
-
-  // CameraController _controller;
-  // Future<void> _initializeControllerFuture;
-  // var isCameraReady = false;
-  // var showCapturedPhoto = false;
-  // var ImagePath;@override
-  // void initState() {
-  //      super.initState();
-  //      _initializeCamera();
-  // }
-  // Future<void> _initializeCamera() async {
-  // 	final cameras = await availableCameras();
-  // 	final firstCamera = cameras.first;
-  // 	_controller = CameraController(firstCamera,ResolutionPreset.high);
-  // 	_initializeControllerFuture = _controller.initialize();
-  // 	if (!mounted) {
-  //  	    return;
-  // 	}
-  // 	setState(() {
-  //   	    isCameraReady = true;
-  // 	});
-  // }
-//   final cameras = await availableCameras();
-//   final firstCamera = cameras.first;
-
-// int _currentNav = 0;
-    
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-            title: Text('Camera/appareil photo en anglais'),
-              // actions: <Widget>[
-              //   IconButton(
-              //     icon: Icon(
-              //       Icons.photo_camera,
-              //       // color: Colors.white,
-              //     ),
-              //     onPressed: () {
-	      // 	    Navigator.push(
-              //         context,
-              //         MaterialPageRoute(builder: (context) => CreateTakePicture()),
-              //       );
-              //     },
-              //   ),
-              // ],
-            ),
-      // 	    bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: _currentNav,
-      //   type: BottomNavigationBarType.fixed,
-      //   items: [
-      //     BottomNavigationBarItem(
-      //        icon: Icon(Icons.home, color: Colors.red),
-      //        title: Text("Home"),
-      //        // onPressed: () {
-      // 	     // 	 Navigator.pop(context);
-      // 	     // },
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.category, color: Colors.red),
-      //       title: Text("Shop"),
-      //     )
-      //   ],
-      //   onTap: (int index) {
-      //     setState(() {
-      //       _currentNav =  index;
-      //     });
-      //   },
-      // ),
-      
-//       home: TakePictureScreen( //inside body??????
-//         camera: firstCamera,
-//       ),
-        body: Align (
-              // alignment: Alignment(0.0, -0.75),
-	      alignment: Alignment.bottomCenter,// TODO why not working
-              child: CreateTakePictureButton(token: token),
-        ),
-        backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
-    );
-  }
-}
-
-class CreateTakePictureButton extends StatefulWidget
+class CreateTakePicture extends StatefulWidget
 {
   final String token;
-  CreateTakePictureButton({Key key, @required this.token}) : super(key: key);
+  final CameraDescription camera;
+
+  CreateTakePicture({Key key,
+  			       @required this.token,
+  			       @required this.camera,
+			  }) : super(key: key);
 
   @override
   CreateTakePictureState createState() => CreateTakePictureState();
 }
 
-class CreateTakePictureState extends State<CreateTakePictureButton>
+class CreateTakePictureState extends State<CreateTakePicture>
 {
     final _id = GlobalKey<FormState>();
     bool state = false;
+    CameraController _controller;
+    Future<void> _initializeControllerFuture;
 
-    void hasClicked()
-    {
-      this.state = true;
-    }
+  @override
+  void initState() {
+    super.initState();
+    _controller = CameraController(
+      widget.camera,
+      ResolutionPreset.medium,
+    );
 
-    final mc1 = TextEditingController();
-    final mc2 = TextEditingController();
-
+    // Next, initialize the controller. This returns a Future.
+    _initializeControllerFuture = _controller.initialize();
+  }
     @override
     void dispose() {
     // Clean up the controller when the widget is disposed.
-      mc1.dispose();
-      mc2.dispose();
+      _controller.dispose();
       super.dispose();
     }
 
-    @override
-    Widget build(BuildContext context) {
-      return Form(
-            key: _id,
-            child: Column(
-              children: <Widget> [
-                Mutation(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+            title: Text('Camera'),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.photo_camera,
+                    // color: Colors.white,
+                  ),
+                  onPressed: () {
+		    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CreateTakePicture()),
+                    );
+                  },
+                ),
+              ],
+            ),
+        body: Mutation(
                   options: MutationOptions(
                     documentNode: gql(takePicture),
                     update: (Cache cache, QueryResult result) {
@@ -205,35 +142,70 @@ class CreateTakePictureState extends State<CreateTakePictureButton>
                     }
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {
-                    return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        child: ElevatedButton(
-                          child: Container(
-          width: 30,
-          height: 30,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(shape: BoxShape.circle),
-          child: Icon(Icons.photo_camera),
-        ),
-			  style: ElevatedButton.styleFrom(
-			  	 shape: CircleBorder(), 
-           			 // primary: Colors.red
-        		  ),
-    	  		  onPressed: () async {
-                            print("GET TOKENNNNNNN");
-                            print(widget.token);
-                            print("GET ENDED");
-                            runMutation({"token": widget.token});
-                          },
-                        )
-                    );
+                    return  Scaffold(
+		    	    body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return CameraPreview(_controller);
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+	),
+	floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.camera_alt),
+        // Provide an onPressed callback.
+        onPressed: () async {
+          try {
+            await _initializeControllerFuture;
+
+            final path = join(
+              (await getTemporaryDirectory()).path,
+              '${DateTime.now()}.png',
+            );
+	    
+            await _controller.takePicture();
+            // await _controller.takePicture(path); // NOT WORKING ???
+	    
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DisplayPictureScreen(imagePath: path),
+              ),
+            );
+          } catch (e) {
+            print(e);
+          }
+        },
+      ),
+      );
                   }
-                )
-              ]
-            )
-          );
-    }
+          ),// Align (
+    //           // alignment: Alignment(0.0, -0.75),
+    // 	      alignment: Alignment.bottomCenter,// TODO why not working
+    //           child: CreateTakePictureButton(token: token, camera: camera),
+    //     ),
+        backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+    );
+  }
 }
+class DisplayPictureScreen extends StatelessWidget {
+  final String imagePath;
+
+  const DisplayPictureScreen({Key key, this.imagePath}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Display the Picture')),
+      // The image is stored as a file on the device. Use the `Image.file`
+      // constructor with the given path to display the image.
+      body: Image.file(File(imagePath)),
+    );
+  }
+}
+    
 
 class ButtonCreateTakePicture extends StatelessWidget {
 

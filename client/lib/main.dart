@@ -11,20 +11,45 @@ import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
-
 // Future<void> main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
 //   final cameras = await availableCameras();
 //   final firstCamera = cameras.first;
-void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+
+//   runApp(
+//     MaterialApp(
+//       theme: ThemeData.dark(),
+//       home: TakePictureScreen(
+//         // Pass the appropriate camera to the TakePictureScreen widget.
+//         text: "lol",
+// 	camera: firstCamera,
+//       ),
+//     ),
+//   );
+// }
+
+// void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final cameras = await availableCameras();
+  final firstCamera = cameras.first;
+
+  runApp(MyApp(
+	camera: firstCamera
+	));
   print("hello");
 }
 
 //carefull alignment is between 1 and -1
 
 class MyApp extends StatelessWidget {
+  final CameraDescription camera;
+
+  const MyApp({
+    Key key,
+    @required this.camera,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GraphQLProvider(
@@ -42,7 +67,9 @@ class MyApp extends StatelessWidget {
                 children: [
                   Align (
                     alignment: Alignment(0.0, -0.75),
-                    child: CreateLogin(),
+                    child: CreateLogin(
+		    	   camera: camera
+			   ),
                   ),
                   Align (
                     alignment: Alignment(-1.0, 1),
