@@ -34,7 +34,7 @@ class CreateMenu extends StatelessWidget {
                   onPressed: () {
 		    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CreateUser()),
+                      MaterialPageRoute(builder: (context) => CreateTakePicture()),
                     );
                   },
                 ),
@@ -44,10 +44,7 @@ class CreateMenu extends StatelessWidget {
                     // color: Colors.white,
                   ),
                   onPressed: () {
-		    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CreateUser()),
-                    );
+		    Navigator.pop(context);
                   },
                 ),
                 IconButton(
@@ -58,7 +55,7 @@ class CreateMenu extends StatelessWidget {
                   onPressed: () {
 		    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CreateUser()),
+                      MaterialPageRoute(builder: (context) => CreateTakePicture()),
                     );
                   },
                 ),

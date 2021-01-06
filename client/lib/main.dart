@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import './createUser.dart';
 import './client.dart';
 import './login.dart';
 
+import 'dart:async';
+import 'dart:io';
+import 'package:camera/camera.dart';
+import 'package:path/path.dart' show join;
+import 'package:path_provider/path_provider.dart';
+
+
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   final cameras = await availableCameras();
+//   final firstCamera = cameras.first;
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());

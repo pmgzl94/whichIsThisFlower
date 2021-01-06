@@ -24,12 +24,12 @@ dependencies:
   graphql_flutter: ^3.1.0
   path_provider: ^1.6.24
   shared_preferences: ^0.5.12+4
-  image_picker: ^0.6.7+17
   flutter:
     sdk: flutter
-  # camera:
+  camera:
   # path_provider:
-  # path:
+  path:
+  # image_picker: ^0.6.7+17
 
 
   # The following adds the Cupertino Icons font to your application.
