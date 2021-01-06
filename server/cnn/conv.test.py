@@ -138,6 +138,68 @@ class TestFcNetwork(unittest.TestCase):
         res = l1.getLastDelta()
 
         self.assertEqual(numpy.isclose(res[0][0], -0.004527013257), True)
+    
+    def test_get_next_delta2(self):
+        #with depth and filter
+        # input  = (3, 5, 5)
+        # filter = (4, 3, 2, 2)
+
+        pathdir = "./tensorfiles"
+        filename1 = "conv_next_delta_test1"
+
+        input = numpy.array([[[0.1, 2, 0.11, 0.3, 1], [0, 0.4, 0.4, 0.36, 1], 
+                            [0, 0.12, 0.27, 0.34, -3], [0.62, 0.12, 0.11, 10, 1], 
+                            [0, 0.56, 0.11, 0.44, 0.23]], [[0.1, 2, 0.11, 0.3, 1], [0, 0.4, 0.4, 0.36, 1], 
+                            [0, 0.12, 0.27, 0.34, -3], [0.62, 0.12, 0.11, 10, 1], 
+                            [0, 0.56, 0.11, 0.23, 0.44]], [[0.1, 2, 0.11, 0.3, 1], [0, 0.4, 0.4, 0.36, 1], 
+                            [0, 0.12, 0.27, 0.34, -3], [0.62, 0.12, 0.11, 10, 1], 
+                            [0, 0.56, 0.11, 0.23, 0.44]]])
+        # print(f"input shape = {input.shape}")
+
+        if not os.path.exists(os.path.join(pathdir, filename1 + ".bs1.npy")):
+            f = numpy.array([[[-0.13,0.15], [-0.51, 0.62]], 
+                    [[-0.13,0.15], [-0.51, 0.62]], [[-0.13,0.15], [-0.51, 0.62]]])
+            
+            containerfilter = numpy.ndarray((0, 3, 2, 2))
+
+            containerfilter = numpy.insert(containerfilter, 0, f, axis=0)
+            containerfilter = numpy.insert(containerfilter, 0, f, axis=0)
+            containerfilter = numpy.insert(containerfilter, 0, f, axis=0)
+            containerfilter = numpy.insert(containerfilter, 0, f, axis=0)
+
+            #print(f"container filter shape = {containerfilter.shape}")
+
+            biases = numpy.zeros((4,))
+
+            tm = TensorFileManager("./tensorfiles")
+            # print(f"shape = {f.shape}")
+
+            tm.save(filename1 + ".bs1", biases)
+            tm.save(filename1 + ".ws1", containerfilter)
+
+        l1 = conv.ConvLayer(load_path=filename1, pool=pool.PoolLayer(), activation_function="sigmoid")
+    
+        res1 = l1.compute(input)
+        
+        # print(f"result conv shape {res1.shape}")
+        ws = numpy.array([[0.61,0.82,0.96,-1, 0.9, 0.71, 0.3, 0.276, 0.11, 0.12, 0.17, 0.5, 0.1, 0.2, 0.11, 0.6], 
+                        [0.02, -0.5, 0.23, 0.17, 0.9, 0.1, 0.4, 0.9, 0.2, 0.12, 0.11, 0.3, 0.1, 0.2, 0.7, 0.8]])
+
+        prev_delta = numpy.array([0.25, -0.15]) #delta from the link
+
+        delta = numpy.dot(prev_delta, ws)
+
+        # print(f"delta = {delta}")
+
+        l1.learn(delta)
+
+        dx = l1.getLastDelta()
+
+        self.assertEqual(dx.shape, (3, 5, 5))
+
+        # print(dx)
+
+        self.assertEqual(numpy.isclose(dx[0][2][2], 2.837872562200001e-10), True)
 
 if __name__ == '__main__':
     unittest.main()

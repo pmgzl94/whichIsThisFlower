@@ -13,7 +13,6 @@ from activation_functions import map_function
 # for as_strided
 # https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.as_strided.html
 
-
 class ConvLayer(LayerInterface):
     # find way to save and load filters 
     # handle padding but not now, specify size
@@ -51,20 +50,7 @@ class ConvLayer(LayerInterface):
             else:
                 self.filters = numpy.ndarray(filtershape)
                 self.biases = numpy.ndarray((nb_filters,))
-        
-    # def enhancedSlidingWindow(self, input):
-    #     #for 2d input and only one filter
-    #     outputshape = ((input.shape[0] - self.fshape[0] + 1) // self.stride_len, (input.shape[1] - self.fshape[1] + 1) // self.stride_len, self.fshape[0], self.fshape[1])
 
-    #     len_per_row ,len_per_number = input.strides
-
-    #     strides = (len_per_row * self.stride_len, len_per_number * self.stride_len, len_per_row, len_per_number)
-
-    #     output = numpy.lib.stride_tricks.as_strided(input, shape=outputshape, strides=strides)
-
-    #     #for 3d input ...
-    #     return output
-    
     def slidingWindow(self, input):
         filtershape = list(self.filters.shape)
         inputshape = list(input.shape)
@@ -106,12 +92,8 @@ class ConvLayer(LayerInterface):
             new_input = numpy.lib.stride_tricks.as_strided(input, shape=std_outputshape, strides=output_stride) + self.biases
 
             self.slicedInput = new_input
-            # print(std_outputshape)
-            # print(self.filters.shape)
-
+            
             output = numpy.tensordot(new_input, self.filters, axes=[[2, 3],[0, 1]]) + self.biases
-            # output = numpy.tensordot(new_input, self.filters, axes=[[2, 3],[1, 2, 3]]) + self.biases
-            # print(output.shape)
             return output
 
     #do not forget activation function
@@ -150,7 +132,7 @@ class ConvLayer(LayerInterface):
     def learn(self, delta):
         # in the example it is: maxpool, then sigmoid
 
-        #reshape delta if it come from classifier
+        # reshape delta if it come from classifier
         if len(delta.shape) == 1:
             delta = delta.reshape(self.output_shape)
 
@@ -162,40 +144,65 @@ class ConvLayer(LayerInterface):
             delta = pool.helper_pool_backprop(delta, self.pool)
         
         
-        # print(f"sliced input shape = {self.slicedInput.shape}")
-        # print(f"delta = {delta.shape}")
-        # print(f"filter = {self.filters.shape}")
-        
         #have to save the weights to apply sgd
         self.nabla_w = numpy.tensordot(delta, self.slicedInput)
-        # print(self.nabla_w)
         #do something with nabla_b
+
+        # print(delta.shape)
 
         self.lastDelta = delta
 
     def getLastDelta(self):
         # inspired by this link: https://medium.com/@pavisj/convolutions-and-backpropagations-46026a8f5d2c
-        delta = numpy.pad(self.lastDelta, 1)
+        
+        if len(self.lastDelta.shape) == 3:
+            delta = numpy.pad(self.lastDelta, ((0, 0), (1, 1), (1, 1)))
+        else:
+            delta = numpy.pad(self.lastDelta, 1)
+
         flipped_filter = numpy.flip(self.filters)
 
-        # strides = (delta.strides[-2], delta.strides[-1])
-
+        #add filter dimensions
         outputshape   = [flipped_filter.shape[-2], flipped_filter.shape[-1]]
         outputstrides = [delta.strides[-2], delta.strides[-1]]
 
+        #add input dimension
         outputshape.insert(0, 1 + (delta.shape[-1] - flipped_filter.shape[-1]) // self.stride_len)
         outputshape.insert(0, 1 + (delta.shape[-2] - flipped_filter.shape[-2]) // self.stride_len)
         
         outputstrides.insert(0, delta.strides[-1]*self.stride_len)
         outputstrides.insert(0, delta.strides[-2]*self.stride_len)
 
-        resized_delta = numpy.lib.stride_tricks.as_strided(delta, shape=outputshape, strides=outputstrides)
+        if len(delta.shape) == 3: #if multiple filter
+            #only handle with depth and multiple filter here
 
-        #print(f"delta = \n{self.lastDelta}")
-        next_delta = numpy.tensordot(resized_delta, flipped_filter)
-        #print("next_delta shape {next_delta.shape}")
+            outputshape.insert(2, delta.shape[-3])
+            outputstrides.insert(2, delta.strides[-3])
+            #have to precise that there is multiple filter
 
-        return (next_delta)
+            resized_delta = numpy.lib.stride_tricks.as_strided(delta, shape=outputshape, strides=outputstrides)
+            
+            filter_axes = [len(flipped_filter.shape) - 3, len(flipped_filter.shape) - 2, len(flipped_filter.shape) - 1]
+            delta_axes = [len(resized_delta.shape) - 3, len(resized_delta.shape) - 2, len(resized_delta.shape) - 1]
+
+            # print(f"shapes = {resized_delta.shape} {flipped_filter.shape}")
+            # print(f"d_axes = {delta_axes}, f_axes = {filter_axes}")
+            flipped_filter = flipped_filter.transpose(1, 0, 2, 3)
+
+            next_delta = numpy.tensordot(resized_delta, flipped_filter, axes=[delta_axes, filter_axes])
+            
+            return next_delta.transpose(2, 0, 1)
+        else: #if only one filter...
+            
+            #print(f"delta = \n{self.lastDelta}")
+            resized_delta = numpy.lib.stride_tricks.as_strided(delta, shape=outputshape, strides=outputstrides)
+            
+            filter_axes = [len(flipped_filter.shape) - 2, len(flipped_filter.shape) - 1]
+            delta_axes = [len(resized_delta.shape) - 2, len(resized_delta.shape) - 1]
+            
+            next_delta = numpy.tensordot(resized_delta, flipped_filter, axes=[delta_axes, filter_axes])
+
+            return (next_delta)
 
     def getNablaW(self):
         return self.nabla_w
