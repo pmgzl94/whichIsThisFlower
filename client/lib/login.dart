@@ -35,15 +35,15 @@ AlertDialog dialog(context, mssg) {
 
 class CreateLogin extends StatefulWidget
 {
-  final CameraDescription camera;
+    final CameraDescription camera;
 
-  const CreateLogin({
-    Key key,
-    @required this.camera,
-  }) : super(key: key);
-  
-  @override
-  CreateLoginState createState() => CreateLoginState();
+    const CreateLogin({
+        Key key,
+        @required this.camera,
+    }) : super(key: key);
+
+    @override
+    CreateLoginState createState() => CreateLoginState();
 }
 
 class CreateLoginState extends State<CreateLogin>
@@ -60,7 +60,8 @@ class CreateLoginState extends State<CreateLogin>
     final mc2 = TextEditingController();
 
     @override
-    void dispose() {
+    void dispose()
+    {
     // Clean up the controller when the widget is disposed.
       mc1.dispose();
       mc2.dispose();
@@ -116,8 +117,8 @@ class CreateLoginState extends State<CreateLogin>
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"],
-			  			     camera: widget.camera
-			  )),
+                                                     camera: widget.camera
+                          )),
                         );
                       } else {
                         print("User doesn't exist");

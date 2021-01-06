@@ -11,23 +11,6 @@ import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   final cameras = await availableCameras();
-//   final firstCamera = cameras.first;
-
-//   runApp(
-//     MaterialApp(
-//       theme: ThemeData.dark(),
-//       home: TakePictureScreen(
-//         // Pass the appropriate camera to the TakePictureScreen widget.
-//         text: "lol",
-// 	camera: firstCamera,
-//       ),
-//     ),
-//   );
-// }
-
 // void main() {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,8 +18,8 @@ Future<void> main() async {
   final firstCamera = cameras.first;
 
   runApp(MyApp(
-	camera: firstCamera
-	));
+        camera: firstCamera
+        ));
   print("hello");
 }
 
@@ -68,8 +51,8 @@ class MyApp extends StatelessWidget {
                   Align (
                     alignment: Alignment(0.0, -0.75),
                     child: CreateLogin(
-		    	   camera: camera
-			   ),
+                           camera: camera
+                           ),
                   ),
                   Align (
                     alignment: Alignment(-1.0, 1),
@@ -82,72 +65,7 @@ class MyApp extends StatelessWidget {
             ),
           )
     );
-
-
-
-
   }
 }
 
-// class RawWords extends StatefulWidget {
-//   @override
-//   RawWordState createState() => RawWordState();
-// }
-
-// class RawWordState extends State<RawWords>
-// {
-//   final _username = GlobalKey<FormState>();
-//   @override
-//   Widget build(BuildContext context) {
-//     // final word = "on est laaaa";
-//     // return Text(word);
-//     return Form(
-//       key: _username,
-//       child: Column(
-//         children: <Widget> [
-//           TextFormField(
-//             decoration: const InputDecoration(
-//               hintText: 'username',
-//             ),
-//             validator: (value) {
-//               if (value.isEmpty) {
-//                 return 'Please enter your username';
-//               }
-//               return null;
-//             },
-//           ),
-//           TextFormField(
-//             decoration: const InputDecoration(
-//               hintText: 'password',
-//             ),
-//             validator: (value) {
-//               if (value.isEmpty) {
-//                 return 'Please enter your password';
-//               }
-//               return null;
-//             },
-//             obscureText: true
-//           ),
-
-//           Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 16.0),
-//             child: ElevatedButton(
-//               onPressed: () {
-//                 // Validate will return true if the form is valid, or false if
-//                 // the form is invalid.
-//                 if (_username.currentState.validate()) {
-//                   // call gql request
-//                 }
-//               },
-//               child: Text('Login'),
-//             ),
-//           ),
-//         ]
-//       )
-
-//     );
-
-//   }
-// }
-
-//Stateless widgets are immutable, meaning that their properties can’t change—all values are final.
+//Stateless widgets are immutable, meaning that their properties can’t change, —all values are final.

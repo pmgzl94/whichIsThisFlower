@@ -18,17 +18,17 @@ final String logout = """
 """;
 
 class CreateMenu extends StatelessWidget {
-  final String token;
-  final CameraDescription camera;
+    final String token;
+    final CameraDescription camera;
 
-  CreateMenu({Key key,
-  		  @required this.token,
-  		  @required this.camera,
-  	     }) : super(key: key);
+    CreateMenu({Key key,
+                  @required this.token,
+                  @required this.camera,
+             }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
         appBar: AppBar(
             title: Text('Menu'),
               actions: <Widget>[
@@ -38,11 +38,11 @@ class CreateMenu extends StatelessWidget {
                     // color: Colors.white,
                   ),
                   onPressed: () {
-		    Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => CreateTakePicture(token: token,
-			  			     camera: camera
-			  )),
+                                                     camera: camera
+                          )),
                     );
                   },
                 ),
@@ -52,7 +52,7 @@ class CreateMenu extends StatelessWidget {
                     // color: Colors.white,
                   ),
                   onPressed: () {
-		    Navigator.pop(context);
+                    Navigator.pop(context);
                   },
                 ),
                 IconButton(
@@ -61,11 +61,11 @@ class CreateMenu extends StatelessWidget {
                     // color: Colors.white,
                   ),
                   onPressed: () {
-		    Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => CreateTakePicture(token: token,
-			  			     camera: camera
-			  )),
+                                                     camera: camera
+                          )),
                     );
                   },
                 ),
@@ -88,11 +88,11 @@ class CreateMenu extends StatelessWidget {
 
 class CreateMenuButton extends StatefulWidget
 {
-  final String token;
-  CreateMenuButton({Key key, @required this.token}) : super(key: key);
+    final String token;
+    CreateMenuButton({Key key, @required this.token}) : super(key: key);
 
-  @override
-  CreateMenuButtonState createState() => CreateMenuButtonState();
+    @override
+    CreateMenuButtonState createState() => CreateMenuButtonState();
 }
 
 class CreateMenuButtonState extends State<CreateMenuButton>
