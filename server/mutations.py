@@ -86,6 +86,7 @@ class LogoutMutation(graphene.Mutation):
         SessionManager.session.removeSession(get_jwt_identity())
         return LogoutMutation(ok=ObjectTypes.IsOk(ok=True))
 
+import base64
 
 class TakePicture(graphene.Mutation):
     class Arguments(object):
@@ -104,13 +105,14 @@ class TakePicture(graphene.Mutation):
         # newImage = bytes(image, 'utf-8').decode()
         file = open("./cache/" + imageName, "w")
         file.write(image)
+        # file.write(base64.decode(image))
         # file.write(newImage)
         file.close()
 
         flowerName = "sunflower" # function to get the name of the flower
         username = get_jwt_identity()
         comment = "none"
-        
+
         db.dbMan.addImage(imageName, image, username, flowerName, comment)
         return TakePicture(ok=ObjectTypes.IsOk(ok=True), flowerName=ObjectTypes.GetFlowerName(flowerName=flowerName))
 
