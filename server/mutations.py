@@ -13,6 +13,8 @@ import db
 import sys
 from graphql import GraphQLError
 
+from base64 import b64encode, b64decode
+
 #mutation object
 # https://docs.graphene-python.org/en/latest/types/mutations/
 
@@ -99,8 +101,14 @@ class TakePicture(graphene.Mutation):
     @mutation_jwt_required
     def mutate(cls, _, info, image, imageName):
         print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
-        username = get_jwt_identity()
+        # newImage = bytes(image, 'utf-8').decode()
+        file = open("./cache/" + imageName, "w")
+        file.write(image)
+        # file.write(newImage)
+        file.close()
+
         flowerName = "sunflower" # function to get the name of the flower
+        username = get_jwt_identity()
         comment = "none"
         
         db.dbMan.addImage(imageName, image, username, flowerName, comment)
