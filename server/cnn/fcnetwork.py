@@ -16,11 +16,6 @@ def basic_cost_derivative(y, a): #where y is the expected result
 # ...
 
 class FCLayer(LayerInterface):
-    # def __init__(self, *args):
-    #     if len(a) == 1:
-    #         create_net(args)
-    #     elif len(a) == 2:
-    #         reload_net(args)
     def __init__(self, arch, transfer_learning_file=None):
         self.weights = []
         self.biases  = []
@@ -59,6 +54,9 @@ class FCLayer(LayerInterface):
         self.weights, self.biases = tfm.loadNet(transfer_learning_file, self.nb_set_of_params)
         
     def compute(self, input):
+
+        if len(input.shape) != 1:
+            input = input.flatten()
         if input.shape != self.inputshape:
             raise Exception("wrong input shape")
         return self.forward(input)

@@ -13,9 +13,10 @@ from activation_functions import map_function
 # for as_strided
 # https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.as_strided.html
 
+
 class ConvLayer(LayerInterface):
-    # find way to save and load filters 
-    # handle padding but not now, specify size
+    # find way to save filters 
+    # if you precise padding, you will only get a padding of 1
 
     def __init__(self, load_path=None, padding=0, nb_filters=1, filtershape=(3, 2, 2), stride_length=1, pool=None, activation_function='relu'):
         self.padding = padding
@@ -48,7 +49,8 @@ class ConvLayer(LayerInterface):
                 self.filters = numpy.ndarray(shape)
                 self.biases = numpy.ndarray((nb_filters,))
             else:
-                self.filters = numpy.ndarray(filtershape)
+                # self.filters = numpy.ndarray(filtershape)
+                self.filters = numpy.random.rand(*filtershape)
                 self.biases = numpy.ndarray((nb_filters,))
 
     def slidingWindow(self, input):
@@ -101,9 +103,13 @@ class ConvLayer(LayerInterface):
         
         ## apply padding
         if self.padding != 0:
-            input = numpy.pad(input, self.padding)
+            # input = numpy.pad(input, self.padding)
+            input = numpy.pad(input, ((0, 0), (1, 1), (1, 1)))
+            # print(f"input shape = {input.shape}")
         
         featuremaps = self.slidingWindow(input)
+
+        # print(featuremaps.shape)
 
         if self.pool is not None:
             res = self.pool.compute(featuremaps)

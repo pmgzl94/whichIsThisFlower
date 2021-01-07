@@ -18,10 +18,12 @@ def helper_pool_backprop(delta, pool_layer):
     return delta * derivative
 
 class PoolLayer(LayerInterface):
+    # if you precise padding, you will only get a padding of 1
 
     def __init__(self, pad=0, pool_size=(2, 2), stride_length=2, type='max'):
         self.pool_size = pool_size
         self.stride_len = stride_length
+        self.pad = pad
 
     def build_derivative(self, input, resized_input, strides, outputshape):
         
@@ -70,6 +72,9 @@ class PoolLayer(LayerInterface):
         #3d
         #smart pad
 
+        if len(input.shape) == 3 and self.pad != 0:
+            input = numpy.pad(input, ((0, 0), (1, 1), (1, 1)))
+            # print(f"new input here = {input.shape}")
         s = self.stride_len
         stride_input = input.strides
         
@@ -83,6 +88,7 @@ class PoolLayer(LayerInterface):
 
             # add size of the filter
             outputshape = outputshape + list(self.pool_size)
+            
             outputstride = outputstride + [stride_input[-2], stride_input[-1]]
 
             output = numpy.lib.stride_tricks.as_strided(input, shape=outputshape, strides=outputstride)

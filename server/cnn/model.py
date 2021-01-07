@@ -1,23 +1,14 @@
 
 from layer import LayerInterface
-
-# class Layer(): #layer can contain multiple layer
-#     def __init__(self, shape, type):
-#         #type: fc, featuremap, maxpooling
-
-
-# class LayersContainer(): #or net
-#     def __init__(): #for now there is now model
-
-#     def addLayer():
-        
-#     def build:
+import dataloader
+import random
 
 class Model():
-    #CNN, FCN, RNN ...
-    def __init__(self, learning_rate, dataset, layerContainer=[], modeltype="FCN"):
+    # type = CNN, FCN, RNN ...
+    # dataset must be supervised
+    def __init__(self, learning_rate, dataset, layerContainer=[]):
         # self.learn = learn()
-        self.modeltype = modeltype
+        #self.modeltype = modeltype
         self.dataset = dataset
         self.layercontainer = layerContainer 
         self.nb_layers = len(self.layercontainer)
@@ -31,8 +22,29 @@ class Model():
     def compute(self, input):
         x = input
         for layer in self.layercontainer:
-            x = layer.compute()
+            print(x.shape)
+            print(x)
+            x = layer.compute(x)
         return x
-    def learn():
-        print("learning")
 
+    def learn(self, input):
+        #for now the classifier is the last layer
+        data = dataloader.load_flower()
+        data = list(data)
+
+        #for now it will be sgd learning algorithm
+        print("learning")
+        # each layer should be able to give us the delta in order to backpropagate the learning
+        data = random.shuffle(data)
+        batch = data[:10]
+        
+        for input, expec in batch:
+            self.compute(input)
+            
+            #get delta from the classifier
+            success = self.layercontainer[-1].learn(input, expec)
+            delta = self.layercontainer[-1].getLastDelta()
+            #backpropagate the delta
+            for i in range(2, len(self.layercontainer), 1):
+                self.layercontainer[-i].learn(delta)
+                delta = self.layercontainer[-i].getLastDelta()
