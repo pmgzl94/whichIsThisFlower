@@ -26,7 +26,7 @@ class CreateUser(graphene.Mutation):
     person = graphene.Field(lambda: ObjectTypes.User)
 
     def mutate(root, info, username, password):
-        print("[MUTATION]: [CreateUser]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
+        print("\n[MUTATION]: [CreateUser]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
 
         person = ObjectTypes.User(username=username)
         ok = True
@@ -50,7 +50,7 @@ class AuthMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, _, info, username, password):
-        print("[MUTATION]: [AuthMutation]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
+        print("\n[MUTATION]: [AuthMutation]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
 
         try:
             dbUser = db.dbMan.getUser(username)
@@ -80,7 +80,7 @@ class LogoutMutation(graphene.Mutation):
     @classmethod
     @mutation_jwt_required
     def mutate(cls, _, info):
-        print("[MUTATION]: [LogoutMutation]: mutate", file=sys.stderr)
+        print("\n[MUTATION]: [LogoutMutation]: mutate", file=sys.stderr)
         SessionManager.session.removeSession(get_jwt_identity())
         return LogoutMutation(ok=ObjectTypes.IsOk(ok=True))
 
@@ -98,13 +98,12 @@ class TakePicture(graphene.Mutation):
     @classmethod
     @mutation_jwt_required
     def mutate(cls, _, info, image, imageName):
-        print("[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
-        username = ""
-        flowerName = "jsp"
-        comment = ""
-        # SessionManager.session.removeSession(get_jwt_identity())
-        # function to get the name of the flower
-        # db.dbMan.addImage(imageName, image, username, flowerName, comment)
+        print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
+        username = get_jwt_identity()
+        flowerName = "sunflower" # function to get the name of the flower
+        comment = "none"
+        
+        db.dbMan.addImage(imageName, image, username, flowerName, comment)
         return TakePicture(ok=ObjectTypes.IsOk(ok=True), flowerName=ObjectTypes.GetFlowerName(flowerName=flowerName))
 
 
