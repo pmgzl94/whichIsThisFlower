@@ -12,6 +12,7 @@ class Mutation(graphene.ObjectType):
     getOtherObj = mutations.OtherProtectedMutation.Field() #tested protected query
 
     logout = mutations.LogoutMutation.Field()
+    takePicture = mutations.TakePicture.Field()
 
 
 class Query(graphene.ObjectType):

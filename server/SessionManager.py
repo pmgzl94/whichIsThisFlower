@@ -13,7 +13,7 @@ class SessionManager():
         raise Exception("token not exists")
     def removeSession(self, username):
         if username in self.refs.keys():
-            self.refs.pop(usename, None)
+            self.refs.pop(username, None)
         else:
             raise Exception("token not exists")
         

@@ -70,6 +70,52 @@ class AuthMutation(graphene.Mutation):
             refresh_token=refrshTok,
         )
 
+
+class LogoutMutation(graphene.Mutation):
+    class Arguments(object):
+        token = graphene.String()
+
+    ok = graphene.Field(ObjectTypes.ProtectedUnion)
+
+    @classmethod
+    @mutation_jwt_required
+    def mutate(cls, _, info):
+        print("[MUTATION]: [LogoutMutation]: mutate", file=sys.stderr)
+        SessionManager.session.removeSession(get_jwt_identity())
+        return LogoutMutation(ok=ObjectTypes.IsOk(ok=True))
+
+
+class TakePicture(graphene.Mutation):
+    class Arguments(object):
+        token = graphene.String()
+        image = graphene.String()
+        imageName = graphene.String()
+
+    ok = graphene.Field(ObjectTypes.ProtectedUnion)
+    flowerName = graphene.Field(ObjectTypes.ProtectedUnion)
+    # flowerName = graphene.Field(lambda: ObjectTypes.GetFlowerName)
+
+    @classmethod
+    @mutation_jwt_required
+    def mutate(cls, _, info, image, imageName):
+        print("[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
+        username = ""
+        flowerName = "jsp"
+        comment = ""
+        # SessionManager.session.removeSession(get_jwt_identity())
+        # function to get the name of the flower
+        # db.dbMan.addImage(imageName, image, username, flowerName, comment)
+        return TakePicture(ok=ObjectTypes.IsOk(ok=True), flowerName=ObjectTypes.GetFlowerName(flowerName=flowerName))
+
+
+
+
+
+
+
+
+
+
 #example of protected mutation
 class ProtectedMutation(graphene.Mutation):
     class Arguments(object):
@@ -86,21 +132,6 @@ class ProtectedMutation(graphene.Mutation):
         return ProtectedMutation(
             message=ObjectTypes.MessageField(message="Protected mutation works")
         )
-
-
-#example of protected mutation
-class LogoutMutation(graphene.Mutation):
-    class Arguments(object):
-        token = graphene.String()
-
-    ok = graphene.Field(ObjectTypes.ProtectedUnion)
-
-    @classmethod
-    @mutation_jwt_required
-    def mutate(cls, _, info):
-        print("[MUTATION]: [LogoutMutation]: mutate", file=sys.stderr)
-        SessionManager.session.removeSession(get_jwt_identity())
-        return LogoutMutation(ok=ObjectTypes.IsOk(ok=True))
 
 
 class OtherProtectedMutation(graphene.Mutation):
