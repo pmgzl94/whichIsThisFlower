@@ -14,6 +14,7 @@ import sys
 from graphql import GraphQLError
 
 from base64 import b64encode, b64decode
+from graphene_file_upload.scalars import Upload
 
 #mutation object
 # https://docs.graphene-python.org/en/latest/types/mutations/
@@ -109,7 +110,7 @@ class TakePicture(graphene.Mutation):
         # file.write(newImage)
         file.close()
 
-        flowerName = "sunflower" # function to get the name of the flower
+        flowerName = "It is not a flower" # function to get the name of the flower
         username = get_jwt_identity()
         comment = "none"
 
