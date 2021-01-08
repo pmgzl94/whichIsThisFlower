@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
-
 import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
-
+import 'package:http/http.dart';
+import 'package:http_parser/http_parser.dart';
 
 final String takePicture = """
   mutation takePicture(\$token: String!, \$image: String!, \$imageName: String!) {
@@ -128,6 +127,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
                       print(res);
                       print("takePICTURE");
 
+		      
                       // to change, add return to picture
                       Navigator.push(
                           context,
@@ -185,6 +185,16 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                   print("GET TOKENNNNNNN");
                                   print(widget.token);
                                   print("GET ENDED");
+				  File pic = new File(path);
+				  var byteData = pic.readAsBytesSync();
+
+    var multipartFile = MultipartFile.fromBytes(
+      'photo',
+      byteData,
+      filename: '${DateTime.now().second}.jpg',
+      contentType: MediaType("image", "jpg"),
+    );
+
                                   runMutation({"token": widget.token, "image": "tt", "imageName": name});
                               } catch (e) {
                                   print(e);
