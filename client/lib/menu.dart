@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:camera/camera.dart';
 import './seePictures.dart';
 import './takePicture.dart';
+import './createUser.dart';
 
 final String logout = """
   mutation logout(\$token: String!) {
@@ -16,23 +18,38 @@ final String logout = """
 """;
 
 class CreateMenu extends StatelessWidget {
-  final String token;
-  CreateMenu({Key key, @required this.token}) : super(key: key);
+    final String token;
+    final CameraDescription camera;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Menu')),
+    CreateMenu({Key key,
+                  @required this.token,
+                  @required this.camera,
+             }) : super(key: key);
+
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(
+            title: Text('Menu'),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.photo_camera,
+                    // color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CreateTakePicture(token: token,
+                                                     camera: camera
+                          )),
+                    );
+                  },
+                ),
+              ],
+            ),
         body: Column(
           children: [
-            Align (
-              alignment: Alignment(0.0, -0.75),
-              child: CreateTakePictureButton(token: token),
-            ),
-            Align (
-              alignment: Alignment(0.0, -0.75),
-              child: CreateSeePictureButton(token: token),
-            ),
             Align (
               alignment: Alignment(0.0, -0.75),
               child: CreateMenuButton(token: token),
@@ -48,11 +65,11 @@ class CreateMenu extends StatelessWidget {
 
 class CreateMenuButton extends StatefulWidget
 {
-  final String token;
-  CreateMenuButton({Key key, @required this.token}) : super(key: key);
+    final String token;
+    CreateMenuButton({Key key, @required this.token}) : super(key: key);
 
-  @override
-  CreateMenuButtonState createState() => CreateMenuButtonState();
+    @override
+    CreateMenuButtonState createState() => CreateMenuButtonState();
 }
 
 class CreateMenuButtonState extends State<CreateMenuButton>

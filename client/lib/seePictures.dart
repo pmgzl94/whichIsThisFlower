@@ -24,6 +24,30 @@ class CreateSeePictureButton extends StatefulWidget
 
 class CreateSeePictureButtonState extends State<CreateSeePictureButton>
 {
+    // List<Image> imgs = [];
+
+    // @override
+    // Widget build(BuildContext context) {
+    //   return Scaffold(
+    //     appBar: AppBar(title: Text(widget.title)),
+    //     body: ListView.builder(
+    //       itemCount: imgs.length,
+    //       itemBuilder: (context, i) =>
+    //         Column(
+    //           children: [
+    //             imgs[i],
+    //             Divider()
+    //           ]
+    //         ),
+    //     ),
+    //     floatingActionButton: FloatingActionButton(
+    //       child: Icon(Icons.add),
+    //       onPressed: ()  {
+    //         return;
+    //       }
+    //     ),
+    //   );
+    // }
     final _id = GlobalKey<FormState>();
     bool state = false;
 

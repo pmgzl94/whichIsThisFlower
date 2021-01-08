@@ -1,5 +1,7 @@
 from flask import Flask
-import graphene
+# import graphene
+# from graphene_file_upload.flask import FileUploadGraphQLView
+
 from flask_graphql_auth import GraphQLAuth
 from flask_graphql import GraphQLView
 from flask_jwt import JWT
