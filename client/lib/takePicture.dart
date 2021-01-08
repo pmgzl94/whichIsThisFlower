@@ -119,13 +119,21 @@ class CreateTakePictureState extends State<CreateTakePicture>
                   },
                   onCompleted: (dynamic resultData) {
                       print("on completed");
-                      print(resultData);
                       print(resultData.data);
-                      // add check
-                      print(resultData.data["takePicture"]["flowerName"]["flowerName"]);
-                      String res = resultData.data["takePicture"]["flowerName"]["flowerName"];
-                      print(res);
-                      print("takePICTURE");
+		      String res = "It is not a flower";
+                      if (resultData != null && resultData.data["takePicture"] != null && resultData.data["takePicture"]["flowerName"] != null) {
+                          print(resultData.data["takePicture"]["flowerName"]["flowerName"]);
+                          res = resultData.data["takePicture"]["flowerName"]["flowerName"];
+                          print(res);
+                          print("takePICTURE");
+                      } else {
+                        // print("coudn't find picture");
+                        // showDialog<AlertDialog>(
+                        //   context: context,
+                        //   builder: (BuildContext context) {
+                        //     return dialog(context, "image not received");
+                        // });
+                      }
 
 
                       // to change, add return to picture
@@ -136,20 +144,6 @@ class CreateTakePictureState extends State<CreateTakePicture>
                           ),
                       );
                       // Navigator.pop(context);
-                      // if (resultData != null) {
-                      //   print(resultData.data["auth"]["accessToken"]);
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"])),
-                      //   );
-                      // } else {
-                      //   print("User doesn't exist");
-                      //   showDialog<AlertDialog>(
-                      //     context: context,
-                      //     builder: (BuildContext context) {
-                      //       return dialog(context, "User doesn't exist");
-                      //   });
-                      // }
                     }
               ),
               builder: (RunMutation runMutation, QueryResult result) {

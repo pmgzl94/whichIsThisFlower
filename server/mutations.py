@@ -104,11 +104,17 @@ class TakePicture(graphene.Mutation):
     def mutate(cls, _, info, imageName, image, **kwargs):
         print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
         # newImage = bytes(image, 'utf-8').decode()
-        file = open("./cache/" + imageName, "w")
-        file.write(image)
-        # file.write(base64.decode(image))
-        # file.write(newImage)
-        file.close()
+        try:
+            file = open("./cache/" + imageName, "w")
+            file.write("oo")
+            # file.write(image.read().decode())
+            # image.read()
+            # image.read().decode()
+            # file.write(base64.decode(image))
+            # file.write(newImage)
+            file.close()
+        except:
+            print("aa")
 
         flowerName = "It is not a flower" # function to get the name of the flower
         username = get_jwt_identity()
