@@ -13,6 +13,8 @@ import db
 import sys
 from graphql import GraphQLError
 
+import cnn
+
 from base64 import b64encode, b64decode
 
 #mutation object
@@ -103,13 +105,14 @@ class TakePicture(graphene.Mutation):
     def mutate(cls, _, info, image, imageName):
         print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
         # newImage = bytes(image, 'utf-8').decode()
-        file = open("./cache/" + imageName, "w")
+        fullpath = "./cache/" + imageName
+        file = open(fullpath, "w")
         file.write(image)
         # file.write(base64.decode(image))
         # file.write(newImage)
         file.close()
 
-        flowerName = "sunflower" # function to get the name of the flower
+        flowerName = cnn.models.zf5model(fullpath) # function to get the name of the flower
         username = get_jwt_identity()
         comment = "none"
 

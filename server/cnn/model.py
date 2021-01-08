@@ -2,10 +2,7 @@
 from layer import LayerInterface
 import dataloader
 import random
-<<<<<<< HEAD
-=======
 from tensor.Tensor import TensorFileManager
->>>>>>> 6744deae55920772dad50e19f70ebc00f3d7630d
 
 class Model():
     # type = CNN, FCN, RNN ...
