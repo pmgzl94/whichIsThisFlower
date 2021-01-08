@@ -160,6 +160,7 @@ class CreateUserFormState extends State<CreateUserForm>
                     },
                     onCompleted: (dynamic resultData) {
                       print("on completed");
+                      print(resultData);
                       print(resultData.data);
                       if (resultData != null && resultData.data["createUser"]["ok"] == true) {
                         print(resultData.data["createUser"]["ok"]);
