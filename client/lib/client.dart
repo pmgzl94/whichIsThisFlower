@@ -15,11 +15,11 @@ final OptimisticCache cache = OptimisticCache(
   dataIdFromObject: typenameDataIdFromObject,
 );
 
-ValueNotifier<GraphQLClient> clientFor({
-  @required String uri,
-  String subscriptionUri,
-}) {
+ValueNotifier<GraphQLClient> clientFor(
+                { @required String uri, String subscriptionUri, })
+{
   Link link = HttpLink(uri: uri);
+
   if (subscriptionUri != null) {
     final WebSocketLink websocketLink = WebSocketLink(
       url: subscriptionUri,
@@ -42,9 +42,11 @@ ValueNotifier<GraphQLClient> clientFor({
 }
 
 String getUri() {
-  if (Platform.isAndroid) {
-    return "http://10.0.2.2:5000/graphql";
-  } else {
-    return "http://localhost:5000/graphql";
-  }
+  print("uri is 10.0.0.34:5000/graphql");
+  return "http://10.0.0.34:5000/graphql";
+  // if (Platform.isAndroid) {
+  //   return "http://10.0.2.2:5000/graphql";
+  // } else {
+  //   return "http://localhost:5000/graphql";
+  // }
 }

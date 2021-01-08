@@ -2,6 +2,10 @@
 from layer import LayerInterface
 import dataloader
 import random
+<<<<<<< HEAD
+=======
+from tensor.Tensor import TensorFileManager
+>>>>>>> 6744deae55920772dad50e19f70ebc00f3d7630d
 
 class Model():
     # type = CNN, FCN, RNN ...
@@ -21,10 +25,18 @@ class Model():
         self.nb_layers += 1
     def compute(self, input):
         x = input
+        i = 1
         for layer in self.layercontainer:
-            print(x.shape)
-            print(x)
+            # print(x.shape)
+            if i == 1:
+                print(f"input={x}")
+                TensorFileManager().save("input_image", x)
             x = layer.compute(x)
+
+            if i == 1:
+                print(f"output {x}")
+                TensorFileManager().save("output", x)
+            i += 1
         return x
 
     def learn(self, input):

@@ -23,7 +23,6 @@ class ImageLoader():
             im = self.getCropedImage(image_path)
             data = numpy.asarray(im)
             data = numpy.transpose(data, (2, 0, 1))
-            print(f"shape = {data.shape}")
             return data
 
         # print(im.size)

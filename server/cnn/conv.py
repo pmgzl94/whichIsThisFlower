@@ -4,6 +4,7 @@ from layer import LayerInterface
 from tensor.Tensor import TensorFileManager
 import pool
 from activation_functions import map_function
+
 # image getdata return flatter container
 # https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.getdata
 
@@ -51,7 +52,12 @@ class ConvLayer(LayerInterface):
             else:
                 # self.filters = numpy.ndarray(filtershape)
                 self.filters = numpy.random.rand(*filtershape)
-                self.biases = numpy.ndarray((nb_filters,))
+                # if filtershape == (96, 3, 7, 7):
+                #     print(f"filters = {self.filters}")
+                #     TensorFileManager().save("filter1", self.filters)
+                self.filters = numpy.random.uniform(-1, 1, filtershape)
+                # self.biases = numpy.ndarray((nb_filters,))
+                self.biases = numpy.random.uniform(-1, 1, (nb_filters,))
 
     def slidingWindow(self, input):
         filtershape = list(self.filters.shape)
