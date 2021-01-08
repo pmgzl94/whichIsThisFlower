@@ -17,10 +17,10 @@ final String takePicture = """
                 ok
               }
           },
-	  flowerName {
+          flowerName {
             ... on GetFlowerName {
                 flowerName
-    	      }
+              }
           }
       }
   }
@@ -122,16 +122,19 @@ class CreateTakePictureState extends State<CreateTakePicture>
                       print("on completed");
                       print(resultData);
                       print(resultData.data);
+                      // add check
                       print(resultData.data["takePicture"]["flowerName"]["flowerName"]);
-		      String res = resultData.data["takePicture"]["flowerName"]["flowerName"];
-		      print(res);
+                      String res = resultData.data["takePicture"]["flowerName"]["flowerName"];
+                      print(res);
                       print("takePICTURE");
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DisplayPictureScreen(imagePath: path, imageName: res),
-                                      ),
-                                  );
+
+                      // to change, add return to picture
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DisplayPictureScreen(imagePath: path, imageName: res),
+                          ),
+                      );
                       // Navigator.pop(context);
                       // if (resultData != null) {
                       //   print(resultData.data["auth"]["accessToken"]);
@@ -174,21 +177,15 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                           name
                                   );
 
-				  print("PATH : ");
-				  print(path);
+                                  print("PATH : ");
+                                  print(path);
                                   // await _controller.takePicture();
                                   await _controller.takePicture(path); // NOT WORKING ???
 
-		  	    print("GET TOKENNNNNNN");
-                            print(widget.token);
-                            print("GET ENDED");
-                            runMutation({"token": widget.token, "image": "tt", "imageName": name});
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //       builder: (context) => DisplayPictureScreen(imagePath: path),
-                                  //     ),
-                                  // );
+                                  print("GET TOKENNNNNNN");
+                                  print(widget.token);
+                                  print("GET ENDED");
+                                  runMutation({"token": widget.token, "image": "tt", "imageName": name});
                               } catch (e) {
                                   print(e);
                               }
@@ -217,21 +214,4 @@ class DisplayPictureScreen extends StatelessWidget {
             body: Image.file(File(imagePath)),
         );
     }
-}
-
-
-class ButtonCreateTakePicture extends StatelessWidget
-{
-    @override
-    Widget build(BuildContext context) {
-       return ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateTakePicture()),
-                );
-              },
-              child: Text('TakePicture'),
-            );
-  }
 }
