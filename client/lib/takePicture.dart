@@ -26,7 +26,8 @@ final String takePicture = """
   }
 """;
 
-AlertDialog dialog(context, mssg) {
+AlertDialog dialog(context, mssg)
+{
   return AlertDialog(
     title: Text('Error occured'),
     content: SingleChildScrollView(
@@ -77,8 +78,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
                             ResolutionPreset.medium,
         );
 
-    // Next, initialize the controller. This returns a Future.
-    _initializeControllerFuture = _controller.initialize();
+        _initializeControllerFuture = _controller.initialize();
     }
 
     @override
@@ -180,8 +180,8 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                   print("PATH : ");
                                   print(path);
                                   // await _controller.takePicture();
-                                  await _controller.takePicture(path); // NOT WORKING ???
-
+                                  await _controller.takePicture(path);
+                                  
                                   print("GET TOKENNNNNNN");
                                   print(widget.token);
                                   print("GET ENDED");
