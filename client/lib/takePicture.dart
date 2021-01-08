@@ -9,8 +9,8 @@ import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 
 final String takePicture = """
-  mutation takePicture(\$token: String!, \$image: String!, \$imageName: String!) {
-      takePicture(token: \$token, image: \$image, imageName: \$imageName) {
+  mutation takePicture(\$token: String!, \$imageName: String!, \$image: Upload!) {
+      takePicture(token: \$token, imageName: \$imageName, image: \$image) {
           ok {
             ... on IsOk {
                 ok
@@ -127,7 +127,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
                       print(res);
                       print("takePICTURE");
 
-		      
+
                       // to change, add return to picture
                       Navigator.push(
                           context,
@@ -181,21 +181,21 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                   print(path);
                                   // await _controller.takePicture();
                                   await _controller.takePicture(path);
-                                  
+
                                   print("GET TOKENNNNNNN");
                                   print(widget.token);
                                   print("GET ENDED");
-				  File pic = new File(path);
-				  var byteData = pic.readAsBytesSync();
+                                  File pic = new File(path);
+                                  var byteData = pic.readAsBytesSync();
 
-    var multipartFile = MultipartFile.fromBytes(
-      'photo',
-      byteData,
-      filename: '${DateTime.now().second}.jpg',
-      contentType: MediaType("image", "jpg"),
-    );
+                                  var multipartFile = MultipartFile.fromBytes(
+                                      'photo',
+                                      byteData,
+                                      filename: '${DateTime.now().second}.jpg',
+                                      contentType: MediaType("image", "jpg"),
+                                  );
 
-                                  runMutation({"token": widget.token, "image": "tt", "imageName": name});
+                                  runMutation({"token": widget.token, "image": multipartFile, "imageName": name});
                               } catch (e) {
                                   print(e);
                               }

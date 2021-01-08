@@ -92,8 +92,8 @@ import base64
 class TakePicture(graphene.Mutation):
     class Arguments(object):
         token = graphene.String()
-        image = graphene.String()
         imageName = graphene.String()
+        image = Upload(required=True)
 
     ok = graphene.Field(ObjectTypes.ProtectedUnion)
     flowerName = graphene.Field(ObjectTypes.ProtectedUnion)
@@ -101,7 +101,7 @@ class TakePicture(graphene.Mutation):
 
     @classmethod
     @mutation_jwt_required
-    def mutate(cls, _, info, image, imageName):
+    def mutate(cls, _, info, imageName, image, **kwargs):
         print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
         # newImage = bytes(image, 'utf-8').decode()
         file = open("./cache/" + imageName, "w")
@@ -117,6 +117,17 @@ class TakePicture(graphene.Mutation):
         db.dbMan.addImage(imageName, image, username, flowerName, comment)
         return TakePicture(ok=ObjectTypes.IsOk(ok=True), flowerName=ObjectTypes.GetFlowerName(flowerName=flowerName))
 
+
+# class UploadMutation(graphene.Mutation):
+#     class Arguments:
+#         file = Upload(required=True)
+
+#     success = graphene.Boolean()
+
+#     def mutate(self, info, file, **kwargs):
+#         # do something with your file
+
+#         return UploadMutation(success=True)
 
 
 
