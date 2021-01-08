@@ -45,26 +45,29 @@ final String createUser = """
 //   }
 // }
 
-AlertDialog a(context, mssg) {return AlertDialog(
-  title: Text('Error occured'),
-  content: SingleChildScrollView(
-    child: ListBody(
-      children: <Widget>[
-        Text(mssg),
+AlertDialog a(context, mssg) {
+  return AlertDialog(
+      title: Text('Error occured'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Text(mssg),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text("Close"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ],
-    ),
-  ),
-  actions: <Widget>[
-    TextButton(
-      child: Text("Close"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    ),
-  ],
-);
+    );
 }
-class CreateUser extends StatelessWidget {
+
+class CreateUser extends StatelessWidget
+{
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +90,8 @@ class CreateUser extends StatelessWidget {
   }
 }
 
-class CreateUserForm extends StatefulWidget {
+class CreateUserForm extends StatefulWidget
+{
 
   @override
   CreateUserFormState createState() => CreateUserFormState();

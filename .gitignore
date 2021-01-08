@@ -32,5 +32,9 @@ vgcore.*
 .vs
 
 
-#python
+# python
 __pycache__/
+
+
+# other
+server/cache/*

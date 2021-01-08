@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:camera/camera.dart';
 import './menu.dart';
 
 //  mutation login(\$username: String!, \$password: String!) {
@@ -34,8 +35,15 @@ AlertDialog dialog(context, mssg) {
 
 class CreateLogin extends StatefulWidget
 {
-  @override
-  CreateLoginState createState() => CreateLoginState();
+    final CameraDescription camera;
+
+    const CreateLogin({
+        Key key,
+        @required this.camera,
+    }) : super(key: key);
+
+    @override
+    CreateLoginState createState() => CreateLoginState();
 }
 
 class CreateLoginState extends State<CreateLogin>
@@ -52,7 +60,8 @@ class CreateLoginState extends State<CreateLogin>
     final mc2 = TextEditingController();
 
     @override
-    void dispose() {
+    void dispose()
+    {
     // Clean up the controller when the widget is disposed.
       mc1.dispose();
       mc2.dispose();
@@ -107,7 +116,9 @@ class CreateLoginState extends State<CreateLogin>
                         print(resultData.data["auth"]["accessToken"]);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"])),
+                          MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"],
+                                                     camera: widget.camera
+                          )),
                         );
                       } else {
                         print("User doesn't exist");
