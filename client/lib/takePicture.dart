@@ -10,12 +10,17 @@ import 'package:path_provider/path_provider.dart';
 
 
 final String takePicture = """
-  mutation logout(\$token: String!) {
-      logout(token: \$token) {
+  mutation takePicture(\$token: String!, \$image: String!, \$imageName: String!) {
+      logout(token: \$token, image: \$image, imageName: \$imageName) {
           ok {
             ... on IsOk {
                 ok
               }
+          },
+	  flowerName {
+            ... on GetFlowerName {
+                flowerName
+    	      }
           }
       }
   }
@@ -87,22 +92,22 @@ class CreateTakePictureState extends State<CreateTakePicture>
       return Scaffold(
         appBar: AppBar(
             title: Text('Camera'),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.photo_camera,
-                    // color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CreateTakePicture()),
-                    );
-                  },
-                ),
-              ],
-          ),
-          body: Mutation(
+            //   actions: <Widget>[
+            //     IconButton(
+            //       icon: Icon(
+            //         Icons.photo_camera,
+            //         // color: Colors.white,
+            //       ),
+            //       onPressed: () {
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(builder: (context) => CreateTakePicture()),
+            //         );
+            //       },
+            //     ),
+            //   ],
+            ),
+            body: Mutation(
               options: MutationOptions(
                   documentNode: gql(takePicture),
                   update: (Cache cache, QueryResult result) {
@@ -178,6 +183,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
       );
     }
 }
+
 class DisplayPictureScreen extends StatelessWidget {
     final String imagePath;
 
@@ -195,8 +201,8 @@ class DisplayPictureScreen extends StatelessWidget {
 }
 
 
-class ButtonCreateTakePicture extends StatelessWidget {
-
+class ButtonCreateTakePicture extends StatelessWidget
+{
     @override
     Widget build(BuildContext context) {
        return ElevatedButton(

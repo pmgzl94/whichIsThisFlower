@@ -46,29 +46,6 @@ class CreateMenu extends StatelessWidget {
                     );
                   },
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.logout,
-                    // color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.photo_camera,
-                    // color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CreateTakePicture(token: token,
-                                                     camera: camera
-                          )),
-                    );
-                  },
-                ),
               ],
             ),
         body: Column(
