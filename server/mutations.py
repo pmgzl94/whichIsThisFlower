@@ -14,6 +14,7 @@ import sys
 from graphql import GraphQLError
 
 from base64 import b64encode, b64decode
+from graphene_file_upload.scalars import Upload
 
 #mutation object
 # https://docs.graphene-python.org/en/latest/types/mutations/
@@ -91,8 +92,8 @@ import base64
 class TakePicture(graphene.Mutation):
     class Arguments(object):
         token = graphene.String()
-        image = graphene.String()
         imageName = graphene.String()
+        image = Upload(required=True)
 
     ok = graphene.Field(ObjectTypes.ProtectedUnion)
     flowerName = graphene.Field(ObjectTypes.ProtectedUnion)
@@ -100,22 +101,39 @@ class TakePicture(graphene.Mutation):
 
     @classmethod
     @mutation_jwt_required
-    def mutate(cls, _, info, image, imageName):
+    def mutate(cls, _, info, imageName, image, **kwargs):
         print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
         # newImage = bytes(image, 'utf-8').decode()
-        file = open("./cache/" + imageName, "w")
-        file.write(image)
-        # file.write(base64.decode(image))
-        # file.write(newImage)
-        file.close()
+        try:
+            file = open("./cache/" + imageName, "w")
+            file.write("oo")
+            # file.write(image.read().decode())
+            # image.read()
+            # image.read().decode()
+            # file.write(base64.decode(image))
+            # file.write(newImage)
+            file.close()
+        except:
+            print("aa")
 
-        flowerName = "sunflower" # function to get the name of the flower
+        flowerName = "It is not a flower" # function to get the name of the flower
         username = get_jwt_identity()
         comment = "none"
 
         db.dbMan.addImage(imageName, image, username, flowerName, comment)
         return TakePicture(ok=ObjectTypes.IsOk(ok=True), flowerName=ObjectTypes.GetFlowerName(flowerName=flowerName))
 
+
+# class UploadMutation(graphene.Mutation):
+#     class Arguments:
+#         file = Upload(required=True)
+
+#     success = graphene.Boolean()
+
+#     def mutate(self, info, file, **kwargs):
+#         # do something with your file
+
+#         return UploadMutation(success=True)
 
 
 
