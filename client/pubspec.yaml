@@ -26,7 +26,7 @@ dependencies:
   shared_preferences: ^0.5.12+4
   flutter:
     sdk: flutter
-  camera:
+  camera: 0.5.8+17
   # path_provider:
   path:
   # image_picker: ^0.6.7+17

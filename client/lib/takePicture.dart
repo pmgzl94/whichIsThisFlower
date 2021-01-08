@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 
 final String takePicture = """
   mutation takePicture(\$token: String!, \$image: String!, \$imageName: String!) {
-      logout(token: \$token, image: \$image, imageName: \$imageName) {
+      takePicture(token: \$token, image: \$image, imageName: \$imageName) {
           ok {
             ... on IsOk {
                 ok
@@ -65,6 +65,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
 {
     final _id = GlobalKey<FormState>();
     bool state = false;
+    String path = "";
     CameraController _controller;
     Future<void> _initializeControllerFuture;
 
@@ -119,8 +120,18 @@ class CreateTakePictureState extends State<CreateTakePicture>
                   },
                   onCompleted: (dynamic resultData) {
                       print("on completed");
+                      print(resultData);
                       print(resultData.data);
+                      print(resultData.data["takePicture"]["flowerName"]["flowerName"]);
+		      String res = resultData.data["takePicture"]["flowerName"]["flowerName"];
+		      print(res);
                       print("takePICTURE");
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DisplayPictureScreen(imagePath: path, imageName: res),
+                                      ),
+                                  );
                       // Navigator.pop(context);
                       // if (resultData != null) {
                       //   print(resultData.data["auth"]["accessToken"]);
@@ -157,20 +168,27 @@ class CreateTakePictureState extends State<CreateTakePicture>
                               try {
                                   await _initializeControllerFuture;
 
-                                  final path = join(
+                                  final name = '${DateTime.now()}.png';
+                                  path = join(
                                           (await getTemporaryDirectory()).path,
-                                          '${DateTime.now()}.png',
+                                          name
                                   );
 
-                                  await _controller.takePicture();
-                                  // await _controller.takePicture(path); // NOT WORKING ???
+				  print("PATH : ");
+				  print(path);
+                                  // await _controller.takePicture();
+                                  await _controller.takePicture(path); // NOT WORKING ???
 
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DisplayPictureScreen(imagePath: path),
-                                      ),
-                                  );
+		  	    print("GET TOKENNNNNNN");
+                            print(widget.token);
+                            print("GET ENDED");
+                            runMutation({"token": widget.token, "image": "tt", "imageName": name});
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) => DisplayPictureScreen(imagePath: path),
+                                  //     ),
+                                  // );
                               } catch (e) {
                                   print(e);
                               }
@@ -186,13 +204,14 @@ class CreateTakePictureState extends State<CreateTakePicture>
 
 class DisplayPictureScreen extends StatelessWidget {
     final String imagePath;
+    final String imageName;
 
-    const DisplayPictureScreen({Key key, this.imagePath}) : super(key: key);
+    const DisplayPictureScreen({Key key, this.imagePath, this.imageName}) : super(key: key);
 
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-            appBar: AppBar(title: Text('Display the Picture')),
+            appBar: AppBar(title: Text(imageName)),
             // The image is stored as a file on the device. Use the `Image.file`
             // constructor with the given path to display the image.
             body: Image.file(File(imagePath)),
