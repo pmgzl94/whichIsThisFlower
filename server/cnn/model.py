@@ -25,14 +25,15 @@ class Model():
         i = 1
         for layer in self.layercontainer:
             # print(x.shape)
-            if i == 1:
-                print(f"input={x}")
-                TensorFileManager().save("input_image", x)
+            # if i == 1:
+            #     print(f"input={x}")
+            #     TensorFileManager().save("input_image", x)
             x = layer.compute(x)
+            # print(f"output = {x}")
 
-            if i == 1:
-                print(f"output {x}")
-                TensorFileManager().save("output", x)
+            # if i == 1:
+            #     print(f"output {x}")
+            #     TensorFileManager().save("output", x)
             i += 1
         return x
 
@@ -57,3 +58,9 @@ class Model():
             for i in range(2, len(self.layercontainer), 1):
                 self.layercontainer[-i].learn(delta)
                 delta = self.layercontainer[-i].getLastDelta()
+    
+    # def loadModel(filenames): #must of forma
+    def saveLayers(self, layersName=[]):  #must of format ["conv1", "conv2" ...]
+        for i in range(0, len(self.layercontainer)):
+            self.layercontainer[i].save(layersName[i])
+        return layersName

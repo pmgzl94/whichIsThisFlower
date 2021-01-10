@@ -24,6 +24,7 @@ class PoolLayer(LayerInterface):
         self.pool_size = pool_size
         self.stride_len = stride_length
         self.pad = pad
+        self.type = type
 
     def build_derivative(self, input, resized_input, strides, outputshape):
         
@@ -61,12 +62,6 @@ class PoolLayer(LayerInterface):
 
             self.derivative = o1
             return o1
-
-
-    def get_derivative(self):
-        return self.derivative
-    def get_pool_size(self):
-        return self.pool_size
 
     def compute(self, input):
         #3d
@@ -121,6 +116,19 @@ class PoolLayer(LayerInterface):
 
     def getType(self):
         return "Pool"
+    
+    def getParams(self):
+        map = {}
+        map["pool_size"] = self.pool_size
+        map["padding"] = self.pad
+        map["stride_length"] = self.stride_len
+        map["type"] = self.type
+        return map
+
+    def get_derivative(self):
+        return self.derivative
+    def get_pool_size(self):
+        return self.pool_size
 
 def SPPLayer(LayerInterface):
     def __init__(self, nb_level=3):
