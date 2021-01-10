@@ -8,7 +8,6 @@ def relu_derivative(input):
 
 # activation functions
 def sigmoid(z):
-    # print(f"z = {z.shape}")
     return numpy.exp(z)/(1 + numpy.exp(z))
 
 def sigmoid_derivative(z):

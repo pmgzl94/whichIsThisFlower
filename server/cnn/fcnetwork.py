@@ -16,22 +16,25 @@ def basic_cost_derivative(y, a): #where y is the expected result
 # ...
 
 class FCLayer(LayerInterface):
-    def __init__(self, arch, transfer_learning_file=None):
+    def __init__(self, arch, load_path=None):
         self.weights = []
         self.biases  = []
 
         self.nb_layer = len(arch)
         self.nb_set_of_params = self.nb_layer - 1
 
-        if transfer_learning_file == None:
+        if load_path == None:
             for i in range(0, self.nb_set_of_params):
-                set_of_weights = np.random.random((arch[i+1], arch[i]))
+                # set_of_weights = np.random.random((arch[i+1], arch[i]))
+
+                set_of_weights = np.random.randn(*(arch[i+1], arch[i])) * np.sqrt(1/(arch[i]))
                 self.weights.append(set_of_weights)
-                self.biases.append(np.random.random((arch[i+1],)))
-                # print(self.biases[-1].shape)
-                # print(self.weights[-1].shape)
+                # self.biases.append(np.random.random((arch[i+1],)))
+                
+                self.biases.append(np.zeros((arch[i+1],)))
+
         else:
-            self.reload_net(self.nb_layer, transfer_learning_file)
+            self.load(load_path)
         self.inputshape = (self.weights[0].shape[1],)
         
         #learning vars: used for backpropagation
@@ -44,15 +47,7 @@ class FCLayer(LayerInterface):
         self.lastDelta = None
 
         self.resetLearningVars()
-    
-    def reload_net(self, nb_layer, transfer_learning_file):
-        dir = "./tensorfiles"
-        if not os.path.exists(dir + "/" + transfer_learning_file + ".ws1.npy"):
-            raise Exception("tensor file not exists")
-        
-        tfm = TensorFileManager("./tensorfiles")
-        self.weights, self.biases = tfm.loadNet(transfer_learning_file, self.nb_set_of_params)
-        
+
     def compute(self, input):
 
         if len(input.shape) != 1:
@@ -62,7 +57,6 @@ class FCLayer(LayerInterface):
         return self.forward(input)
 
     def forward(self, input):
-        
         if len(input.shape) > 1:
             input = input.flatten()
         
@@ -81,8 +75,7 @@ class FCLayer(LayerInterface):
             self.a.append(x)
         return x
     def getType(self):
-        return "FCLayer"
-    
+        return "Dense"
 
     def learn(self, input, expected_res):
         self.forward(input)
@@ -115,8 +108,6 @@ class FCLayer(LayerInterface):
         for i in range(0, self.nb_set_of_params):
             self.sum_of_nabla_w.append(np.zeros(self.weights[i].shape))
             self.sum_of_nabla_b.append(np.zeros(self.biases[i].shape))
-            # print(f"les wei{self.weights[i].shape}")
-            # print(f"les bias{self.biases[i].shape}")
         
         self.lastDelta = None
         self.a = []
@@ -130,6 +121,18 @@ class FCLayer(LayerInterface):
             self.sum_of_nabla_w[i] + nabla_w[i]
             self.sum_of_nabla_w[i] = self.sum_of_nabla_w[i] + nabla_w[i]
             self.sum_of_nabla_b[i] = self.sum_of_nabla_b[i] + nabla_b[i]
+    
+    def load(self, load_path):
+        dir = "./tensorfiles"
+        if not os.path.exists(dir + "/" + load_path + ".ws1.npy"):
+            raise Exception("tensor file not exists")
+
+        tfm = TensorFileManager(dir)
+        self.weights, self.biases = tfm.loadNet(load_path, self.nb_set_of_params)
+
+    def save(self, filename):
+        tm = TensorFileManager("./tensorfiles")
+        tm.saveNet(filename, self.weights, self.biases)
 
 # a = FcLayer(arch=[2, 3, 2])
 
