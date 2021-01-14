@@ -39,7 +39,7 @@ class MenuState extends State<Menu>
   Map<int, bool> originalDic;
   List<Widget> listScreens;
   List<int> listScreensIndex;
-  int tabIndex = 0;
+  int tabIndex = 1;
 
   Widget men;
   List<Widget> listMen;
@@ -57,9 +57,9 @@ class MenuState extends State<Menu>
       CreateLogin(),
       // Tab1(),
     ];
-    originalDic = {0: true, 1: false, 2: false};
-    listScreens = [originalList[0]];
-    listScreensIndex = [0];
+    originalDic = {0: false, 1: true, 2: false};
+    listScreens = [originalList[1]];
+    listScreensIndex = [1];
   }
 
 void _selectedTab(int index) {
