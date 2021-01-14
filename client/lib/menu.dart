@@ -4,6 +4,8 @@ import 'package:camera/camera.dart';
 import './seePictures.dart';
 import './takePicture.dart';
 import './createUser.dart';
+import './login.dart';
+
 
 final String logout = """
   mutation logout(\$token: String!) {
@@ -17,7 +19,123 @@ final String logout = """
   }
 """;
 
-class CreateMenu extends StatelessWidget {
+class Menu extends StatefulWidget
+{
+    final String token;
+    final CameraDescription camera;
+    
+    Menu({Key key,
+                  @required this.token,
+                  @required this.camera,
+             }) : super(key: key);
+
+    @override
+    MenuState createState() => MenuState();
+}
+
+class MenuState extends State<Menu>
+{
+  List<Widget> originalList;
+  Map<int, bool> originalDic;
+  List<Widget> listScreens;
+  List<int> listScreensIndex;
+  int tabIndex = 0;
+
+  Widget men;
+  List<Widget> listMen;
+
+
+  @override
+  void initState() {
+    super.initState();
+    originalList = [
+    // CreateMenuButton(token: widget.token),
+    // CreateMenuButton(token: widget.token),
+    // CreateMenuButton(token: widget.token),
+      CreateMenu(token: widget.token, camera: widget.camera),
+      CreateTakePicture(token: widget.token, camera: widget.camera),
+      CreateLogin(),
+      // Tab1(),
+    ];
+    originalDic = {0: true, 1: false, 2: false};
+    listScreens = [originalList[0]];
+    listScreensIndex = [0];
+  }
+
+void _selectedTab(int index) {
+    if (originalDic[index] == false) {
+      listScreensIndex.add(index);
+      originalDic[index] = true;
+      listScreensIndex.sort();
+      listScreens = listScreensIndex.map((index) {
+        return originalList[index];
+      }).toList();
+    }
+
+    setState(() {
+      tabIndex = index;
+    });
+}
+
+
+    @override
+    void dispose() {
+    // Clean up the controller when the widget is disposed.
+      super.dispose();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        // appBar: AppBar(
+        //     title: Text('Menu'),
+        //       actions: <Widget>[
+        //         IconButton(
+        //           icon: Icon(
+        //             Icons.photo_camera,
+        //             // color: Colors.white,
+        //           ),
+        //           onPressed: () {
+        //             Navigator.push(
+        //               context,
+        //               MaterialPageRoute(builder: (context) => CreateTakePicture(token: widget.token,
+        //                                              camera: widget.camera
+        //                   )),
+        //             );
+        //           },
+        //         ),
+        //       ],
+        //     ),
+	    
+	body: originalList[tabIndex],//IndexedStack(index: tabIndex, children: listScreens),	    
+        // body: CreateMenuButton(token: widget.token),
+	bottomNavigationBar: BottomNavigationBar(
+            currentIndex: tabIndex,
+            onTap: _selectedTab,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                title: Text('Menu'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.photo_camera),
+                title: Text('Camera'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                title: Text('Profil'),
+              ),
+            ]),
+	    backgroundColor: Theme.of(context).primaryColor,
+	    // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+        // body: Center(child: RawWords()),
+      // home: MyHomePage(title: 'Flutter Demeau Home Page'),
+    );
+  }
+}
+
+class CreateMenu extends StatelessWidget
+{
     final String token;
     final CameraDescription camera;
 

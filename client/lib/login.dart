@@ -116,7 +116,8 @@ class CreateLoginState extends State<CreateLogin>
                         print(resultData.data["auth"]["accessToken"]);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"],
+                          // MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"],
+                          MaterialPageRoute(builder: (context) => Menu(token: resultData.data["auth"]["accessToken"],
                                                      camera: widget.camera
                           )),
                         );

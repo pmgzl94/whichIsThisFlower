@@ -198,10 +198,12 @@ class CreateTakePictureState extends State<CreateTakePicture>
                   );
               }
           ),
-          backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+            backgroundColor: Theme.of(context).primaryColor,
+            // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
       );
     }
 }
+
 
 class DisplayPictureScreen extends StatelessWidget {
     final String imagePath;
