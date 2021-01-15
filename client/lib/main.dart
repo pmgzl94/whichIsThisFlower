@@ -60,6 +60,7 @@ class MyApp extends StatelessWidget {
                   )
                 ]
               ),
+              // backgroundColor: Colors.white,
               backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
               // body: Center(child: RawWords()),
             ),

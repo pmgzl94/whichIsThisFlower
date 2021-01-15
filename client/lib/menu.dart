@@ -4,7 +4,8 @@ import 'package:camera/camera.dart';
 import './seePictures.dart';
 import './takePicture.dart';
 import './createUser.dart';
-import './login.dart';
+// import './login.dart';
+import './profil.dart';
 
 
 final String logout = """
@@ -49,13 +50,9 @@ class MenuState extends State<Menu>
   void initState() {
     super.initState();
     originalList = [
-    // CreateMenuButton(token: widget.token),
-    // CreateMenuButton(token: widget.token),
-    // CreateMenuButton(token: widget.token),
       CreateMenu(token: widget.token, camera: widget.camera),
       CreateTakePicture(token: widget.token, camera: widget.camera),
-      CreateLogin(),
-      // Tab1(),
+      CreateProfil(token: widget.token),
     ];
     originalDic = {0: false, 1: true, 2: false};
     listScreens = [originalList[1]];
