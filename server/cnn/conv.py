@@ -38,6 +38,8 @@ class ConvLayer(LayerInterface):
 
         self.z = None
 
+        self.sum_of_nabla_w = numpy.zeros(filtershape)
+
         if load_path is not None:
             self.load(load_path)
         
@@ -113,14 +115,14 @@ class ConvLayer(LayerInterface):
             return output
 
     #do not forget activation function
-    def compute(self, input):
+    def compute(self, input, learn=False):
         
         ## apply padding
         if self.padding != 0:
             # input = numpy.pad(input, self.padding)
             input = numpy.pad(input, ((0, 0), (1, 1), (1, 1)))
             # print(f"input shape = {input.shape}")
-        
+
         featuremaps = self.slidingWindow(input)
 
         # print(featuremaps.shape)
@@ -150,8 +152,7 @@ class ConvLayer(LayerInterface):
         return "Conv"
     
     def learn(self, delta):
-        # in the example it is: maxpool, then sigmoid
-
+        print(f"conv learn")
         # reshape delta if it come from classifier
         if len(delta.shape) == 1:
             delta = delta.reshape(self.output_shape)
@@ -166,19 +167,28 @@ class ConvLayer(LayerInterface):
         
         #have to save the weights to apply sgd
         self.nabla_w = numpy.tensordot(delta, self.slicedInput)
+
+        self.sumUpNablas(self.nabla_w)
+
         #do something with nabla_b
 
         # print(delta.shape)
+
+        print(delta.shape)
 
         self.lastDelta = delta
 
     def getLastDelta(self):
         # inspired by this link: https://medium.com/@pavisj/convolutions-and-backpropagations-46026a8f5d2c
-        
+
         if len(self.lastDelta.shape) == 3:
-            delta = numpy.pad(self.lastDelta, ((0, 0), (1, 1), (1, 1)))
+            h = self.filters.shape[-2] - self.stride_len
+            w = self.filters.shape[-1] - self.stride_len
+            delta = numpy.pad(self.lastDelta, ((0, 0), (h, h), (w, w)))
         else:
             delta = numpy.pad(self.lastDelta, 1)
+
+        # print(f"delta shape = {delta.shape}")
 
         flipped_filter = numpy.flip(self.filters)
 
@@ -210,7 +220,7 @@ class ConvLayer(LayerInterface):
             flipped_filter = flipped_filter.transpose(1, 0, 2, 3)
 
             next_delta = numpy.tensordot(resized_delta, flipped_filter, axes=[delta_axes, filter_axes])
-            
+            print(f"next delta .shape = {next_delta.transpose(2, 0, 1).shape}")
             return next_delta.transpose(2, 0, 1)
         else: #if only one filter...
             
@@ -272,3 +282,18 @@ class ConvLayer(LayerInterface):
 
     def getNablaW(self):
         return self.nabla_w
+
+    def sumUpNablas(self, nabla_w):
+        self.sum_of_nabla_w += nabla_w
+
+    def modify_weights(self, learning_rate, batch_size):
+
+        self.filters -= learning_rate/batch_size * self.sum_of_nabla_w
+
+        self.sum_of_nabla_w = numpy.zeros(self.filters.shape)
+        
+
+        
+
+        
+        
