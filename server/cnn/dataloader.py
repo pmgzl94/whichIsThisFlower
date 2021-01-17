@@ -15,7 +15,7 @@ linker = {  "daisy": numpy.array([1, 0, 0, 0, 0]),
             "tulip": numpy.array([0, 0, 0, 0, 1]),
             }
 
-def load_flowers(dirpath="./dataset"):
+def load_flowers(crop_size=(0, 0, 224, 224)):
     subdirs = ["daisy", "dandelion", "rose", "sunflower", "tulip"]
     # subdirs = ["daisy"]
 
@@ -29,6 +29,32 @@ def load_flowers(dirpath="./dataset"):
             res = linker[subdir]
             serialized_im.append(nparray)
             expected_res.append(res)
+    training_input = zip(serialized_im, expected_res)
+
+    print(f"nb flower = {len(training_input)}")
+
+    # print(os.listdir("./dataset/daisy"))
+    return training_input
+
+def load_some_flowers(image_per_flower=3, crop_size=(0, 0, 224, 224)):
+    subdirs = ["daisy", "dandelion", "rose", "sunflower", "tulip"]
+    # subdirs = ["daisy"]
+
+    serialized_im = []
+    expected_res = []
+
+    for subdir in subdirs:
+        path = "./dataset/" + subdir
+        i = 1
+        for f in os.listdir(path):
+            if i == image_per_flower:
+                break
+            # nparray = iml.ImageLoader.getOutputNpArray(os.path.join(path, f))
+            nparray = iml.ImageLoader.getOutputNpArray(image_path=os.path.join(path, f), crop=True, crop_size=crop_size)
+            res = linker[subdir]
+            serialized_im.append(nparray)
+            expected_res.append(res)
+            i += 1
     training_input = zip(serialized_im, expected_res)
 
     # print(os.listdir("./dataset/daisy"))

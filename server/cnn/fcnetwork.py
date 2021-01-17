@@ -48,18 +48,17 @@ class FCLayer(LayerInterface):
 
         self.resetLearningVars()
 
-    def compute(self, input):
-
+    def compute(self, input, learn=False):
         if len(input.shape) != 1:
             input = input.flatten()
         if input.shape != self.inputshape:
             raise Exception("wrong input shape")
-        return self.forward(input)
+        return self.forward(input, learn)
 
-    def forward(self, input):
+    def forward(self, input, learn=False):
         if len(input.shape) > 1:
             input = input.flatten()
-        
+        #print(f"input flatten = {input.shape}")
         if input.shape[0] != self.weights[0].shape[1]:
             raise Exception(f"wrong input shape: received shape {input.shape}")
 
@@ -71,14 +70,17 @@ class FCLayer(LayerInterface):
         for i in range(0, self.nb_set_of_params):
             z = np.dot(x, self.weights[i].T) + self.biases[i]
             x = sigmoid(z)
-            self.z.append(z)
-            self.a.append(x)
+            if learn == True:
+                self.z.append(z)
+                self.a.append(x)
         return x
     def getType(self):
         return "Dense"
 
-    def learn(self, input, expected_res):
-        self.forward(input)
+    # def learn(self, input, expected_res):
+    def learn(self, expected_res): #expected res or delta
+        # print("learn fcn")
+        # self.forward(input)
         
         #first delta
         delta = basic_cost_derivative(expected_res, self.a[-1]) * sigmoid_derivative(self.z[-1])
@@ -86,11 +88,11 @@ class FCLayer(LayerInterface):
         nabla_w = [np.outer(delta, self.a[-2].T)]
         nabla_b = [delta]
 
-        for idx_layer in range(self.nb_layer - 2, 0, -1): #-2 : -1 for index and -1 for the previous final layer
-            index_set_param = idx_layer - 1
+        # self.a.pop(len(a) - 1)
+
+        for index_set_param in range(self.nb_set_of_params - 2, -1, -1):
             delta = np.dot(delta, self.weights[index_set_param + 1]) * sigmoid_derivative(self.z[index_set_param])
-        
-            nabla_w.insert(0, np.outer(delta, self.a[index_set_param - 1].T))
+            nabla_w.insert(0, np.outer(delta, self.a[index_set_param].T))
             nabla_b.insert(0, delta)
 
         self.lastDelta = delta
@@ -113,14 +115,6 @@ class FCLayer(LayerInterface):
         self.a = []
         self.z = []
     
-    #used for the sgd
-    def sumUpNablas(self, nabla_w, nabla_b):
-        #must be divided by the number of training input within the mini batch
-        for i in range(0, self.nb_set_of_params):
-            # print(f'shapes {self.sum_of_nabla_w[i].shape}, {nabla_w[i].shape}')
-            self.sum_of_nabla_w[i] + nabla_w[i]
-            self.sum_of_nabla_w[i] = self.sum_of_nabla_w[i] + nabla_w[i]
-            self.sum_of_nabla_b[i] = self.sum_of_nabla_b[i] + nabla_b[i]
     
     def load(self, load_path):
         dir = "./tensorfiles"
@@ -133,6 +127,22 @@ class FCLayer(LayerInterface):
     def save(self, filename):
         tm = TensorFileManager("./tensorfiles")
         tm.saveNet(filename, self.weights, self.biases)
+    
+    #used for the sgd
+    def sumUpNablas(self, nabla_w, nabla_b):
+        #must be divided by the number of training input within the mini batch
+        for i in range(0, self.nb_set_of_params):
+            # print(f'shapes {self.sum_of_nabla_w[i].shape}, {nabla_w[i].shape}')
+            # self.sum_of_nabla_w[i] + nabla_w[i]
+            self.sum_of_nabla_w[i] = self.sum_of_nabla_w[i] + nabla_w[i]
+            self.sum_of_nabla_b[i] = self.sum_of_nabla_b[i] + nabla_b[i]
+
+    def modify_weights(self, learning_rate, batch_size):
+        for i in range(0, self.nb_set_of_params):
+            self.weights[i] -= learning_rate/batch_size * self.sum_of_nabla_w[i]
+            self.biases[i] -= learning_rate/batch_size * self.sum_of_nabla_b[i]
+        
+        self.resetLearningVars()
 
 # a = FcLayer(arch=[2, 3, 2])
 
