@@ -68,7 +68,6 @@ AlertDialog a(context, mssg) {
 
 class CreateUser extends StatelessWidget
 {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +91,6 @@ class CreateUser extends StatelessWidget
 
 class CreateUserForm extends StatefulWidget
 {
-
   @override
   CreateUserFormState createState() => CreateUserFormState();
 }
@@ -102,12 +100,14 @@ class CreateUserFormState extends State<CreateUserForm>
     final _id = GlobalKey<FormState>();
     bool state = false;
 
-    void hasClicked() {
-      this.state = true;
+    void hasClicked()
+    {
+        this.state = true;
     }
 
-    void quit(context) {
-      Navigator.pop(context);
+    void quit(context)
+    {
+        Navigator.pop(context);
     }
 
     final mc1 = TextEditingController();
@@ -116,9 +116,9 @@ class CreateUserFormState extends State<CreateUserForm>
     @override
     void dispose() {
     // Clean up the controller when the widget is disposed.
-      mc1.dispose();
-      mc2.dispose();
-      super.dispose();
+        mc1.dispose();
+        mc2.dispose();
+        super.dispose();
     }
 
     @override
@@ -127,30 +127,36 @@ class CreateUserFormState extends State<CreateUserForm>
             key: _id,
             child: Column(
               children: <Widget> [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'username',
+                Padding(
+                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                        hintText: 'username',
+                    ),
+                    validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        return null;
+                    },
+                    controller: mc1,
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your username';
-                    }
-                    return null;
-                  },
-                  controller: mc1,
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'password',
+                Padding(
+                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                        hintText: 'password',
+                    ),
+                    validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                    },
+                    controller: mc2,
+                    obscureText: true,
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                  controller: mc2,
-                  obscureText: true,
                 ),
                 Mutation(
                   options: MutationOptions(
@@ -194,10 +200,7 @@ class CreateUserFormState extends State<CreateUserForm>
               ]
             )
           );
-
     }
-
-
 }
 
 class ButtonCreateUser extends StatelessWidget {
@@ -207,8 +210,8 @@ class ButtonCreateUser extends StatelessWidget {
       return ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateUser()),
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateUser()),
                 );
               },
               child: Text('Sign Up'),

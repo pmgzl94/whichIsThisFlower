@@ -76,7 +76,6 @@ class CreateTakePictureState extends State<CreateTakePicture>
                             widget.camera,
                             ResolutionPreset.medium,
         );
-
         _initializeControllerFuture = _controller.initialize();
     }
 
@@ -107,95 +106,96 @@ class CreateTakePictureState extends State<CreateTakePicture>
             //     ),
             //   ],
             ),
-            body: Mutation(
-              options: MutationOptions(
-                  documentNode: gql(takePicture),
-                  update: (Cache cache, QueryResult result) {
-                      return cache;
-                  },
-                  onError: (result) {
-                      print("error");
-                      print(result);
-                  },
-                  onCompleted: (dynamic resultData) {
-                      print("on completed");
-                      print(resultData.data);
-		      String res = "It is not a flower";
-                      if (resultData != null && resultData.data["takePicture"] != null && resultData.data["takePicture"]["flowerName"] != null) {
-                          print(resultData.data["takePicture"]["flowerName"]["flowerName"]);
-                          res = resultData.data["takePicture"]["flowerName"]["flowerName"];
-                          print(res);
-                          print("takePICTURE");
-                      } else {
-                        // print("coudn't find picture");
-                        // showDialog<AlertDialog>(
-                        //   context: context,
-                        //   builder: (BuildContext context) {
-                        //     return dialog(context, "image not received");
-                        // });
-                      }
-
-
-                      // to change, add return to picture
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DisplayPictureScreen(imagePath: path, imageName: res),
-                          ),
-                      );
-                      // Navigator.pop(context);
+          body: Mutation(
+            options: MutationOptions(
+                documentNode: gql(takePicture),
+                update: (Cache cache, QueryResult result) {
+                    return cache;
+                },
+                onError: (result) {
+                    print("error");
+                    print(result);
+                },
+                onCompleted: (dynamic resultData) {
+                    print("on completed");
+                    print(resultData.data);
+                    String res = "It is not a flower";
+                    if (resultData != null && resultData.data["takePicture"] != null && resultData.data["takePicture"]["flowerName"] != null) {
+                        print(resultData.data["takePicture"]["flowerName"]["flowerName"]);
+                        res = resultData.data["takePicture"]["flowerName"]["flowerName"];
+                        print(res);
+                        print("takePICTURE");
+                    } else {
+                      print("coudn't find picture");
+                      // dialog(context, "image not received");
+                      showDialog<AlertDialog>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return dialog(context, "image not received");
+                      });
                     }
-              ),
-              builder: (RunMutation runMutation, QueryResult result) {
-                  return Scaffold(
-                      body: FutureBuilder<void>(
-                          future: _initializeControllerFuture,
-                          builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.done) {
-                                  return CameraPreview(_controller);
-                              } else {
-                                  return Center(child: CircularProgressIndicator());
-                              }
-                          },
-                      ),
-                      floatingActionButton: FloatingActionButton(
-                          child: Icon(Icons.camera_alt),
-                            // Provide an onPressed callback.
-                          onPressed: () async {
-                              try {
-                                  await _initializeControllerFuture;
 
-                                  final name = '${DateTime.now()}.png';
-                                  path = join(
-                                          (await getTemporaryDirectory()).path,
-                                          name
-                                  );
 
-                                  print("PATH : ");
-                                  print(path);
-                                  // await _controller.takePicture();
-                                  await _controller.takePicture(path);
+                    // to change, add return to picture
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DisplayPictureScreen(imagePath: path, imageName: res),
+                        ),
+                    );
+                    // Navigator.pop(context);
+                  }
+            ),
+            builder: (RunMutation runMutation, QueryResult result) {
+                return Scaffold(
+                    body: FutureBuilder<void>(
+                        future: _initializeControllerFuture,
+                        builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.done) {
+                                return CameraPreview(_controller);
+                            } else {
+                                return Center(child: CircularProgressIndicator());
+                            }
+                        },
+                    ),
+                    floatingActionButton: FloatingActionButton(
+                        child: Icon(Icons.camera_alt),
+                          // Provide an onPressed callback.
+                        onPressed: () async {
+                            try {
+                                await _initializeControllerFuture;
 
-                                  print("GET TOKENNNNNNN");
-                                  print(widget.token);
-                                  print("GET ENDED");
-                                  File pic = new File(path);
-                                  var byteData = pic.readAsBytesSync();
+                                final name = '${DateTime.now()}.png';
+                                path = join(
+                                        (await getTemporaryDirectory()).path,
+                                        name
+                                );
 
-                                  var multipartFile = MultipartFile.fromBytes(
-                                      'photo',
-                                      byteData,
-                                      filename: '${DateTime.now().second}.jpg',
-                                      contentType: MediaType("image", "jpg"),
-                                  );
+                                print("PATH : ");
+                                print(path);
+                                // await _controller.takePicture();
+                                await _controller.takePicture(path);
 
-                                  runMutation({"token": widget.token, "image": multipartFile, "imageName": name});
-                              } catch (e) {
-                                  print(e);
-                              }
-                          },
-                      ),
-                  );
+                                print("GET TOKENNNNNNN");
+                                print(widget.token);
+                                print("GET ENDED");
+                                File pic = new File(path);
+                                var byteData = pic.readAsBytesSync();
+
+                                var multipartFile = MultipartFile.fromBytes(
+                                    'photo',
+                                    byteData,
+                                    filename: '${DateTime.now().second}.jpg',
+                                    contentType: MediaType("image", "jpg"),
+                                );
+
+                                runMutation({"token": widget.token, "image": multipartFile, "imageName": name});
+                            } catch (e) {
+                                print(e);
+                            }
+                        },
+                    ),
+                );
               }
           ),
             backgroundColor: Theme.of(context).primaryColor,

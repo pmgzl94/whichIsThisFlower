@@ -74,34 +74,36 @@ class CreateLoginState extends State<CreateLogin>
             key: _id,
             child: Column(
               children: <Widget> [
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 25.0),
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'username',
+                Padding(
+                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                        hintText: 'username',
+                    ),
+                    validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        return null;
+                    },
+                    controller: mc1,
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your username';
-                    }
-                    return null;
-                  },
-                  controller: mc1,
                 ),
-		),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'password',
+                Padding(
+                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                        hintText: 'password',
+                    ),
+                    validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                    },
+                    controller: mc2,
+                    obscureText: true,
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                  controller: mc2,
-                  obscureText: true,
                 ),
                 Mutation(
                   options: MutationOptions(
@@ -160,8 +162,8 @@ class ButtonCreateLogin extends StatelessWidget {
       return ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateLogin()),
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateLogin()),
                 );
               },
               child: Text('Login'),

@@ -2,11 +2,12 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 
-String typenameDataIdFromObject(Object object) {
+String typenameDataIdFromObject(Object object)
+{
   if (object is Map<String, Object> &&
       object.containsKey('__typename') &&
       object.containsKey('id')) {
-    return "${object['__typename']}/${object['id']}";
+          return "${object['__typename']}/${object['id']}";
   }
   return null;
 }
@@ -15,8 +16,7 @@ final OptimisticCache cache = OptimisticCache(
   dataIdFromObject: typenameDataIdFromObject,
 );
 
-ValueNotifier<GraphQLClient> clientFor(
-                { @required String uri, String subscriptionUri, })
+ValueNotifier<GraphQLClient> clientFor({ @required String uri, String subscriptionUri})
 {
   Link link = HttpLink(uri: uri);
 

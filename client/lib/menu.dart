@@ -24,7 +24,7 @@ class Menu extends StatefulWidget
 {
     final String token;
     final CameraDescription camera;
-    
+
     Menu({Key key,
                   @required this.token,
                   @required this.camera,
@@ -76,7 +76,8 @@ void _selectedTab(int index) {
 
 
     @override
-    void dispose() {
+    void dispose()
+    {
     // Clean up the controller when the widget is disposed.
       super.dispose();
     }
@@ -103,10 +104,10 @@ void _selectedTab(int index) {
         //         ),
         //       ],
         //     ),
-	    
-	body: originalList[tabIndex],//IndexedStack(index: tabIndex, children: listScreens),	    
+
+        body: originalList[tabIndex],//IndexedStack(index: tabIndex, children: listScreens),
         // body: CreateMenuButton(token: widget.token),
-	bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: BottomNavigationBar(
             currentIndex: tabIndex,
             onTap: _selectedTab,
             items: [
@@ -123,10 +124,8 @@ void _selectedTab(int index) {
                 title: Text('Profile'),
               ),
             ]),
-	    backgroundColor: Theme.of(context).primaryColor,
-	    // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
-        // body: Center(child: RawWords()),
-      // home: MyHomePage(title: 'Flutter Demeau Home Page'),
+            backgroundColor: Theme.of(context).primaryColor,
+            // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
     );
   }
 }
@@ -155,9 +154,7 @@ class CreateMenu extends StatelessWidget
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CreateTakePicture(token: token,
-                                                     camera: camera
-                          )),
+                      MaterialPageRoute(builder: (context) => CreateTakePicture(token: token, camera: camera)),
                     );
                   },
                 ),
@@ -172,8 +169,6 @@ class CreateMenu extends StatelessWidget
           ]
         ),
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
-        // body: Center(child: RawWords()),
-      // home: MyHomePage(title: 'Flutter Demeau Home Page'),
     );
   }
 }
@@ -194,7 +189,7 @@ class CreateMenuButtonState extends State<CreateMenuButton>
 
     void hasClicked()
     {
-      this.state = true;
+        this.state = true;
     }
 
     final mc1 = TextEditingController();
@@ -203,9 +198,9 @@ class CreateMenuButtonState extends State<CreateMenuButton>
     @override
     void dispose() {
     // Clean up the controller when the widget is disposed.
-      mc1.dispose();
-      mc2.dispose();
-      super.dispose();
+        mc1.dispose();
+        mc2.dispose();
+        super.dispose();
     }
 
     @override
