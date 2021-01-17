@@ -74,7 +74,10 @@ class CreateLoginState extends State<CreateLogin>
             key: _id,
             child: Column(
               children: <Widget> [
-                TextFormField(
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                child: TextFormField(
                   decoration: const InputDecoration(
                     hintText: 'username',
                   ),
@@ -86,6 +89,7 @@ class CreateLoginState extends State<CreateLogin>
                   },
                   controller: mc1,
                 ),
+		),
                 TextFormField(
                   decoration: const InputDecoration(
                     hintText: 'password',

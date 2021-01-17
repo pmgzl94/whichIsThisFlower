@@ -41,7 +41,7 @@ class CreateProfilState extends State<CreateProfil>
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        appBar: AppBar(title: Text('Profil'),),
+        appBar: AppBar(title: Text('Profile'),),
         body: new ListView(
 	  children: <Widget>[
 	    Column(

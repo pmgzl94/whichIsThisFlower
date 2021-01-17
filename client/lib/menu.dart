@@ -120,7 +120,7 @@ void _selectedTab(int index) {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
-                title: Text('Profil'),
+                title: Text('Profile'),
               ),
             ]),
 	    backgroundColor: Theme.of(context).primaryColor,
