@@ -65,12 +65,19 @@ def flowerAndFun(path=example1):
         #128, 17, 17
         fcnetwork.FCLayer(arch=[36992, 512, 128, 5])
     ]
+    learning_rate = 0.15
 
-    model_FAndF = model.Model(learning_rate=0.001, dataset=None, layerContainer=layerContainer)
+    model_FAndF = model.Model(learning_rate=learning_rate, dataset=None, layerContainer=layerContainer)
 
-    output = model_FAndF.compute(input, learn=True)
+    # output = model_FAndF.compute(input, learn=True)
 
-    print(f"output = {output}")
+    # model_FAndF.soft_learn()
+    model_FAndF.test_learn(epoch=10)
+
+    # print(f"output = {output}")
+
+    
+
 
 
 
