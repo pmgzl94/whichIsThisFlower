@@ -42,21 +42,21 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.green,
               // primarySwatch: Colors.white,
-	      appBarTheme: AppBarTheme(
-     	      		   color: Colors.white,
-     	      		   // color: Color.fromRGBO(242, 242, 242, 0.6),
-  	      ),
-	      primaryTextTheme: TextTheme(
-    	      			headline6: TextStyle(
-      	      			color: Colors.black
-    	          )
-  	      ),
+              appBarTheme: AppBarTheme(
+                    color: Colors.white,
+                    // color: Color.fromRGBO(242, 242, 242, 0.6),
+              ),
+              primaryTextTheme: TextTheme(
+                  headline6: TextStyle(
+                      color: Colors.black
+                  )
+              ),
             ),
             home: Scaffold(
               appBar: AppBar(
-	      	      title: Text('Login'),
-	      	      centerTitle: true,
-	      ),
+                      title: Text('Login'),
+                      centerTitle: true,
+              ),
               body: Column(
                 children: [
                   Align (

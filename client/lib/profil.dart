@@ -42,10 +42,10 @@ class CreateProfilState extends State<CreateProfil>
     Widget build(BuildContext context) {
       return Scaffold(
         appBar: AppBar(
-		title: Text('PROFILE'),
-		centerTitle: true,
-  	    	automaticallyImplyLeading: false,
-	),
+                title: Text('PROFILE'),
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+        ),
         body: new ListView(
           children: <Widget>[
             Column(
@@ -143,7 +143,7 @@ class CreateProfilState extends State<CreateProfil>
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     new Text(
-                                      'Parsonal Information',
+                                      'Personal Information',
                                       style: TextStyle(
                                           fontSize: 18.0,
                                           fontWeight: FontWeight.bold),
