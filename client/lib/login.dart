@@ -141,6 +141,9 @@ class CreateLoginState extends State<CreateLogin>
                     return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
+			  style: ElevatedButton.styleFrom(
+			       primary: Color.fromRGBO(0, 102, 0, 0.6),
+			  ),
                           onPressed: () {
                             runMutation({"username": mc1.text, "password": mc2.text});
                           },

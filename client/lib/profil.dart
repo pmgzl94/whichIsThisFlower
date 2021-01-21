@@ -41,7 +41,11 @@ class CreateProfilState extends State<CreateProfil>
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        appBar: AppBar(title: Text('Profile'),),
+        appBar: AppBar(
+		title: Text('PROFILE'),
+		centerTitle: true,
+  	    	automaticallyImplyLeading: false,
+	),
         body: new ListView(
           children: <Widget>[
             Column(
@@ -51,27 +55,27 @@ class CreateProfilState extends State<CreateProfil>
                   color: Colors.white,
                   child: new Column(
                     children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.only(left: 20.0, top: 20.0),
-                          child: new Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Icon(
-                                Icons.arrow_back_ios,
-                                color: Colors.black,
-                                size: 22.0,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 25.0),
-                                child: new Text('PROFILE',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20.0,
-                                        fontFamily: 'sans-serif-light',
-                                        color: Colors.black)),
-                              )
-                            ],
-                          )),
+                      // Padding(
+                      //     padding: EdgeInsets.only(left: 20.0, top: 20.0),
+                      //     child: new Row(
+                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //       children: <Widget>[
+                      //         new Icon(
+                      //           Icons.arrow_back_ios,
+                      //           color: Colors.black,
+                      //           size: 22.0,
+                      //         ),
+                      //         Padding(
+                      //           padding: EdgeInsets.only(left: 25.0),
+                      //           child: new Text('PROFILE',
+                      //               style: TextStyle(
+                      //                   fontWeight: FontWeight.bold,
+                      //                   fontSize: 20.0,
+                      //                   fontFamily: 'sans-serif-light',
+                      //                   color: Colors.black)),
+                      //         )
+                      //       ],
+                      //     )),
                       Padding(
                         padding: EdgeInsets.only(top: 20.0),
                         child: new Stack(fit: StackFit.loose, children: <Widget>[
@@ -86,28 +90,28 @@ class CreateProfilState extends State<CreateProfil>
                                     shape: BoxShape.circle,
                                     image: new DecorationImage(
                                       image: new ExactAssetImage(
-                                          './assets/images/as.png'),
+                                          './assets/images/profile.png'),
                                       fit: BoxFit.cover,
                                     ),
                                   )),
                             ],
                           ),
-                          Padding(
-                              padding: EdgeInsets.only(top: 90.0, right: 100.0),
-                              child: new Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  new CircleAvatar(
-                                    backgroundColor: Colors.red,
-                                    radius: 25.0,
-                                    child: new Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                ],
-                              )
-                            ),
+                          // Padding(
+                          //     padding: EdgeInsets.only(top: 90.0, right: 100.0),
+                          //     child: new Row(
+                          //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       children: <Widget>[
+                          //         new CircleAvatar(
+                          //           backgroundColor: Colors.red,
+                          //           radius: 25.0,
+                          //           child: new Icon(
+                          //             Icons.camera_alt,
+                          //             color: Colors.white,
+                          //           ),
+                          //         )
+                          //       ],
+                          //     )
+                          //   ),
                         ]),
                       )
                     ]
@@ -263,71 +267,16 @@ class CreateProfilState extends State<CreateProfil>
                                 ),
                               ],
                             )),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 25.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Container(
-                                    child: new Text(
-                                      'Pin Code',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  flex: 2,
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    child: new Text(
-                                      'State',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  flex: 2,
-                                ),
-                              ],
-                            )),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 2.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Flexible(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 10.0),
-                                    child: new TextField(
-                                      decoration: const InputDecoration(
-                                          hintText: "Enter Pin Code"),
-                                      enabled: !_status,
-                                    ),
-                                  ),
-                                  flex: 2,
-                                ),
-                                Flexible(
-                                  child: new TextField(
-                                    decoration: const InputDecoration(
-                                        hintText: "Enter State"),
-                                    enabled: !_status,
-                                  ),
-                                  flex: 2,
-                                ),
-                              ],
-                            )),
                         !_status ? _getActionButtons() : new Container(),
                       ],
                     ),
                   ),
                 )
               ]
+            ),
+            Align (
+              alignment: Alignment(0.0, -0.75),
+              child: CreateProfilButton(token: widget.token),
             ),
           ]
         ),
@@ -392,7 +341,7 @@ class CreateProfilState extends State<CreateProfil>
 Widget _getEditIcon() {
     return new GestureDetector(
       child: new CircleAvatar(
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         radius: 14.0,
         child: new Icon(
           Icons.edit,

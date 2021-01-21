@@ -71,7 +71,11 @@ class CreateUser extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Create User')),
+        appBar: AppBar(
+		title: Text('Create User'),
+		centerTitle: true,
+  	    // automaticallyImplyLeading: true, // not working but have to get arrow back
+	),
         body: Column(
           children: [
             Align (
@@ -80,7 +84,9 @@ class CreateUser extends StatelessWidget
             ),
           ]
         ),
-        backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+        // backgroundColor: Theme.of(context).primaryColor,
+        // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+        backgroundColor: Colors.white,
         // body: Center(child: RawWords()),
       // home: MyHomePage(title: 'Flutter Demeau Home Page'),
     );
@@ -189,6 +195,9 @@ class CreateUserFormState extends State<CreateUserForm>
                     return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
+			  style: ElevatedButton.styleFrom(
+			       primary: Color.fromRGBO(0, 102, 0, 0.6),
+			  ),
                           onPressed: () {
                             runMutation({"username": mc1.text, "password": mc2.text});
                           },

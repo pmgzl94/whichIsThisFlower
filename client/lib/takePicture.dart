@@ -91,6 +91,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
       return Scaffold(
         appBar: AppBar(
             title: Text('Camera'),
+	    centerTitle: true,
             //   actions: <Widget>[
             //     IconButton(
             //       icon: Icon(

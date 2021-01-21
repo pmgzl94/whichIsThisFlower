@@ -145,7 +145,8 @@ class CreateMenu extends StatelessWidget
       return Scaffold(
         appBar: AppBar(
             title: Text('Menu'),
-              actions: <Widget>[
+	    centerTitle: true,
+  automaticallyImplyLeading: false,              actions: <Widget>[
                 IconButton(
                   icon: Icon(
                     Icons.photo_camera,
