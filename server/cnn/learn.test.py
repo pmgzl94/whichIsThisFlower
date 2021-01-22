@@ -38,7 +38,7 @@ class TestFcNetwork(unittest.TestCase):
             tm.save("conv_test_depth_multiple_filter.bs1", biases)
             tm.save("conv_test_depth_multiple_filter.ws1", containerfilter)
         
-        l1 = conv.ConvLayer(load_path=filename, pool=pool.PoolLayer(), activation_function="relu")
+        l1 = conv.ConvLayer(load_path=filename, filtershape=(3, 3, 2, 2), pool=pool.PoolLayer(), activation_function="relu")
         output = l1.compute(input)
 
         filename = "fcn_test_depth_multiple_filter"
@@ -54,10 +54,12 @@ class TestFcNetwork(unittest.TestCase):
             tm.save("fcn_test_depth_multiple_filter.bs1", biases)
             tm.save("fcn_test_depth_multiple_filter.ws1", ws)
 
-        l2 = fcnetwork.FCLayer(arch=[12, 2], transfer_learning_file="fcn_test_depth_multiple_filter")
+        l2 = fcnetwork.FCLayer(arch=[12, 2], load_path="fcn_test_depth_multiple_filter")
 
         expected_res = numpy.array([1, 0])
-        l2.learn(output, expected_res)
+
+        l2.compute(input=output, learn=True)
+        l2.learn(expected_res)
 
         delta = l2.getLastDelta()
 
@@ -68,6 +70,47 @@ class TestFcNetwork(unittest.TestCase):
         self.assertEqual(numpy.isclose(nabla_w[0][0][0][0], 4.1609570961e-09), True)
         self.assertEqual(numpy.isclose(nabla_w[1][1][0][0], 1.8135273233e-09), True)
 
+    # def test_delta_computation_in_pool_layer(self):
+    #     # def reshape_delta_and_compute(derivative, delta, pool_size, stride):
+    #     #derivative shape 1,5,5
+    #     #pool_size = 2, 2 with stride_len = 3
+    #     #so delta shape =  1, 2, 2
+
+
+    #     ##pool for stride len of 1
+    #     # pool_derivative = numpy.array([[[1, 0, 1, 0, 0], [0, 1, 0, 1, 0], 
+    #     #             [0, 0, 0, 0, 0], [1, 1, 0, 0, 0], [0, 0, 0, 1, 0]]])
+        
+    #     pool_derivative = numpy.array(
+    #         [[[0, 0, 0, 0, 0], 
+    #           [0, 1, 0, 1, 0], 
+    #           [0, 0, 1, 0, 0], 
+    #           [0, 0, 0, 0, 0], 
+    #           [0, 0, 0, 1, 0]]], dtype="float64")
+
+    #     delta = numpy.array([[[0.3, 0.2], [1, 0.3]]])
+    #     print(f"pool_derivative shape = {pool_derivative.shape}")
+    #     print(f"delta shape = {delta.shape}")
+        
+
+    #     exp_result = numpy.array(
+    #         [[[0, 0, 0, 0, 0], [0, 9*0.3, 0, 12*0.2, 0], 
+    #       [0, 0, 8*1, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0.3*9, 0]]])
+        
+    #     got = pool.reshape_delta_and_compute(pool_derivative, delta, (3, 3), 2)
+    #     print(got)
+
+    #     compare_res = (exp_result == got).all()
+    #     self.assertEqual(compare_res, True)
+
+        # [1, 0, 1, 0, 0]
+        # [0, 1, 0, 1, 0]
+        # [0, 0, 0, 0, 0]
+        # [1, 1, 0, 0, 0]
+        # [0, 0, 0, 1, 0]
+
+
+        
 # max_derivative = numpy.array([[[1, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 0], [1, 0, 0, 1]], [[1, 0, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [1, 0, 0, 1]], [[1, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 0], [1, 0, 0, 1]]])
 # delta = numpy.array([8.22132387e-10, 7.25410930e-10, 1.54754332e-09, 2.90164372e-10, 2.41803643e-09, 2.90164372e-10, 2.41803643e-10, 2.41803643e-10, 2.90164372e-10, 3.14344736e-10, 3.62705465e-10, 2.65984008e-10])
 
