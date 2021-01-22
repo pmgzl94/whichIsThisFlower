@@ -3,7 +3,7 @@ import image_loader as iml
 import model
 import pool
 import fcnetwork
-
+from evaluation import evaluate_test_data, evaluate_test_flower_verbose
 
 rp_dataset = "./dataset/"
 
@@ -65,26 +65,31 @@ def flowerAndFun(path=example1):
         #128, 17, 17
         fcnetwork.FCLayer(arch=[36992, 512, 128, 5])
     ]
-    learning_rate = 0.15
+    learning_rate = 0.0001
 
     model_FAndF = model.Model(learning_rate=learning_rate, dataset=None, layerContainer=layerContainer)
 
     # output = model_FAndF.compute(input, learn=True)
 
     # model_FAndF.soft_learn()
-    model_FAndF.test_learn(epoch=10)
+    model_FAndF.test_learn(epoch=50)
 
     # print(f"output = {output}")
 
-    
-
-
-
-
-
-
-
 flowerAndFun()
+
+def model_for_mnist():
+
+    layerContainer = [
+        fcnetwork.FCLayer(arch=[784, 100, 10])
+    ]
+    learning_rate = 0.01
+
+    modelMnist = model.Model(learning_rate=learning_rate, dataset=None, layerContainer=layerContainer)
+
+    modelMnist.test_learn_mnist(epoch=50)
+
+# model_for_mnist()
 
 def zf5model(path=example1):
     # from this architecture: 

@@ -3,10 +3,14 @@ from layer import LayerInterface
 import dataloader
 import random
 from tensor.Tensor import TensorFileManager
+import numpy
+
+from evaluation import evaluate_test_data, evaluate_test_flower_verbose
+
+import mnist
 
 class Model():
-    # type = CNN, FCN, RNN ...
-    # dataset must be supervised
+    # learning must be supervised
     def __init__(self, learning_rate, dataset, layerContainer=[]):
         # self.learn = learn()
         #self.modeltype = modeltype
@@ -14,35 +18,24 @@ class Model():
         self.dataset = dataset
         self.layercontainer = layerContainer 
         self.nb_layers = len(self.layercontainer)
+
+    #evaluation function
+    evaluate_test_data = evaluate_test_data
+    evaluate_test_flower_verbose = evaluate_test_flower_verbose
+
     def addLayer(self, newLayer):
-        # type1 = layerContainer[-1].getType()
-        # type2 = newLayer.getType()
-        # if type1 == "FCN" and type2 == type1:
-        #     type1 = 
         layercontainer.append(newlayer)
         self.nb_layers += 1
+
     def compute(self, input, learn=False):
         x = input
-        i = 1
         
         for layer in self.layercontainer:
-            # print(x.shape)
-            # if i == 1:
-            #     print(f"input={x}")
-            #     TensorFileManager().save("input_image", x)
             x = layer.compute(x, learn)
-
-            # print(f"output = {x[2]}")
-            # print(x.shape)
-
-            # if i == 1:
-            #     print(f"output {x}")
-            #     TensorFileManager().save("output", x)
-            i += 1
         return x
 
     def soft_learn(self):
-        data = dataloader.load_some_flowers(crop_size=(0, 0, 150, 150))
+        data = dataloader.load_some_flowers(image_per_flower=3, crop_size=(0, 0, 150, 150))
         data = list(data)
         data = data[:10]
         success = 0
@@ -63,32 +56,86 @@ class Model():
         # for i in range(0, len(self.layercontainer)):
         #     self.layercontainer[i].modify_weights(learning_rate=self.learning_rate, batch_size=10)
 
-    def test_learn(self, epoch=10):
-        data = dataloader.load_some_flowers(crop_size=(0, 0, 150, 150))
-        data = list(data)
-        data = data[:128]
-        success = 0
+    def test_learn_mnist(self, epoch=50):
+        training_data, vdata, test_data = mnist.mnist_loader.load_data_wrapper("./mnist/")
+
+
+        training_data = list(training_data)
+        test_data = list(test_data)
         
-        response_from_net = []
-        for i in range(0, epoch):
+        n_training_data = len(training_data)
+        batch_size = 10
+
+        # print(f"Len = training_data = {len(training_data)}")
+        # print(f"Len = test_data = {len(test_data)}")
+
+        for ep in range(0, epoch):
             success = 0
             res = []
-            for input, expec in data:
+            data = random.sample(training_data, n_training_data)
 
-                res.append(self.compute(input, learn=True))
+            for b in range(0, n_training_data, batch_size):
+                batch = data[b:b+batch_size]
+                for input, expec in batch:
+                    self.compute(input, learn=True)
 
-                success += self.layercontainer[-1].learn(expec)
-                delta = self.layercontainer[-1].getLastDelta()
-                
-                #backpropagate the delta
-                for i in range(2, len(self.layercontainer) + 1, 1):
-                    # print(f"layer number = {-i}, len = {len(self.layercontainer) - 1}")
-                    self.layercontainer[-i].learn(delta)
-                    delta = self.layercontainer[-i].getLastDelta()
-            print(f"error rate = {success / len(data)}")
-            for i in range(0, len(self.layercontainer)):
-                self.layercontainer[i].modify_weights(learning_rate=self.learning_rate, batch_size=10)
-            response_from_net.append(res)
+                    success += self.layercontainer[-1].learn(expec)
+                    
+                    delta = self.layercontainer[-1].getLastDelta()
+
+                    #We have only one layer so no need a backprop loop
+
+                self.layercontainer[0].modify_weights(learning_rate=self.learning_rate, batch_size=batch_size)
+
+            print(f"error rate = {success / len(training_data)}")
+            result = self.evaluate_test_data(test_data)
+            print(f"Epoch {ep}: {result}/{len(test_data)}")
+
+
+
+
+    def test_learn(self, epoch=10):
+        training_data, test_data = dataloader.load_some_flowers(500, 100, crop_size=(0, 0, 150, 150))
+        
+
+        training_data = list(training_data)
+        test_data = list(test_data)
+
+        print(f"len training data = {len(training_data)}")
+        print(f"len test data = {len(test_data)}")
+        # print(len(test_data))
+
+        batch_size = 10
+        
+        # response_from_net = []
+        for ep in range(0, epoch):
+            success = 0
+            res = []
+
+            for b in range(0, 600, batch_size):
+
+                training_data = random.sample(training_data, len(training_data))
+
+                for input, expec in training_data[b:batch_size]:
+
+                    res.append(self.compute(input, learn=True))
+
+                    success += self.layercontainer[-1].learn(expec)
+                    delta = self.layercontainer[-1].getLastDelta()
+                    
+                    #backpropagate the delta
+                    for i in range(2, len(self.layercontainer) + 1, 1):
+                        # print(f"layer number = {-i}, len = {len(self.layercontainer) - 1}")
+                        self.layercontainer[-i].learn(delta)
+                        delta = self.layercontainer[-i].getLastDelta()
+                for i in range(0, len(self.layercontainer)):
+                    self.layercontainer[i].modify_weights(learning_rate=self.learning_rate, batch_size=batch_size)
+            print(f"error rate = {success / len(training_data)}")
+            # result = self.evaluate_test_data(test_data)
+            result = self.evaluate_test_flower_verbose(test_data)
+            
+            print(f"Epoch {ep}: {result}/{len(test_data)}")
+                # response_from_net.append(res)
         # print(f'response net = {response_from_net}')
 
     #number of flowers = 4323
