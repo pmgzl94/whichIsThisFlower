@@ -73,7 +73,8 @@ class TestFcNetwork(unittest.TestCase):
 
         expected_delta = numpy.dot(previous_delta, ws1)
         
-        net.learn(input, expected_res)
+        net.compute(input, learn=True)
+        net.learn(expected_res)
         returnedDelta = net.getLastDelta()
         
         res  = numpy.isclose(returnedDelta, expected_delta, atol=1e-5)

@@ -6,7 +6,7 @@ from activation_functions import sigmoid, sigmoid_derivative
 
 #mean squared error
 def mse(output, expec_o):
-    return np.sum((expec_o - output)**2)/len(output)
+    return np.sum((expec_o - output)**2) /len(output)
 
 #cost functions
 def basic_cost_derivative(y, a): #where y is the expected result
@@ -25,14 +25,10 @@ class FCLayer(LayerInterface):
 
         if load_path == None:
             for i in range(0, self.nb_set_of_params):
-                # set_of_weights = np.random.random((arch[i+1], arch[i]))
-
                 set_of_weights = np.random.randn(*(arch[i+1], arch[i])) * np.sqrt(1/(arch[i]))
                 self.weights.append(set_of_weights)
-                # self.biases.append(np.random.random((arch[i+1],)))
-                
-                self.biases.append(np.zeros((arch[i+1],)))
-
+                # self.biases.append(np.random.randn(arch[i+1]))
+                self.biases.append(np.zeros(arch[i+1]))
         else:
             self.load(load_path)
         self.inputshape = (self.weights[0].shape[1],)
@@ -58,7 +54,6 @@ class FCLayer(LayerInterface):
     def forward(self, input, learn=False):
         if len(input.shape) > 1:
             input = input.flatten()
-        #print(f"input flatten = {input.shape}")
         if input.shape[0] != self.weights[0].shape[1]:
             raise Exception(f"wrong input shape: received shape {input.shape}")
 
@@ -66,7 +61,7 @@ class FCLayer(LayerInterface):
         self.z = []
         
         x = input
-        self.a = [x] #usefull for the backprop
+        self.a = [x]
         for i in range(0, self.nb_set_of_params):
             z = np.dot(x, self.weights[i].T) + self.biases[i]
             x = sigmoid(z)
@@ -79,16 +74,11 @@ class FCLayer(LayerInterface):
 
     # def learn(self, input, expected_res):
     def learn(self, expected_res): #expected res or delta
-        # print("learn fcn")
-        # self.forward(input)
-        
-        #first delta
+        # expected_res = expected_res.flatten() #for the mnist dataset
         delta = basic_cost_derivative(expected_res, self.a[-1]) * sigmoid_derivative(self.z[-1])
         
         nabla_w = [np.outer(delta, self.a[-2].T)]
         nabla_b = [delta]
-
-        # self.a.pop(len(a) - 1)
 
         for index_set_param in range(self.nb_set_of_params - 2, -1, -1):
             delta = np.dot(delta, self.weights[index_set_param + 1]) * sigmoid_derivative(self.z[index_set_param])
@@ -98,11 +88,7 @@ class FCLayer(LayerInterface):
         self.lastDelta = delta
         self.sumUpNablas(nabla_w, nabla_b)
         
-        #return error percentage
         return mse(self.a[-1], expected_res)
-
-    def getLastDelta(self):
-        return np.dot(self.lastDelta, self.weights[0])
 
     def resetLearningVars(self):
         self.sum_of_nabla_w = []
@@ -139,10 +125,21 @@ class FCLayer(LayerInterface):
 
     def modify_weights(self, learning_rate, batch_size):
         for i in range(0, self.nb_set_of_params):
-            self.weights[i] -= learning_rate/batch_size * self.sum_of_nabla_w[i]
-            self.biases[i] -= learning_rate/batch_size * self.sum_of_nabla_b[i]
+            # print("here")
+            self.weights[i] = self.weights[i] - (learning_rate/batch_size) * self.sum_of_nabla_w[i]
+            self.biases[i] = self.biases[i] - (learning_rate/batch_size) * self.sum_of_nabla_b[i]
         
         self.resetLearningVars()
+
+    def getWeightsAndBiases(self):
+        return self.weights, self.biases
+    
+    def getLastDelta(self):
+        return np.dot(self.lastDelta, self.weights[0])
+
+    def getNablas(self):
+        return self.sum_of_nabla_w, self.sum_of_nabla_b
+
 
 # a = FcLayer(arch=[2, 3, 2])
 
