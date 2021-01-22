@@ -23,6 +23,7 @@ class ConvLayer(LayerInterface):
     # find way to save filters 
     # if you precise padding, you will only get a padding of 1
 
+    ## nb_filter is deprecated
     def __init__(self, load_path=None, padding=0, nb_filters=1, filtershape=(3, 2, 2), stride_length=1, pool=None, activation_function='relu', ishape=None):
         self.padding = padding
         self.stride_len = stride_length
@@ -152,7 +153,7 @@ class ConvLayer(LayerInterface):
         return "Conv"
     
     def learn(self, delta):
-        print(f"conv learn")
+
         # reshape delta if it come from classifier
         if len(delta.shape) == 1:
             delta = delta.reshape(self.output_shape)
@@ -165,16 +166,9 @@ class ConvLayer(LayerInterface):
             delta = pool.helper_pool_backprop(delta, self.pool)
         
         
-        #have to save the weights to apply sgd
+        # get the weight's gradient
         self.nabla_w = numpy.tensordot(delta, self.slicedInput)
-
         self.sumUpNablas(self.nabla_w)
-
-        #do something with nabla_b
-
-        # print(delta.shape)
-
-        print(delta.shape)
 
         self.lastDelta = delta
 
@@ -187,8 +181,6 @@ class ConvLayer(LayerInterface):
             delta = numpy.pad(self.lastDelta, ((0, 0), (h, h), (w, w)))
         else:
             delta = numpy.pad(self.lastDelta, 1)
-
-        # print(f"delta shape = {delta.shape}")
 
         flipped_filter = numpy.flip(self.filters)
 
@@ -220,7 +212,7 @@ class ConvLayer(LayerInterface):
             flipped_filter = flipped_filter.transpose(1, 0, 2, 3)
 
             next_delta = numpy.tensordot(resized_delta, flipped_filter, axes=[delta_axes, filter_axes])
-            print(f"next delta .shape = {next_delta.transpose(2, 0, 1).shape}")
+            # print(f"next delta .shape = {next_delta.transpose(2, 0, 1).shape}")
             return next_delta.transpose(2, 0, 1)
         else: #if only one filter...
             
@@ -291,9 +283,3 @@ class ConvLayer(LayerInterface):
         self.filters -= learning_rate/batch_size * self.sum_of_nabla_w
 
         self.sum_of_nabla_w = numpy.zeros(self.filters.shape)
-        
-
-        
-
-        
-        

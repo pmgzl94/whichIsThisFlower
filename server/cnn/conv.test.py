@@ -140,7 +140,7 @@ class TestFcNetwork(unittest.TestCase):
         self.assertEqual(numpy.isclose(res[0][0], -0.004527013257), True)
     
     def test_get_next_delta2(self):
-        #with depth and filter
+        # with depth and filter
         # input  = (3, 5, 5)
         # filter = (4, 3, 2, 2)
 
@@ -177,7 +177,7 @@ class TestFcNetwork(unittest.TestCase):
             tm.save(filename1 + ".bs1", biases)
             tm.save(filename1 + ".ws1", containerfilter)
 
-        l1 = conv.ConvLayer(load_path=filename1, pool=pool.PoolLayer(), activation_function="sigmoid")
+        l1 = conv.ConvLayer(load_path=filename1, filtershape=(4, 3, 2, 2), pool=pool.PoolLayer(), activation_function="sigmoid")
     
         res1 = l1.compute(input)
         
