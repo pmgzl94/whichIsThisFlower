@@ -63,6 +63,7 @@ def load_some_flowers(training_data_amount, test_data_amount, crop_size=(0, 0, 2
     subdirs = ["daisy", "dandelion", "rose", "sunflower", "tulip"]
     
     #around 4300 pictures
+    #number of flowers = 4323
     if test_data_amount + training_data_amount > 4300:
         raise Exception("There is only 4300 pictures in the dataset")
 
@@ -71,7 +72,7 @@ def load_some_flowers(training_data_amount, test_data_amount, crop_size=(0, 0, 2
     
     image_per_flower = (test_data_amount + training_data_amount) // 5
 
-    print(image_per_flower)
+    # print(image_per_flower)
 
     for subdir in subdirs:
         path = "./dataset/" + subdir
