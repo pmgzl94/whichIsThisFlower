@@ -72,15 +72,14 @@ class CreateUser extends StatelessWidget
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-                title: Text('Create User'),
-                centerTitle: true,
-            automaticallyImplyLeading: true, // not working but have to get arrow back
-	    leading: IconButton(
-	    	 icon:Icon(
-		      Icons.arrow_back,
-		      color: Colors.black
-		 ),
-                 onPressed:() => Navigator.pop(context, false),
+            title: Text('Create User'),
+            centerTitle: true,
+            leading: IconButton(
+                icon:Icon(
+                      Icons.arrow_back,
+                      color: Colors.black
+                ),
+                onPressed:() => Navigator.pop(context, false),
             ),
         ),
         body: Column(
@@ -267,19 +266,19 @@ class ButtonCreateUser extends StatelessWidget {
       return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25),
                         child: ElevatedButton(
-			  style: ElevatedButton.styleFrom(
-			       shape: RoundedRectangleBorder(
-        		         // borderRadius: BorderRadius.circular(20),
-        		         borderRadius: BorderRadius.circular(7),
-			       ),
+                          style: ElevatedButton.styleFrom(
+                               shape: RoundedRectangleBorder(
+                                 // borderRadius: BorderRadius.circular(20),
+                                 borderRadius: BorderRadius.circular(7),
+                               ),
                                primary: Colors.white,
                                onPrimary: Colors.green,
-			       textStyle: TextStyle(
-                    		    // fontSize: 30,
-                    		    fontWeight: FontWeight.bold
-			       ),
+                               textStyle: TextStyle(
+                                    // fontSize: 30,
+                                    fontWeight: FontWeight.bold
+                               ),
                                minimumSize: Size(350, 40),
-      			  ),
+                          ),
               onPressed: () {
                 Navigator.push(
                     context,
@@ -287,7 +286,7 @@ class ButtonCreateUser extends StatelessWidget {
                 );
               },
               child: Text('Sign Up'),
-	      )
+              )
             );
   }
 }

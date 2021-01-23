@@ -168,8 +168,8 @@ class CreateLoginState extends State<CreateLogin>
                                                      camera: widget.camera
                           )),
                         );
-			print("RESETING");
-			_id.currentState?.reset();
+                        print("RESETING");
+                        _id.currentState?.reset();
                       } else {
                         print("User doesn't exist");
                         showDialog<AlertDialog>(
@@ -184,14 +184,14 @@ class CreateLoginState extends State<CreateLogin>
                     return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25),
                         child: ElevatedButton(
-			  style: ElevatedButton.styleFrom(
-			       shape: RoundedRectangleBorder(
-        		         borderRadius: BorderRadius.circular(20),
-        		         // borderRadius: BorderRadius.circular(10),
-			       ),
+                          style: ElevatedButton.styleFrom(
+                               shape: RoundedRectangleBorder(
+                                 borderRadius: BorderRadius.circular(20),
+                                 // borderRadius: BorderRadius.circular(10),
+                               ),
                                minimumSize: Size(350, 40),
                           //      primary: Color.fromRGBO(0, 102, 0, 0.6),
-      			  ),
+                          ),
                           onPressed: () {
                             runMutation({"username": mc1.text, "password": mc2.text});
                           },
@@ -206,8 +206,8 @@ class CreateLoginState extends State<CreateLogin>
     }
 }
 
-class ButtonCreateLogin extends StatelessWidget {
-
+class ButtonCreateLogin extends StatelessWidget
+{
   @override
   Widget build(BuildContext context) {
       return ElevatedButton(

@@ -92,6 +92,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
       return Scaffold(
         appBar: AppBar(
             title: Text('Camera'),
+            automaticallyImplyLeading: false,
             centerTitle: true,
             //   actions: <Widget>[
             //     IconButton(
@@ -162,7 +163,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
                     ),
                     floatingActionButton: FloatingActionButton(
                         child: Icon(Icons.camera_alt, color: Colors.black),
-			backgroundColor: Colors.white,
+                        backgroundColor: Colors.white,
                           // Provide an onPressed callback.
                         onPressed: () async {
                             try {
@@ -187,19 +188,19 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                 var byteData = pic.readAsBytesSync();
 
 
-				print("SAVED :");
-				print(File(path).existsSync());
+                                print("SAVED :");
+                                print(File(path).existsSync());
 
 
-				// Directory directory = await getTemporaryDirectory();
-				// if (!await directory.exists()) {
-        			//     await directory.create(recursive: true);
-				// }
-				///////saving file
-				final result = await ImageGallerySaver.saveFile(path, isReturnPathOfIOS: true); // check why it's failing
-				print("RESULT HERE :");
-				print(result);
-				/////////
+                                // Directory directory = await getTemporaryDirectory();
+                                // if (!await directory.exists()) {
+                                //     await directory.create(recursive: true);
+                                // }
+                                ///////saving file
+                                final result = await ImageGallerySaver.saveFile(path, isReturnPathOfIOS: true); // check why it's failing
+                                print("RESULT HERE :");
+                                print(result);
+                                /////////
 
                                 var multipartFile = MultipartFile.fromBytes(
                                     'photo',
@@ -209,14 +210,14 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                 );
 
                                 runMutation({"token": widget.token, "image": multipartFile, "imageName": name});
-				print("path EXIST?????? :");
-				print(File(path).existsSync());
+                                print("path EXIST?????? :");
+                                print(File(path).existsSync());
                             } catch (e) {
                                 print(e);
                             }
                         },
                     ),
-		    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+                    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 
                 );
               }
@@ -237,7 +238,16 @@ class DisplayPictureScreen extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-            appBar: AppBar(title: Text(imageName)),
+            appBar: AppBar(
+                title: Text(imageName)
+                leading: IconButton(
+                  icon:Icon(
+                      Icons.arrow_back,
+                      color: Colors.black
+                  ),
+                  onPressed:() => Navigator.pop(context, false),
+                ),
+            ),
             // The image is stored as a file on the device. Use the `Image.file`
             // constructor with the given path to display the image.
             body: Image.file(File(imagePath)),
