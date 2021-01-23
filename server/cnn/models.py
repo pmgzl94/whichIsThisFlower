@@ -101,6 +101,7 @@ def zf5model(path=example1):
     # image = iml.ImageLoader.getCropedImage(rp_dataset + "daisy/" + "5547758_eea9edfd54_n.jpg")#.getOutputNpArray(rp_dataset + "daisy/" + "5547758_eea9edfd54_n.jpg")
 
     #it crops by 224x224 by default
+    print(f"Model load this picture as input: {path}")
     input = iml.ImageLoader.getOutputNpArray(path, crop=True, crop_size=(0, 0, 224, 224))
     dir = "./tensorfiles"
 
@@ -156,7 +157,6 @@ def zf5model(path=example1):
     # print(f"snd output = {res}")
 
     try:
-        print("here")
         output = zf5.compute(input)
     except:
         print("error occured in zf5 mode")
