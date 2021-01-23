@@ -11,8 +11,15 @@ from flask_graphql_auth import (
 import SessionManager
 import db
 import sys
+sys.path.insert(1, './cnn/')
+# sys.path.insert(2, './cnn/mnist')
+
+import cnn.models
+
+
 from graphql import GraphQLError
 
+# from cnn.models
 import cnn
 
 from base64 import b64encode, b64decode
@@ -114,8 +121,8 @@ class TakePicture(graphene.Mutation):
         except:
             print("FAILED TO WRITE IMAGE")
 
-        # flowerName = cnn.models.zf5model(fullPath)
-        flowerName = "It is not a flower" # remove
+        flowerName = cnn.models.zf5model(fullPath)
+        # flowerName = "It is not a flower" # remove
         username = get_jwt_identity()
         comment = "none"
 

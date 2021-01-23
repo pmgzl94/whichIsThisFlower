@@ -1,11 +1,11 @@
-from mnist import mnist_loader
+# from mnist import mnist_loader
 import image_loader as iml
 import os
 import numpy
 
-def load_mnist():
-    train_data, validation_data, testdata = mnist_loader.load_data_wrapper("./mnist/")
-    return train_data
+# def load_mnist():
+#     train_data, validation_data, testdata = mnist_loader.load_data_wrapper("./mnist/")
+#     return train_data
 
 linker = {  "daisy": numpy.array([1, 0, 0, 0, 0]),
             "dandelion": numpy.array([0, 1, 0, 0, 0]), 

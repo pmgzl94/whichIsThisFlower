@@ -7,7 +7,7 @@ import numpy
 
 from evaluation import evaluate_test_data, evaluate_test_flower_verbose
 
-import mnist
+# import mnist
 
 class Model():
     # learning must be supervised
@@ -56,40 +56,40 @@ class Model():
         # for i in range(0, len(self.layercontainer)):
         #     self.layercontainer[i].modify_weights(learning_rate=self.learning_rate, batch_size=10)
 
-    def test_learn_mnist(self, epoch=50):
-        training_data, vdata, test_data = mnist.mnist_loader.load_data_wrapper("./mnist/")
+    # def test_learn_mnist(self, epoch=50):
+    #     training_data, vdata, test_data = mnist.mnist_loader.load_data_wrapper("./mnist/")
 
 
-        training_data = list(training_data)
-        test_data = list(test_data)
+    #     training_data = list(training_data)
+    #     test_data = list(test_data)
         
-        n_training_data = len(training_data)
-        batch_size = 10
+    #     n_training_data = len(training_data)
+    #     batch_size = 10
 
-        # print(f"Len = training_data = {len(training_data)}")
-        # print(f"Len = test_data = {len(test_data)}")
+    #     # print(f"Len = training_data = {len(training_data)}")
+    #     # print(f"Len = test_data = {len(test_data)}")
 
-        for ep in range(0, epoch):
-            success = 0
-            res = []
-            data = random.sample(training_data, n_training_data)
+    #     for ep in range(0, epoch):
+    #         success = 0
+    #         res = []
+    #         data = random.sample(training_data, n_training_data)
 
-            for b in range(0, n_training_data, batch_size):
-                batch = data[b:b+batch_size]
-                for input, expec in batch:
-                    self.compute(input, learn=True)
+    #         for b in range(0, n_training_data, batch_size):
+    #             batch = data[b:b+batch_size]
+    #             for input, expec in batch:
+    #                 self.compute(input, learn=True)
 
-                    success += self.layercontainer[-1].learn(expec)
+    #                 success += self.layercontainer[-1].learn(expec)
                     
-                    delta = self.layercontainer[-1].getLastDelta()
+    #                 delta = self.layercontainer[-1].getLastDelta()
 
-                    #We have only one layer so no need a backprop loop
+    #                 #We have only one layer so no need a backprop loop
 
-                self.layercontainer[0].modify_weights(learning_rate=self.learning_rate, batch_size=batch_size)
+    #             self.layercontainer[0].modify_weights(learning_rate=self.learning_rate, batch_size=batch_size)
 
-            print(f"error rate = {success / len(training_data)}")
-            result = self.evaluate_test_data(test_data)
-            print(f"Epoch {ep}: {result}/{len(test_data)}")
+    #         print(f"error rate = {success / len(training_data)}")
+    #         result = self.evaluate_test_data(test_data)
+    #         print(f"Epoch {ep}: {result}/{len(test_data)}")
 
 
 
