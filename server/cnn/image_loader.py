@@ -17,13 +17,12 @@ class ImageLoader():
         return im
 
     @classmethod
-    def getOutputNpArray(self, image_path, gray=False, crop=False):
+    def getOutputNpArray(self, image_path, gray=False, crop=False, crop_size=(0, 0, 224, 224)):
         
         if crop:
-            im = self.getCropedImage(image_path)
+            im = self.getCropedImage(image_path, crop_size)
             data = numpy.asarray(im)
             data = numpy.transpose(data, (2, 0, 1))
-            # print(f"shape = {data.shape}")
             return data
 
         # print(im.size)

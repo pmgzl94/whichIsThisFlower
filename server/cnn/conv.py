@@ -1,9 +1,13 @@
-# import num∞py as np
-import numpy
 from layer import LayerInterface
 from tensor.Tensor import TensorFileManager
 import pool
 from activation_functions import map_function
+
+import numpy
+import functools
+import pickle
+import sys
+import os
 
 # image getdata return flatter container
 # https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.getdata
@@ -19,9 +23,11 @@ class ConvLayer(LayerInterface):
     # find way to save filters 
     # if you precise padding, you will only get a padding of 1
 
-    def __init__(self, load_path=None, padding=0, nb_filters=1, filtershape=(3, 2, 2), stride_length=1, pool=None, activation_function='relu'):
+    ## nb_filter is deprecated
+    def __init__(self, load_path=None, padding=0, nb_filters=1, filtershape=(3, 2, 2), stride_length=1, pool=None, activation_function='relu', ishape=None):
         self.padding = padding
         self.stride_len = stride_length
+        self.activation_function_tag = activation_function
         
         if activation_function != None:
             self.activation_function, self.derivative_activation = map_function[activation_function]
@@ -33,12 +39,10 @@ class ConvLayer(LayerInterface):
 
         self.z = None
 
+        self.sum_of_nabla_w = numpy.zeros(filtershape)
+
         if load_path is not None:
-            tm = TensorFileManager("./tensorfiles")
-            self.filters = tm.load(load_path + ".ws1")
-            self.biases = tm.load(load_path + ".bs1")
-            self.nb_filters = self.filters.shape[0]
-            self.fshape = tuple(self.filters.shape[1:])
+            self.load(load_path)
         
         if load_path is None:
             self.fshape = filtershape
@@ -51,11 +55,18 @@ class ConvLayer(LayerInterface):
                 self.biases = numpy.ndarray((nb_filters,))
             else:
                 # self.filters = numpy.ndarray(filtershape)
+                #he intialization
+
+                nb_neurons = functools.reduce(lambda a,b : a*b,list(ishape))
+
                 self.filters = numpy.random.rand(*filtershape)
                 # if filtershape == (96, 3, 7, 7):
                 #     print(f"filters = {self.filters}")
                 #     TensorFileManager().save("filter1", self.filters)
-                self.filters = numpy.random.uniform(-1, 1, filtershape)
+                # self.filters = numpy.random.uniform(-1, 1, filtershape)
+
+                self.filters = numpy.random.randn(*filtershape) * numpy.sqrt(2/nb_neurons)
+
                 # self.biases = numpy.ndarray((nb_filters,))
                 self.biases = numpy.random.uniform(-1, 1, (nb_filters,))
 
@@ -105,14 +116,14 @@ class ConvLayer(LayerInterface):
             return output
 
     #do not forget activation function
-    def compute(self, input):
+    def compute(self, input, learn=False):
         
         ## apply padding
         if self.padding != 0:
             # input = numpy.pad(input, self.padding)
             input = numpy.pad(input, ((0, 0), (1, 1), (1, 1)))
             # print(f"input shape = {input.shape}")
-        
+
         featuremaps = self.slidingWindow(input)
 
         # print(featuremaps.shape)
@@ -139,10 +150,9 @@ class ConvLayer(LayerInterface):
         return self.z
 
     def getType(self):
-        return "FeatureMap"
+        return "Conv"
     
     def learn(self, delta):
-        # in the example it is: maxpool, then sigmoid
 
         # reshape delta if it come from classifier
         if len(delta.shape) == 1:
@@ -156,19 +166,19 @@ class ConvLayer(LayerInterface):
             delta = pool.helper_pool_backprop(delta, self.pool)
         
         
-        #have to save the weights to apply sgd
+        # get the weight's gradient
         self.nabla_w = numpy.tensordot(delta, self.slicedInput)
-        #do something with nabla_b
-
-        # print(delta.shape)
+        self.sumUpNablas(self.nabla_w)
 
         self.lastDelta = delta
 
     def getLastDelta(self):
         # inspired by this link: https://medium.com/@pavisj/convolutions-and-backpropagations-46026a8f5d2c
-        
+
         if len(self.lastDelta.shape) == 3:
-            delta = numpy.pad(self.lastDelta, ((0, 0), (1, 1), (1, 1)))
+            h = self.filters.shape[-2] - self.stride_len
+            w = self.filters.shape[-1] - self.stride_len
+            delta = numpy.pad(self.lastDelta, ((0, 0), (h, h), (w, w)))
         else:
             delta = numpy.pad(self.lastDelta, 1)
 
@@ -202,7 +212,7 @@ class ConvLayer(LayerInterface):
             flipped_filter = flipped_filter.transpose(1, 0, 2, 3)
 
             next_delta = numpy.tensordot(resized_delta, flipped_filter, axes=[delta_axes, filter_axes])
-            
+            # print(f"next delta .shape = {next_delta.transpose(2, 0, 1).shape}")
             return next_delta.transpose(2, 0, 1)
         else: #if only one filter...
             
@@ -215,6 +225,61 @@ class ConvLayer(LayerInterface):
             next_delta = numpy.tensordot(resized_delta, flipped_filter, axes=[delta_axes, filter_axes])
 
             return (next_delta)
+        
+    def save(self, filename): # not only weights and biases
+        
+        tm = TensorFileManager("./tensorfiles")
+        tm.save(filename + ".ws1", self.filters)
+        tm.save(filename + ".bs1", self.biases)
+
+        #save params
+        params = {}
+        if self.pool != None:
+            params["pool"] = self.pool.getParams()
+
+        params["padding"] = self.padding
+        params["stride_length"] = self.stride_len
+        params["activation_function"] = self.activation_function_tag
+
+        dir = "./tensorfiles"
+        with open(dir + "/" + filename + ".params", "bw") as f:
+            pickle.dump(params, f)
+    
+    def load(self, filename):
+        dir = "./tensorfiles"
+
+        tm = TensorFileManager(dir)
+        self.filters = tm.load(filename + ".ws1")
+        self.biases = tm.load(filename + ".bs1")
+        self.nb_filters = self.filters.shape[0]
+        self.fshape = tuple(self.filters.shape[1:],)
+
+        if not os.path.exists(os.path.join(dir, filename + ".params")):
+            print(f'Carefull: no params in {dir + "/" + filename + ".params"}', file=sys.stderr)
+        else:
+            params = {}
+            with open(dir + "/" + filename + ".params", "br") as f:
+                params = pickle.load(f)
+                ## set conv params
+                self.padding = params["padding"]
+                self.stride_len = params["stride_length"]
+                if params.get("activation_function", None) is not None:
+                    self.activation_function_tag = params["activation_function"]
+                    self.activation_function, self.derivative_activation = map_function[self.activation_function_tag]
+                
+                ## set pool params
+                if (pool_param := params.get("pool", None)) is not None:
+                    self.pool = pool.PoolLayer(pool_size=pool_param["pool_size"],\
+                    pad=pool_param["padding"], stride_length=pool_param["stride_length"], type=pool_param["type"])
 
     def getNablaW(self):
         return self.nabla_w
+
+    def sumUpNablas(self, nabla_w):
+        self.sum_of_nabla_w += nabla_w
+
+    def modify_weights(self, learning_rate, batch_size):
+
+        self.filters -= learning_rate/batch_size * self.sum_of_nabla_w
+
+        self.sum_of_nabla_w = numpy.zeros(self.filters.shape)

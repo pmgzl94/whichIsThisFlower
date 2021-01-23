@@ -13,6 +13,8 @@ import db
 import sys
 from graphql import GraphQLError
 
+import cnn
+
 from base64 import b64encode, b64decode
 from graphene_file_upload.scalars import Upload
 
@@ -111,7 +113,8 @@ class TakePicture(graphene.Mutation):
         except:
             print("FAILED TO WRITE IMAGE")
 
-        flowerName = "It is not a flower" # function to get the name of the flower
+        # flowerName = cnn.models.zf5model("./cache/" + imageName)
+        flowerName = "It is not a flower" # remove
         username = get_jwt_identity()
         comment = "none"
 

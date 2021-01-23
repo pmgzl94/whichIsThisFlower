@@ -35,6 +35,7 @@ vgcore.*
 # python
 __pycache__/
 
+./client/ios/
 
 # other
 server/cache/*

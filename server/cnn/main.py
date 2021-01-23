@@ -14,7 +14,6 @@ input = iml.ImageLoader.getOutputNpArray(image_path=rp_dataset + "daisy/" + "554
 
 # from this architecture: 
 # https://www.researchgate.net/figure/Architecture-of-ZF-model-An-3-channels-image-with-224224-is-as-the-input-It-is_fig5_318577329
-# print(input)
 
 layerContainer = [
     conv.ConvLayer(padding=1, filtershape=(96, 3, 7, 7), stride_length=2, pool=pool.PoolLayer(pad=1, pool_size=(3, 3), stride_length=2)),
