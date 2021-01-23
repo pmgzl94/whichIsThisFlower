@@ -105,15 +105,16 @@ class TakePicture(graphene.Mutation):
     @mutation_jwt_required
     def mutate(cls, _, info, imageName, image, **kwargs):
         print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
+        fullPath = "./cache/" + imageName
         try:
-            file = open("./cache/" + imageName, "wb")
+            file = open(fullPath, "wb")
             file.write(image.read())
             file.close()
             print("IMAGE WRITEN")
         except:
             print("FAILED TO WRITE IMAGE")
 
-        # flowerName = cnn.models.zf5model("./cache/" + imageName)
+        # flowerName = cnn.models.zf5model(fullPath)
         flowerName = "It is not a flower" # remove
         username = get_jwt_identity()
         comment = "none"
