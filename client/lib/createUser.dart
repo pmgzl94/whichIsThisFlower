@@ -74,7 +74,14 @@ class CreateUser extends StatelessWidget
         appBar: AppBar(
                 title: Text('Create User'),
                 centerTitle: true,
-            // automaticallyImplyLeading: true, // not working but have to get arrow back
+            automaticallyImplyLeading: true, // not working but have to get arrow back
+	    leading: IconButton(
+	    	 icon:Icon(
+		      Icons.arrow_back,
+		      color: Colors.black
+		 ),
+                 onPressed:() => Navigator.pop(context, false),
+            ),
         ),
         body: Column(
           children: [
@@ -155,10 +162,10 @@ class CreateUserFormState extends State<CreateUserForm>
                     )
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0),
                     child: TextFormField(
                       decoration: const InputDecoration(
-                          hintText: 'Enter Your Username',
+                          hintText: 'Enter your username',
                       ),
                       validator: (value) {
                           if (value.isEmpty) {
@@ -191,10 +198,10 @@ class CreateUserFormState extends State<CreateUserForm>
                     )
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0),
                     child: TextFormField(
                       decoration: const InputDecoration(
-                          hintText: 'enter your password',
+                          hintText: 'Enter your password',
                       ),
                       validator: (value) {
                           if (value.isEmpty) {
@@ -219,12 +226,11 @@ class CreateUserFormState extends State<CreateUserForm>
                       onCompleted: (dynamic resultData) {
                         print("on completed");
                         print(resultData.data);
-                        if (resultData != null && resultData.data["createUser"]["ok"] == true) {
+                        if (resultData != null && resultData.data["createUser"] != null && resultData.data["createUser"]["ok"] == true) {
                           print(resultData.data["createUser"]["ok"]);
                           quit(context);
-                        }
-                        else if (resultData != null && resultData.data["createUser"]["ok"] == false) {
-                          print("icci");
+                        } else {
+                          print("user already exist");
                           showDialog<AlertDialog>(
                             context: context,
                             builder: (BuildContext context) {
@@ -258,7 +264,22 @@ class ButtonCreateUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return ElevatedButton(
+      return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25),
+                        child: ElevatedButton(
+			  style: ElevatedButton.styleFrom(
+			       shape: RoundedRectangleBorder(
+        		         // borderRadius: BorderRadius.circular(20),
+        		         borderRadius: BorderRadius.circular(7),
+			       ),
+                               primary: Colors.white,
+                               onPrimary: Colors.green,
+			       textStyle: TextStyle(
+                    		    // fontSize: 30,
+                    		    fontWeight: FontWeight.bold
+			       ),
+                               minimumSize: Size(350, 40),
+      			  ),
               onPressed: () {
                 Navigator.push(
                     context,
@@ -266,6 +287,7 @@ class ButtonCreateUser extends StatelessWidget {
                 );
               },
               child: Text('Sign Up'),
+	      )
             );
   }
 }

@@ -53,6 +53,7 @@ class CreateProfilState extends State<CreateProfil>
                 new Container(
                   height: 250.0,
                   color: Colors.white,
+                  // color: Color.fromRGBO(230, 255, 255, 0.6),
                   child: new Column(
                     children: <Widget>[
                       // Padding(
@@ -77,7 +78,7 @@ class CreateProfilState extends State<CreateProfil>
                       //       ],
                       //     )),
                       Padding(
-                        padding: EdgeInsets.only(top: 20.0),
+                        padding: EdgeInsets.only(top: 50.0),
                         child: new Stack(fit: StackFit.loose, children: <Widget>[
                           new Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -149,14 +150,14 @@ class CreateProfilState extends State<CreateProfil>
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ],
-                                ),
-                                new Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    _status ? _getEditIcon() : new Container(),
-                                  ],
-                                )
+                                ), // put back and use it maybe
+                                // new Column(
+                                //   mainAxisAlignment: MainAxisAlignment.end,
+                                //   mainAxisSize: MainAxisSize.min,
+                                //   children: <Widget>[
+                                //     _status ? _getEditIcon() : new Container(),
+                                //   ],
+                                // )
                               ],
                             )),
                         Padding(
@@ -170,7 +171,7 @@ class CreateProfilState extends State<CreateProfil>
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     new Text(
-                                      'Name',
+                                      'Username',
                                       style: TextStyle(
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold),
@@ -188,7 +189,8 @@ class CreateProfilState extends State<CreateProfil>
                                 new Flexible(
                                   child: new TextField(
                                     decoration: const InputDecoration(
-                                      hintText: "Enter Your Name",
+                                      // hintText: "Enter your username",
+                                      hintText: "aaa",
                                     ),
                                     enabled: !_status,
                                     autofocus: !_status,
@@ -197,76 +199,77 @@ class CreateProfilState extends State<CreateProfil>
                                 ),
                               ],
                             )),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 25.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    new Text(
-                                      'Email ID',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 2.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Flexible(
-                                  child: new TextField(
-                                    decoration: const InputDecoration(
-                                        hintText: "Enter Email ID"),
-                                    enabled: !_status,
-                                  ),
-                                ),
-                              ],
-                            )),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 25.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    new Text(
-                                      'Mobile',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 2.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Flexible(
-                                  child: new TextField(
-                                    decoration: const InputDecoration(
-                                        hintText: "Enter Mobile Number"),
-                                    enabled: !_status,
-                                  ),
-                                ),
-                              ],
-                            )),
+                        // Padding(
+                        //     padding: EdgeInsets.only(
+                        //         left: 25.0, right: 25.0, top: 25.0),
+                        //     child: new Row(
+                        //       mainAxisSize: MainAxisSize.max,
+                        //       children: <Widget>[
+                        //         new Column(
+                        //           mainAxisAlignment: MainAxisAlignment.start,
+                        //           mainAxisSize: MainAxisSize.min,
+                        //           children: <Widget>[
+                        //             new Text(
+                        //               'Email ID',
+                        //               style: TextStyle(
+                        //                   fontSize: 16.0,
+                        //                   fontWeight: FontWeight.bold),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ],
+                        //     )),
+                        // Padding(
+                        //     padding: EdgeInsets.only(
+                        //         left: 25.0, right: 25.0, top: 2.0),
+                        //     child: new Row(
+                        //       mainAxisSize: MainAxisSize.max,
+                        //       children: <Widget>[
+                        //         new Flexible(
+                        //           child: new TextField(
+                        //             decoration: const InputDecoration(
+                        //                 // hintText: "Enter Email ID"),
+                        //                 hintText: "aaa@epitech.eu"),
+                        //             enabled: !_status,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     )),
+                        // Padding(
+                        //     padding: EdgeInsets.only(
+                        //         left: 25.0, right: 25.0, top: 25.0),
+                        //     child: new Row(
+                        //       mainAxisSize: MainAxisSize.max,
+                        //       children: <Widget>[
+                        //         new Column(
+                        //           mainAxisAlignment: MainAxisAlignment.start,
+                        //           mainAxisSize: MainAxisSize.min,
+                        //           children: <Widget>[
+                        //             new Text(
+                        //               'Mobile',
+                        //               style: TextStyle(
+                        //                   fontSize: 16.0,
+                        //                   fontWeight: FontWeight.bold),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ],
+                        //     )),
+                        // Padding(
+                        //     padding: EdgeInsets.only(
+                        //         left: 25.0, right: 25.0, top: 2.0),
+                        //     child: new Row(
+                        //       mainAxisSize: MainAxisSize.max,
+                        //       children: <Widget>[
+                        //         new Flexible(
+                        //           child: new TextField(
+                        //             decoration: const InputDecoration(
+                        //                 hintText: "Enter Mobile Number"),
+                        //             enabled: !_status,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     )),
                         !_status ? _getActionButtons() : new Container(),
                       ],
                     ),

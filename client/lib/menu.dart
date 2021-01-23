@@ -124,7 +124,7 @@ void _selectedTab(int index) {
                 title: Text('Profile'),
               ),
             ]),
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Colors.white,
             // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
     );
   }
@@ -170,7 +170,8 @@ class CreateMenu extends StatelessWidget
             ),
           ]
         ),
-        backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+            backgroundColor: Colors.white,
+        // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 final String takePicture = """
   mutation takePicture(\$token: String!, \$imageName: String!, \$image: Upload!) {
@@ -128,7 +129,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
                         print("takePICTURE");
                     } else {
                       print("coudn't find picture");
-                      // dialog(context, "image not received");
+                      dialog(context, "image not received");
                       showDialog<AlertDialog>(
                         context: context,
                         builder: (BuildContext context) {
@@ -160,17 +161,19 @@ class CreateTakePictureState extends State<CreateTakePicture>
                         },
                     ),
                     floatingActionButton: FloatingActionButton(
-                        child: Icon(Icons.camera_alt),
+                        child: Icon(Icons.camera_alt, color: Colors.black),
+			backgroundColor: Colors.white,
                           // Provide an onPressed callback.
                         onPressed: () async {
                             try {
                                 await _initializeControllerFuture;
 
-                                final name = '${DateTime.now()}.png';
+                                final name = '${DateTime.now()}.jpg';
                                 path = join(
                                         (await getTemporaryDirectory()).path,
                                         name
                                 );
+                                // path = join("./assets/tmp/", name);
 
                                 print("PATH : ");
                                 print(path);
@@ -183,19 +186,38 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                 File pic = new File(path);
                                 var byteData = pic.readAsBytesSync();
 
+
+				print("SAVED :");
+				print(File(path).existsSync());
+
+
+				// Directory directory = await getTemporaryDirectory();
+				// if (!await directory.exists()) {
+        			//     await directory.create(recursive: true);
+				// }
+				///////saving file
+				final result = await ImageGallerySaver.saveFile(path, isReturnPathOfIOS: true); // check why it's failing
+				print("RESULT HERE :");
+				print(result);
+				/////////
+
                                 var multipartFile = MultipartFile.fromBytes(
                                     'photo',
                                     byteData,
-                                    filename: '${DateTime.now().second}.jpg',
+                                    filename: name,
                                     contentType: MediaType("image", "jpg"),
                                 );
 
                                 runMutation({"token": widget.token, "image": multipartFile, "imageName": name});
+				print("path EXIST?????? :");
+				print(File(path).existsSync());
                             } catch (e) {
                                 print(e);
                             }
                         },
                     ),
+		    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
                 );
               }
           ),

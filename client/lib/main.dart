@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
                     child: CreateLogin(camera: camera),
                   ),
                   Align (
-                    alignment: Alignment(-1.0, 1),
+                    alignment: Alignment(0.0, -0.75),
                     child: ButtonCreateUser(),
                   )
                 ]
