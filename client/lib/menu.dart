@@ -4,6 +4,9 @@ import 'package:camera/camera.dart';
 import './seePictures.dart';
 import './takePicture.dart';
 import './createUser.dart';
+// import './login.dart';
+import './profil.dart';
+
 
 final String logout = """
   mutation logout(\$token: String!) {
@@ -17,7 +20,118 @@ final String logout = """
   }
 """;
 
-class CreateMenu extends StatelessWidget {
+class Menu extends StatefulWidget
+{
+    final String token;
+    final CameraDescription camera;
+
+    Menu({Key key,
+                  @required this.token,
+                  @required this.camera,
+             }) : super(key: key);
+
+    @override
+    MenuState createState() => MenuState();
+}
+
+class MenuState extends State<Menu>
+{
+  List<Widget> originalList;
+  Map<int, bool> originalDic;
+  List<Widget> listScreens;
+  List<int> listScreensIndex;
+  int tabIndex = 1;
+
+  Widget men;
+  List<Widget> listMen;
+
+
+  @override
+  void initState() {
+    super.initState();
+    originalList = [
+      CreateMenu(token: widget.token, camera: widget.camera),
+      CreateTakePicture(token: widget.token, camera: widget.camera),
+      CreateProfil(token: widget.token),
+    ];
+    originalDic = {0: false, 1: true, 2: false};
+    listScreens = [originalList[1]];
+    listScreensIndex = [1];
+  }
+
+void _selectedTab(int index) {
+    if (originalDic[index] == false) {
+      listScreensIndex.add(index);
+      originalDic[index] = true;
+      listScreensIndex.sort();
+      listScreens = listScreensIndex.map((index) {
+        return originalList[index];
+      }).toList();
+    }
+
+    setState(() {
+      tabIndex = index;
+    });
+}
+
+
+    @override
+    void dispose()
+    {
+    // Clean up the controller when the widget is disposed.
+      super.dispose();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        // appBar: AppBar(
+        //     title: Text('Menu'),
+        //       actions: <Widget>[
+        //         IconButton(
+        //           icon: Icon(
+        //             Icons.photo_camera,
+        //             // color: Colors.white,
+        //           ),
+        //           onPressed: () {
+        //             Navigator.push(
+        //               context,
+        //               MaterialPageRoute(builder: (context) => CreateTakePicture(token: widget.token,
+        //                                              camera: widget.camera
+        //                   )),
+        //             );
+        //           },
+        //         ),
+        //       ],
+        //     ),
+
+        body: originalList[tabIndex],//IndexedStack(index: tabIndex, children: listScreens),
+        // body: CreateMenuButton(token: widget.token),
+        bottomNavigationBar: BottomNavigationBar(
+            currentIndex: tabIndex,
+            onTap: _selectedTab,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                title: Text('Menu'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.photo_camera),
+                title: Text('Camera'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                title: Text('Profile'),
+              ),
+            ]),
+            backgroundColor: Colors.white,
+            // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+    );
+  }
+}
+
+class CreateMenu extends StatelessWidget
+{
     final String token;
     final CameraDescription camera;
 
@@ -31,7 +145,9 @@ class CreateMenu extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
             title: Text('Menu'),
-              actions: <Widget>[
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            actions: <Widget>[
                 IconButton(
                   icon: Icon(
                     Icons.photo_camera,
@@ -40,9 +156,7 @@ class CreateMenu extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CreateTakePicture(token: token,
-                                                     camera: camera
-                          )),
+                      MaterialPageRoute(builder: (context) => CreateTakePicture(token: token, camera: camera)),
                     );
                   },
                 ),
@@ -56,9 +170,8 @@ class CreateMenu extends StatelessWidget {
             ),
           ]
         ),
-        backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
-        // body: Center(child: RawWords()),
-      // home: MyHomePage(title: 'Flutter Demeau Home Page'),
+            backgroundColor: Colors.white,
+        // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
     );
   }
 }
@@ -79,7 +192,7 @@ class CreateMenuButtonState extends State<CreateMenuButton>
 
     void hasClicked()
     {
-      this.state = true;
+        this.state = true;
     }
 
     final mc1 = TextEditingController();
@@ -88,9 +201,9 @@ class CreateMenuButtonState extends State<CreateMenuButton>
     @override
     void dispose() {
     // Clean up the controller when the widget is disposed.
-      mc1.dispose();
-      mc2.dispose();
-      super.dispose();
+        mc1.dispose();
+        mc2.dispose();
+        super.dispose();
     }
 
     @override
@@ -113,7 +226,7 @@ class CreateMenuButtonState extends State<CreateMenuButton>
                       print("on completed");
                       print(resultData.data);
                       print("LOGOUT");
-                      Navigator.pop(context);
+                      Navigator.maybePop(context);
                     }
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {

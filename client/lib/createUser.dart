@@ -59,7 +59,7 @@ AlertDialog a(context, mssg) {
         TextButton(
           child: Text("Close"),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).maybePop();
           },
         ),
       ],
@@ -68,11 +68,20 @@ AlertDialog a(context, mssg) {
 
 class CreateUser extends StatelessWidget
 {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Create User')),
+        appBar: AppBar(
+            title: Text('Create User'),
+            centerTitle: true,
+            leading: IconButton(
+                icon:Icon(
+                      Icons.arrow_back,
+                      color: Colors.black
+                ),
+                onPressed:() => Navigator.maybePop(context, false),
+            ),
+        ),
         body: Column(
           children: [
             Align (
@@ -81,7 +90,9 @@ class CreateUser extends StatelessWidget
             ),
           ]
         ),
-        backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+        // backgroundColor: Theme.of(context).primaryColor,
+        // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+        backgroundColor: Colors.white,
         // body: Center(child: RawWords()),
       // home: MyHomePage(title: 'Flutter Demeau Home Page'),
     );
@@ -92,7 +103,6 @@ class CreateUser extends StatelessWidget
 
 class CreateUserForm extends StatefulWidget
 {
-
   @override
   CreateUserFormState createState() => CreateUserFormState();
 }
@@ -102,12 +112,14 @@ class CreateUserFormState extends State<CreateUserForm>
     final _id = GlobalKey<FormState>();
     bool state = false;
 
-    void hasClicked() {
-      this.state = true;
+    void hasClicked()
+    {
+        this.state = true;
     }
 
-    void quit(context) {
-      Navigator.pop(context);
+    void quit(context)
+    {
+        Navigator.maybePop(context);
     }
 
     final mc1 = TextEditingController();
@@ -116,9 +128,9 @@ class CreateUserFormState extends State<CreateUserForm>
     @override
     void dispose() {
     // Clean up the controller when the widget is disposed.
-      mc1.dispose();
-      mc2.dispose();
-      super.dispose();
+        mc1.dispose();
+        mc2.dispose();
+        super.dispose();
     }
 
     @override
@@ -127,92 +139,154 @@ class CreateUserFormState extends State<CreateUserForm>
             key: _id,
             child: Column(
               children: <Widget> [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'username',
+                Padding(
+                    padding: EdgeInsets.only(
+                        left: 25.0, right: 25.0, top: 25.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            new Text(
+                              'Username',
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your username';
-                    }
-                    return null;
-                  },
-                  controller: mc1,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'password',
+                  Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                          hintText: 'Enter your username',
+                      ),
+                      validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter your username';
+                          }
+                          return null;
+                      },
+                      controller: mc1,
+                    ),
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                  controller: mc2,
-                  obscureText: true,
-                ),
-                Mutation(
-                  options: MutationOptions(
-                    documentNode: gql(createUser),
-                    update: (Cache cache, QueryResult result) {
-                      return cache;
-                    },
-                    onError: (result) {
-                      print("error");
-                      print(result);
-                    },
-                    onCompleted: (dynamic resultData) {
-                      print("on completed");
-                      print(resultData);
-                      print(resultData.data);
-                      if (resultData != null && resultData.data["createUser"]["ok"] == true) {
-                        print(resultData.data["createUser"]["ok"]);
-                        quit(context);
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: 25.0, right: 25.0, top: 25.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            new Text(
+                              'Password',
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                          hintText: 'Enter your password',
+                      ),
+                      validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                      },
+                      controller: mc2,
+                      obscureText: true,
+                    ),
+                  ),
+                  Mutation(
+                    options: MutationOptions(
+                      documentNode: gql(createUser),
+                      update: (Cache cache, QueryResult result) {
+                        return cache;
+                      },
+                      onError: (result) {
+                        print("error");
+                        print(result);
+                      },
+                      onCompleted: (dynamic resultData) {
+                        print("on completed");
+                        print(resultData.data);
+                        if (resultData != null && resultData.data["createUser"] != null && resultData.data["createUser"]["ok"] == true) {
+                          print(resultData.data["createUser"]["ok"]);
+                          quit(context);
+                        } else {
+                          print("user already exist");
+                          showDialog<AlertDialog>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return a(context, "User already exists");
+                          });
+                        }
                       }
-                      else if (resultData != null && resultData.data["createUser"]["ok"] == false) {
-                        print("icci");
-                        showDialog<AlertDialog>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return a(context, "User already exists");
-                        });
-                      }
+                    ),
+                    builder: (RunMutation runMutation, QueryResult result) {
+                      return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Color.fromRGBO(0, 102, 0, 0.6),
+                            ),
+                            onPressed: () {
+                              runMutation({"username": mc1.text, "password": mc2.text});
+                            },
+                            child: Text('Create Account'),
+                          )
+                      );
                     }
-                  ),
-                  builder: (RunMutation runMutation, QueryResult result) {
-                    return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            runMutation({"username": mc1.text, "password": mc2.text});
-                          },
-                          child: Text('Create Account'),
-                        )
-                    );
-                  }
-                )
-              ]
-            )
-          );
-
+                  )
+                ]
+              )
+      );
     }
-
-
 }
 
 class ButtonCreateUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return ElevatedButton(
+      return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                               shape: RoundedRectangleBorder(
+                                 // borderRadius: BorderRadius.circular(20),
+                                 borderRadius: BorderRadius.circular(7),
+                               ),
+                               primary: Colors.white,
+                               onPrimary: Colors.green,
+                               textStyle: TextStyle(
+                                    // fontSize: 30,
+                                    fontWeight: FontWeight.bold
+                               ),
+                               minimumSize: Size(350, 40),
+                          ),
               onPressed: () {
                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateUser()),
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateUser()),
                 );
               },
               child: Text('Sign Up'),
+              )
             );
   }
 }

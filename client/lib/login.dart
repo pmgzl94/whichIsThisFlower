@@ -26,7 +26,7 @@ AlertDialog dialog(context, mssg) {
         TextButton(
             child: Text("Close"),
             onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).maybePop();
             },
         ),
      ],
@@ -74,31 +74,79 @@ class CreateLoginState extends State<CreateLogin>
             key: _id,
             child: Column(
               children: <Widget> [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'username',
+                Padding(
+                    padding: EdgeInsets.only(
+                        left: 25.0, right: 25.0, top: 50.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            new Text(
+                              'Username',
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your username';
-                    }
-                    return null;
-                  },
-                  controller: mc1,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'password',
+                  Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                          hintText: 'Enter your username',
+                      ),
+                      validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter your username';
+                          }
+                          return null;
+                      },
+                      controller: mc1,
+                    ),
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                  controller: mc2,
-                  obscureText: true,
-                ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: 25.0, right: 25.0, top: 25.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            new Text(
+                              'Password',
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0, bottom: 20.0),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                          hintText: 'Enter your password',
+                      ),
+                      validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                      },
+                      controller: mc2,
+                      obscureText: true,
+                    ),
+                  ),
                 Mutation(
                   options: MutationOptions(
                     documentNode: gql(login),
@@ -112,14 +160,16 @@ class CreateLoginState extends State<CreateLogin>
                     onCompleted: (dynamic resultData) {
                       print("on completed");
                       print(resultData.data);
-                      if (resultData != null) {
+                      if (resultData != null && resultData.data["auth"] != null && resultData.data["auth"]["accessToken"] != null) {
                         print(resultData.data["auth"]["accessToken"]);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => CreateMenu(token: resultData.data["auth"]["accessToken"],
+                          MaterialPageRoute(builder: (context) => Menu(token: resultData.data["auth"]["accessToken"],
                                                      camera: widget.camera
                           )),
                         );
+                        print("RESETING");
+                        _id.currentState?.reset();
                       } else {
                         print("User doesn't exist");
                         showDialog<AlertDialog>(
@@ -132,8 +182,16 @@ class CreateLoginState extends State<CreateLogin>
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {
                     return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25),
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                               shape: RoundedRectangleBorder(
+                                 borderRadius: BorderRadius.circular(20),
+                                 // borderRadius: BorderRadius.circular(10),
+                               ),
+                               minimumSize: Size(350, 40),
+                          //      primary: Color.fromRGBO(0, 102, 0, 0.6),
+                          ),
                           onPressed: () {
                             runMutation({"username": mc1.text, "password": mc2.text});
                           },
@@ -148,15 +206,15 @@ class CreateLoginState extends State<CreateLogin>
     }
 }
 
-class ButtonCreateLogin extends StatelessWidget {
-
+class ButtonCreateLogin extends StatelessWidget
+{
   @override
   Widget build(BuildContext context) {
       return ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateLogin()),
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateLogin()),
                 );
               },
               child: Text('Login'),

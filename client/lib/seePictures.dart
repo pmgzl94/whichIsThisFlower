@@ -53,18 +53,14 @@ class CreateSeePictureButtonState extends State<CreateSeePictureButton>
 
     void hasClicked()
     {
-      this.state = true;
+        this.state = true;
     }
 
-    final mc1 = TextEditingController();
-    final mc2 = TextEditingController();
 
     @override
     void dispose() {
     // Clean up the controller when the widget is disposed.
-      mc1.dispose();
-      mc2.dispose();
-      super.dispose();
+        super.dispose();
     }
 
     @override
@@ -87,7 +83,7 @@ class CreateSeePictureButtonState extends State<CreateSeePictureButton>
                       print("on completed");
                       print(resultData.data);
                       print("SEE PICTURES");
-                      Navigator.pop(context);
+                      Navigator.maybePop(context);
                     }
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {

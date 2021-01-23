@@ -17,9 +17,7 @@ Future<void> main() async {
   final cameras = await availableCameras();
   final firstCamera = cameras.first;
 
-  runApp(MyApp(
-        camera: firstCamera
-        ));
+  runApp(MyApp(camera: firstCamera));
   print("hello");
 }
 
@@ -43,24 +41,36 @@ class MyApp extends StatelessWidget {
             title: 'What is this Flower',
             theme: ThemeData(
               primarySwatch: Colors.green,
+              // primarySwatch: Colors.white,
+              appBarTheme: AppBarTheme(
+                    color: Colors.white,
+                    // color: Color.fromRGBO(242, 242, 242, 0.6),
+              ),
+              primaryTextTheme: TextTheme(
+                  headline6: TextStyle(
+                      color: Colors.black
+                  )
+              ),
             ),
             home: Scaffold(
-              appBar: AppBar(title: Text('Login')),
+              appBar: AppBar(
+                      title: Text('Login'),
+                      centerTitle: true,
+              ),
               body: Column(
                 children: [
                   Align (
                     alignment: Alignment(0.0, -0.75),
-                    child: CreateLogin(
-                           camera: camera
-                           ),
+                    child: CreateLogin(camera: camera),
                   ),
                   Align (
-                    alignment: Alignment(-1.0, 1),
+                    alignment: Alignment(0.0, -0.75),
                     child: ButtonCreateUser(),
                   )
                 ]
               ),
-              backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+              backgroundColor: Colors.white,
+              // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
               // body: Center(child: RawWords()),
             ),
           )
