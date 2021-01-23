@@ -83,7 +83,7 @@ class CreateSeePictureButtonState extends State<CreateSeePictureButton>
                       print("on completed");
                       print(resultData.data);
                       print("SEE PICTURES");
-                      Navigator.pop(context);
+                      Navigator.maybePop(context);
                     }
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {

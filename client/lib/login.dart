@@ -26,7 +26,7 @@ AlertDialog dialog(context, mssg) {
         TextButton(
             child: Text("Close"),
             onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).maybePop();
             },
         ),
      ],

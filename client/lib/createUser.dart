@@ -59,7 +59,7 @@ AlertDialog a(context, mssg) {
         TextButton(
           child: Text("Close"),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).maybePop();
           },
         ),
       ],
@@ -79,7 +79,7 @@ class CreateUser extends StatelessWidget
                       Icons.arrow_back,
                       color: Colors.black
                 ),
-                onPressed:() => Navigator.pop(context, false),
+                onPressed:() => Navigator.maybePop(context, false),
             ),
         ),
         body: Column(
@@ -119,7 +119,7 @@ class CreateUserFormState extends State<CreateUserForm>
 
     void quit(context)
     {
-        Navigator.pop(context);
+        Navigator.maybePop(context);
     }
 
     final mc1 = TextEditingController();

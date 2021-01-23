@@ -226,7 +226,7 @@ class CreateMenuButtonState extends State<CreateMenuButton>
                       print("on completed");
                       print(resultData.data);
                       print("LOGOUT");
-                      Navigator.pop(context);
+                      Navigator.maybePop(context);
                     }
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {

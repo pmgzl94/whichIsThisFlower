@@ -41,7 +41,7 @@ AlertDialog dialog(context, mssg)
         TextButton(
             child: Text("Close"),
             onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).maybePop();
             },
         ),
      ],
@@ -146,7 +146,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
                           builder: (context) => DisplayPictureScreen(imagePath: path, imageName: res),
                         ),
                     );
-                    // Navigator.pop(context);
+                    // Navigator.maybePop(context);
                   }
             ),
             builder: (RunMutation runMutation, QueryResult result) {
@@ -239,13 +239,13 @@ class DisplayPictureScreen extends StatelessWidget {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                title: Text(imageName)
+                title: Text(imageName),
                 leading: IconButton(
                   icon:Icon(
                       Icons.arrow_back,
                       color: Colors.black
                   ),
-                  onPressed:() => Navigator.pop(context, false),
+                  onPressed:() => Navigator.maybePop(context, false),
                 ),
             ),
             // The image is stored as a file on the device. Use the `Image.file`

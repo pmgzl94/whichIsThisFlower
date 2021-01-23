@@ -413,7 +413,7 @@ class CreateProfilButtonState extends State<CreateProfilButton>
                       print("on completed");
                       print(resultData.data);
                       print("LOGOUT");
-                      Navigator.pop(context);
+                      Navigator.maybePop(context);
                     }
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {

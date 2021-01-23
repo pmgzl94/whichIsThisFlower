@@ -93,7 +93,7 @@ class TakePicture(graphene.Mutation):
     class Arguments(object):
         token = graphene.String()
         imageName = graphene.String()
-        image = Upload(required=True)
+        image = Upload()
 
     ok = graphene.Field(ObjectTypes.ProtectedUnion)
     flowerName = graphene.Field(ObjectTypes.ProtectedUnion)
@@ -103,18 +103,13 @@ class TakePicture(graphene.Mutation):
     @mutation_jwt_required
     def mutate(cls, _, info, imageName, image, **kwargs):
         print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
-        # newImage = bytes(image, 'utf-8').decode()
         try:
-            file = open("./cache/" + imageName, "w")
-            file.write("oo")
-            # file.write(image.read().decode())
-            # image.read()
-            # image.read().decode()
-            # file.write(base64.decode(image))
-            # file.write(newImage)
+            file = open("./cache/" + imageName, "wb")
+            file.write(image.read())
             file.close()
+            print("IMAGE WRITEN")
         except:
-            print("aa")
+            print("FAILED TO WRITE IMAGE")
 
         flowerName = "It is not a flower" # function to get the name of the flower
         username = get_jwt_identity()
