@@ -9,6 +9,21 @@ that same feature map has 256 filters we get: 1x1x256, 2x2x256, 4x4x256
 then all of these element are concatenated like that: 4x4x256 ++ 2x2x256 ++ 1x1x256
 then we get a 1x1x4096 input for the classifier.
 
+## training spp
+
+according to the previous link, it underlined that theoretically a basic backprop for training the model should suffice but as they use a gpu for the training, it 
+
+propose two different technique to train the model:
+    - single size training (so we have to crop the image)
+    - multi size training
+
+as the result, it shows that multi size training improve the model's accuracy.
+
+## model
+
+<!-- based on the previous link, we will use the spp in the last layer, and we will use the overfeat 7 model though the zf5 model which is smaller and learn faster. -->
+start by implementing the zf5 model.
+
 ## sliding window to get feature map
 
 I used numpy.lib.strides_tricks.as_strided
@@ -17,6 +32,7 @@ link: https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.a
 each numpy array has a stride for example an array of shape (4, 3) as a stride of (24, 8), 8 because for moving an element to another and 24 to get to the next row.
 
 then I use the dot product between the filter and the sliced image.
+
 
 ## track input of the choosen element during pooling
 
