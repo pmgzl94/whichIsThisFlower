@@ -1,5 +1,7 @@
 from flask import Flask
-import graphene
+# import graphene
+# from graphene_file_upload.flask import FileUploadGraphQLView
+
 from flask_graphql_auth import GraphQLAuth
 from flask_graphql import GraphQLView
 from flask_jwt import JWT
@@ -7,6 +9,7 @@ from graphql import GraphQLError
 import SessionManager
 
 from schema import schema
+from graphene_file_upload.flask import FileUploadGraphQLView
 
 ############################ TODO comment, only used to test on browser
 from flask import Flask
@@ -24,9 +27,17 @@ app.config["ACCESS_EXP_LENGTH"] = 10
 
 auth = GraphQLAuth(app)
 
-app.add_url_rule(
-    "/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True)
-)
+# app.add_url_rule(
+#     "/graphql", view_func=GraphQLView.as_view(
+#         "graphql", schema=schema, graphiql=True
+#     )
+# )
 
+app.add_url_rule(
+    '/graphql',
+    view_func=FileUploadGraphQLView.as_view(
+        "graphql", schema=schema, graphiql=True
+    )
+)
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0")

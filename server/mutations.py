@@ -13,6 +13,11 @@ import db
 import sys
 from graphql import GraphQLError
 
+import cnn
+
+from base64 import b64encode, b64decode
+from graphene_file_upload.scalars import Upload
+
 #mutation object
 # https://docs.graphene-python.org/en/latest/types/mutations/
 
@@ -26,7 +31,7 @@ class CreateUser(graphene.Mutation):
     person = graphene.Field(lambda: ObjectTypes.User)
 
     def mutate(root, info, username, password):
-        print("[MUTATION]: [CreateUser]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
+        print("\n[MUTATION]: [CreateUser]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
 
         person = ObjectTypes.User(username=username)
         ok = True
@@ -50,7 +55,7 @@ class AuthMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, _, info, username, password):
-        print("[MUTATION]: [AuthMutation]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
+        print("\n[MUTATION]: [AuthMutation]: mutate: user: {}, password: {}".format(username, password), file=sys.stderr)
 
         try:
             dbUser = db.dbMan.getUser(username)
@@ -70,6 +75,86 @@ class AuthMutation(graphene.Mutation):
             refresh_token=refrshTok,
         )
 
+
+class LogoutMutation(graphene.Mutation):
+    class Arguments(object):
+        token = graphene.String()
+
+    ok = graphene.Field(ObjectTypes.ProtectedUnion)
+
+    @classmethod
+    @mutation_jwt_required
+    def mutate(cls, _, info):
+        print("\n[MUTATION]: [LogoutMutation]: mutate", file=sys.stderr)
+        SessionManager.session.removeSession(get_jwt_identity())
+        return LogoutMutation(ok=ObjectTypes.IsOk(ok=True))
+
+import base64
+
+class TakePicture(graphene.Mutation):
+    class Arguments(object):
+        token = graphene.String()
+        imageName = graphene.String()
+        image = Upload(required=True)
+
+    ok = graphene.Field(ObjectTypes.ProtectedUnion)
+    flowerName = graphene.Field(ObjectTypes.ProtectedUnion)
+    # flowerName = graphene.Field(lambda: ObjectTypes.GetFlowerName)
+
+    @classmethod
+    @mutation_jwt_required
+    def mutate(cls, _, info, imageName, image, **kwargs):
+        print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
+        # newImage = bytes(image, 'utf-8').decode()
+        fullpath = "./cache/" + imageName
+        file = open(fullpath, "w")
+        file.write(image)
+        # file.write(base64.decode(image))
+        # file.write(newImage)
+        file.close()
+
+        flowerName = cnn.models.zf5model(fullpath) # function to get the name of the flower
+# =======
+#         try:
+#             file = open("./cache/" + imageName, "w")
+#             file.write("oo")
+#             # file.write(image.read().decode())
+#             # image.read()
+#             # image.read().decode()
+#             # file.write(base64.decode(image))
+#             # file.write(newImage)
+#             file.close()
+#         except:
+#             print("aa")
+
+#         flowerName = "It is not a flower" # function to get the name of the flower
+# >>>>>>> b66d1d930b5f65a484abb92953e1fd5a05f0fa7e
+        username = get_jwt_identity()
+        comment = "none"
+
+        db.dbMan.addImage(imageName, image, username, flowerName, comment)
+        return TakePicture(ok=ObjectTypes.IsOk(ok=True), flowerName=ObjectTypes.GetFlowerName(flowerName=flowerName))
+
+
+# class UploadMutation(graphene.Mutation):
+#     class Arguments:
+#         file = Upload(required=True)
+
+#     success = graphene.Boolean()
+
+#     def mutate(self, info, file, **kwargs):
+#         # do something with your file
+
+#         return UploadMutation(success=True)
+
+
+
+
+
+
+
+
+
 #example of protected mutation
 class ProtectedMutation(graphene.Mutation):
     class Arguments(object):
@@ -86,21 +171,6 @@ class ProtectedMutation(graphene.Mutation):
         return ProtectedMutation(
             message=ObjectTypes.MessageField(message="Protected mutation works")
         )
-
-
-#example of protected mutation
-class LogoutMutation(graphene.Mutation):
-    class Arguments(object):
-        token = graphene.String()
-
-    ok = graphene.Field(ObjectTypes.ProtectedUnion)
-
-    @classmethod
-    @mutation_jwt_required
-    def mutate(cls, _, info):
-        print("[MUTATION]: [LogoutMutation]: mutate", file=sys.stderr)
-        SessionManager.session.removeSession(get_jwt_identity())
-        return LogoutMutation(ok=ObjectTypes.IsOk(ok=True))
 
 
 class OtherProtectedMutation(graphene.Mutation):

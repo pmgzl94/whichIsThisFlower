@@ -10,10 +10,10 @@ class TestFcNetwork(unittest.TestCase):
         pathdir = "./tensorfiles"
         filename = "perceptest1"
         fullypath = pathdir + "/" + filename
-        if not os.path.isdir(os.path.join(pathdir, filename + ".bs1.npy")):
+        if not os.path.exists(os.path.join(pathdir, filename + ".bs1.npy")):
             TensorFileManager("./tensorfiles").save(filename + ".bs1", numpy.array([[0.4]]))
             TensorFileManager("./tensorfiles").save(filename + ".ws1", numpy.array([[1.1]]))
-        net = fcn.FcLayer(arch=[1, 1], transfer_learning_file=filename)
+        net = fcn.FCLayer(arch=[1, 1], load_path=filename)
         expected_res = fcn.sigmoid(0.4 + 1.1)
         res = net.compute(numpy.array([1]))
 
@@ -24,7 +24,7 @@ class TestFcNetwork(unittest.TestCase):
         pathdir = "./tensorfiles"
         filename = "shallow_network1"
         fullypath = pathdir + "/" + filename
-        if not os.path.isdir(os.path.join(pathdir, filename + ".bs1.npy")):
+        if not os.path.exists(os.path.join(pathdir, filename + ".bs1.npy")):
             # ws = [[numpy.array([1, 0.7]), numpy.array([0.1, 0.8]), numpy.array([0.4, 0.9])], [numpy.array([0.9, 0.7, 0.1])]]
             ws1 = numpy.array([[1, 0.7], [0.1, 0.8], [0.4, 0.9]])
             ws2 = numpy.array([[0.9, 0.7, 0.1]])
@@ -36,7 +36,7 @@ class TestFcNetwork(unittest.TestCase):
             TensorFileManager("./tensorfiles").save(filename + ".bs2", bs2)
             TensorFileManager("./tensorfiles").save(filename + ".ws1", ws1)
             TensorFileManager("./tensorfiles").save(filename + ".ws2", ws2)
-        net = fcn.FcLayer(arch=[2, 3, 1], transfer_learning_file=filename)
+        net = fcn.FCLayer(arch=[2, 3, 1], load_path=filename)
 
         input = numpy.array([0.3, 0.4])
         expected_res = 0.7406534729647368
@@ -49,7 +49,7 @@ class TestFcNetwork(unittest.TestCase):
         pathdir = "./tensorfiles"
         filename = "online_learning1"
         fullypath = pathdir + "/" + filename
-        if not os.path.isdir(os.path.join(pathdir, filename + ".bs1.npy")):
+        if not os.path.exists(os.path.join(pathdir, filename + ".bs1.npy")):
             # print("la2")
             ws1 = numpy.array([[0.2, 0.3], [0.4, 0.5], [1.1, 0.1]])
             # print(f"w = {ws1.shape}")
@@ -63,20 +63,22 @@ class TestFcNetwork(unittest.TestCase):
             TensorFileManager("./tensorfiles").save(filename + ".bs2", bs2)
             TensorFileManager("./tensorfiles").save(filename + ".ws1", ws1)
             TensorFileManager("./tensorfiles").save(filename + ".ws2", ws2)
-        net = fcn.FcLayer(arch=[2, 3, 2], transfer_learning_file=filename)
+        net = fcn.FCLayer(arch=[2, 3, 2], load_path=filename)
 
         input = numpy.array([0.1, 0.2])
         expected_res = numpy.array([1,  0])
-        expected_delta = numpy.array([-0.00601069,  0.00878729,  0.00173201])
         
-        net.learn(input, expected_res)
+        previous_delta = numpy.array([-0.00601069,  0.00878729,  0.00173201])
+        ws1 = numpy.array([[0.2, 0.3], [0.4, 0.5], [1.1, 0.1]])
+
+        expected_delta = numpy.dot(previous_delta, ws1)
+        
+        net.compute(input, learn=True)
+        net.learn(expected_res)
         returnedDelta = net.getLastDelta()
-
+        
         res  = numpy.isclose(returnedDelta, expected_delta, atol=1e-5)
-        # print(returnedDelta)
-        # print(expected_delta)
-        # print(res.all())
-
+        
         self.assertEqual(res.all(), True)
 
     # def test_list_fraction(self):
