@@ -1,7 +1,7 @@
 import numpy
 
 class AdamConv():
-    def __init__(self, alpha=0.001, b1=0.9, b2=0.999, epsilon=1e-08, wshape, bshape)
+    def __init__(self, wshape, bshape, alpha=0.001, b1=0.9, b2=0.999, epsilon=1e-08):
         self.t = 1
         self.mw = numpy.zeros(wshape)
         self.vw = numpy.zeros(wshape)
@@ -38,31 +38,35 @@ class AdamConv():
         return new_ws, new_bs
 
 class AdamFC():
-    def __init__(self, alpha=0.001, b1=0.9, b2=0.999, epsilon=1e-08, ws, bs)
-        self.mw = []
-        self.vw = []
-        
-        new_mb = []
-        new_vb = []
-
-        ## init momentums (moving average and squarred grad)
-        for i in range(len(ws)):
-            n_mw = numpy.zeros(ws[i].shape)
-            new_mw.append(n_mw)
-
-            n_vw = numpy.zeros(bs[i].shape)
-            new_vw.append(n_vw)
-
-            n_mb = numpy.zeros(ws[i].shape)
-            new_mb.append(n_mb)
-
-            n_vb = numpy.zeros(bs[i].shape)
-            new_vb.append(n_vb)
+    def __init__(self, alpha=0.001, b1=0.9, b2=0.999, epsilon=1e-08):
+        self.t = 1
 
         self.b1 = b1
         self.b2 = b2
         self.alpha = alpha
         self.eps = epsilon
+
+    def setMomentumVars(self, ws, bs):
+        
+        self.mw = []
+        self.vw = []
+        
+        self.mb = []
+        self.vb = []
+        
+        ## init momentums (moving average and squarred grad)
+        for i in range(len(ws)):
+            n_mw = numpy.zeros(ws[i].shape)
+            self.mw.append(n_mw)
+
+            n_vw = numpy.zeros(ws[i].shape)
+            self.vw.append(n_vw)
+
+            n_mb = numpy.zeros(bs[i].shape)
+            self.mb.append(n_mb)
+
+            n_vb = numpy.zeros(bs[i].shape)
+            self.vb.append(n_vb)
 
     def generic_update(self, m, v, g, curr_val):
         
@@ -86,14 +90,14 @@ class AdamFC():
             # new_m[i] = self.b1 * m[i] + (1 - self.b1) * g[i]
             # new_v[i] = self.b2 * v[i] + (1 - self.b2) * g[i]**2
             mh = new_m[i] / (1 - b1t)
-            vh = new_m[i] / (1 - b1t)
+            vh = new_v[i] / (1 - b2t)
             mhat.append(mh)
             vhat.append(vh)
 
         updated_params = []
 
         for i in range(nb_layer):
-            u_val = curr_val - self.alpha * mhat[i] / (numpy.sqrt(vhat[i]) + self.eps)
+            u_val = curr_val[i] - self.alpha * mhat[i] / (numpy.sqrt(vhat[i]) + self.eps)
             updated_params.append(u_val)
 
         return updated_params, new_m, new_v
