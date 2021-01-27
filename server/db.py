@@ -104,7 +104,7 @@ class dbManager():
             raise Exception("[DBMANAGER]: [addImage]: image alredy exist")
 
         doc = {"imageName": imageName,
-               "image": image,
+               "image": "oo",#image,
                "user": user,
                "flowerName": flowerName,
                "comment": comment}

@@ -1,11 +1,11 @@
-from mnist import mnist_loader
+# from mnist import mnist_loader
 import image_loader as iml
 import os
 import numpy
 
-def load_mnist():
-    train_data, validation_data, testdata = mnist_loader.load_data_wrapper("./mnist/")
-    return train_data
+# def load_mnist():
+#     train_data, validation_data, testdata = mnist_loader.load_data_wrapper("./mnist/")
+#     return train_data
 
 linker = {  "daisy": numpy.array([1, 0, 0, 0, 0]),
             "dandelion": numpy.array([0, 1, 0, 0, 0]), 
@@ -63,6 +63,7 @@ def load_some_flowers(training_data_amount, test_data_amount, crop_size=(0, 0, 2
     subdirs = ["daisy", "dandelion", "rose", "sunflower", "tulip"]
     
     #around 4300 pictures
+    #number of flowers = 4323
     if test_data_amount + training_data_amount > 4300:
         raise Exception("There is only 4300 pictures in the dataset")
 
@@ -71,7 +72,7 @@ def load_some_flowers(training_data_amount, test_data_amount, crop_size=(0, 0, 2
     
     image_per_flower = (test_data_amount + training_data_amount) // 5
 
-    print(image_per_flower)
+    # print(image_per_flower)
 
     for subdir in subdirs:
         path = "./dataset/" + subdir

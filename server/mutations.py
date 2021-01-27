@@ -11,8 +11,15 @@ from flask_graphql_auth import (
 import SessionManager
 import db
 import sys
+sys.path.insert(1, './cnn/')
+# sys.path.insert(2, './cnn/mnist')
+
+import cnn.models
+
+
 from graphql import GraphQLError
 
+# from cnn.models
 import cnn
 
 from base64 import b64encode, b64decode
@@ -95,7 +102,7 @@ class TakePicture(graphene.Mutation):
     class Arguments(object):
         token = graphene.String()
         imageName = graphene.String()
-        image = Upload(required=True)
+        image = Upload()
 
     ok = graphene.Field(ObjectTypes.ProtectedUnion)
     flowerName = graphene.Field(ObjectTypes.ProtectedUnion)
@@ -105,30 +112,17 @@ class TakePicture(graphene.Mutation):
     @mutation_jwt_required
     def mutate(cls, _, info, imageName, image, **kwargs):
         print("\n[MUTATION]: [TakePicture]: mutate", file=sys.stderr)
-        # newImage = bytes(image, 'utf-8').decode()
-        fullpath = "./cache/" + imageName
-        file = open(fullpath, "w")
-        file.write(image)
-        # file.write(base64.decode(image))
-        # file.write(newImage)
-        file.close()
+        fullPath = "./cache/" + imageName
+        try:
+            file = open(fullPath, "wb")
+            file.write(image.read())
+            file.close()
+            print("IMAGE WRITEN")
+        except:
+            print("FAILED TO WRITE IMAGE")
 
-        flowerName = cnn.models.zf5model(fullpath) # function to get the name of the flower
-# =======
-#         try:
-#             file = open("./cache/" + imageName, "w")
-#             file.write("oo")
-#             # file.write(image.read().decode())
-#             # image.read()
-#             # image.read().decode()
-#             # file.write(base64.decode(image))
-#             # file.write(newImage)
-#             file.close()
-#         except:
-#             print("aa")
-
-#         flowerName = "It is not a flower" # function to get the name of the flower
-# >>>>>>> b66d1d930b5f65a484abb92953e1fd5a05f0fa7e
+        flowerName = cnn.models.zf5model(fullPath)
+        # flowerName = "It is not a flower" # remove
         username = get_jwt_identity()
         comment = "none"
 

@@ -2,11 +2,12 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 
-String typenameDataIdFromObject(Object object) {
+String typenameDataIdFromObject(Object object)
+{
   if (object is Map<String, Object> &&
       object.containsKey('__typename') &&
       object.containsKey('id')) {
-    return "${object['__typename']}/${object['id']}";
+          return "${object['__typename']}/${object['id']}";
   }
   return null;
 }
@@ -15,8 +16,7 @@ final OptimisticCache cache = OptimisticCache(
   dataIdFromObject: typenameDataIdFromObject,
 );
 
-ValueNotifier<GraphQLClient> clientFor(
-                { @required String uri, String subscriptionUri, })
+ValueNotifier<GraphQLClient> clientFor({ @required String uri, String subscriptionUri})
 {
   Link link = HttpLink(uri: uri);
 
@@ -42,11 +42,11 @@ ValueNotifier<GraphQLClient> clientFor(
 }
 
 String getUri() {
-  print("uri is 10.0.0.34:5000/graphql");
-  return "http://10.0.0.34:5000/graphql";
-  // if (Platform.isAndroid) {
-  //   return "http://10.0.2.2:5000/graphql";
-  // } else {
-  //   return "http://localhost:5000/graphql";
-  // }
+  // print("uri is 10.0.0.34:5000/graphql");
+  // return "http://10.0.0.34:5000/graphql";
+  if (Platform.isAndroid) {
+    return "http://10.0.2.2:5000/graphql";
+  } else {
+    return "http://localhost:5000/graphql";
+  }
 }

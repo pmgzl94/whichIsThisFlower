@@ -7,6 +7,7 @@ import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 final String takePicture = """
   mutation takePicture(\$token: String!, \$imageName: String!, \$image: Upload!) {
@@ -40,7 +41,7 @@ AlertDialog dialog(context, mssg)
         TextButton(
             child: Text("Close"),
             onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).maybePop();
             },
         ),
      ],
@@ -76,7 +77,6 @@ class CreateTakePictureState extends State<CreateTakePicture>
                             widget.camera,
                             ResolutionPreset.medium,
         );
-
         _initializeControllerFuture = _controller.initialize();
     }
 
@@ -92,6 +92,8 @@ class CreateTakePictureState extends State<CreateTakePicture>
       return Scaffold(
         appBar: AppBar(
             title: Text('Camera'),
+            automaticallyImplyLeading: false,
+            centerTitle: true,
             //   actions: <Widget>[
             //     IconButton(
             //       icon: Icon(
@@ -107,101 +109,125 @@ class CreateTakePictureState extends State<CreateTakePicture>
             //     ),
             //   ],
             ),
-            body: Mutation(
-              options: MutationOptions(
-                  documentNode: gql(takePicture),
-                  update: (Cache cache, QueryResult result) {
-                      return cache;
-                  },
-                  onError: (result) {
-                      print("error");
-                      print(result);
-                  },
-                  onCompleted: (dynamic resultData) {
-                      print("on completed");
-                      print(resultData.data);
-		      String res = "It is not a flower";
-                      if (resultData != null && resultData.data["takePicture"] != null && resultData.data["takePicture"]["flowerName"] != null) {
-                          print(resultData.data["takePicture"]["flowerName"]["flowerName"]);
-                          res = resultData.data["takePicture"]["flowerName"]["flowerName"];
-                          print(res);
-                          print("takePICTURE");
-                      } else {
-                        // print("coudn't find picture");
-                        // showDialog<AlertDialog>(
-                        //   context: context,
-                        //   builder: (BuildContext context) {
-                        //     return dialog(context, "image not received");
-                        // });
-                      }
-
-
-                      // to change, add return to picture
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DisplayPictureScreen(imagePath: path, imageName: res),
-                          ),
-                      );
-                      // Navigator.pop(context);
+          body: Mutation(
+            options: MutationOptions(
+                documentNode: gql(takePicture),
+                update: (Cache cache, QueryResult result) {
+                    return cache;
+                },
+                onError: (result) {
+                    print("error");
+                    print(result);
+                },
+                onCompleted: (dynamic resultData) {
+                    print("on completed");
+                    print(resultData.data);
+                    String res = "It is not a flower";
+                    if (resultData != null && resultData.data["takePicture"] != null && resultData.data["takePicture"]["flowerName"] != null) {
+                        print(resultData.data["takePicture"]["flowerName"]["flowerName"]);
+                        res = resultData.data["takePicture"]["flowerName"]["flowerName"];
+                        print(res);
+                        print("takePICTURE");
+                    } else {
+                      print("coudn't find picture");
+                      dialog(context, "image not received");
+                      showDialog<AlertDialog>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return dialog(context, "image not received");
+                      });
                     }
-              ),
-              builder: (RunMutation runMutation, QueryResult result) {
-                  return Scaffold(
-                      body: FutureBuilder<void>(
-                          future: _initializeControllerFuture,
-                          builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.done) {
-                                  return CameraPreview(_controller);
-                              } else {
-                                  return Center(child: CircularProgressIndicator());
-                              }
-                          },
-                      ),
-                      floatingActionButton: FloatingActionButton(
-                          child: Icon(Icons.camera_alt),
-                            // Provide an onPressed callback.
-                          onPressed: () async {
-                              try {
-                                  await _initializeControllerFuture;
 
-                                  final name = '${DateTime.now()}.png';
-                                  path = join(
-                                          (await getTemporaryDirectory()).path,
-                                          name
-                                  );
 
-                                  print("PATH : ");
-                                  print(path);
-                                  // await _controller.takePicture();
-                                  await _controller.takePicture(path);
+                    // to change, add return to picture
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DisplayPictureScreen(imagePath: path, imageName: res),
+                        ),
+                    );
+                    // Navigator.maybePop(context);
+                  }
+            ),
+            builder: (RunMutation runMutation, QueryResult result) {
+                return Scaffold(
+                    body: FutureBuilder<void>(
+                        future: _initializeControllerFuture,
+                        builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.done) {
+                                return CameraPreview(_controller);
+                            } else {
+                                return Center(child: CircularProgressIndicator());
+                            }
+                        },
+                    ),
+                    floatingActionButton: FloatingActionButton(
+                        child: Icon(Icons.camera_alt, color: Colors.black),
+                        backgroundColor: Colors.white,
+                          // Provide an onPressed callback.
+                        onPressed: () async {
+                            try {
+                                await _initializeControllerFuture;
 
-                                  print("GET TOKENNNNNNN");
-                                  print(widget.token);
-                                  print("GET ENDED");
-                                  File pic = new File(path);
-                                  var byteData = pic.readAsBytesSync();
+                                final name = '${DateTime.now()}.jpg';
+                                path = join(
+                                        (await getTemporaryDirectory()).path,
+                                        name
+                                );
+                                // path = join("./assets/tmp/", name);
 
-                                  var multipartFile = MultipartFile.fromBytes(
-                                      'photo',
-                                      byteData,
-                                      filename: '${DateTime.now().second}.jpg',
-                                      contentType: MediaType("image", "jpg"),
-                                  );
+                                print("PATH : ");
+                                print(path);
+                                // await _controller.takePicture();
+                                await _controller.takePicture(path);
 
-                                  runMutation({"token": widget.token, "image": multipartFile, "imageName": name});
-                              } catch (e) {
-                                  print(e);
-                              }
-                          },
-                      ),
-                  );
+                                print("GET TOKENNNNNNN");
+                                print(widget.token);
+                                print("GET ENDED");
+                                File pic = new File(path);
+                                var byteData = pic.readAsBytesSync();
+
+
+                                print("SAVED :");
+                                print(File(path).existsSync());
+
+
+                                // Directory directory = await getTemporaryDirectory();
+                                // if (!await directory.exists()) {
+                                //     await directory.create(recursive: true);
+                                // }
+                                ///////saving file
+                                final result = await ImageGallerySaver.saveFile(path, isReturnPathOfIOS: true); // check why it's failing
+                                print("RESULT HERE :");
+                                print(result);
+                                /////////
+
+                                var multipartFile = MultipartFile.fromBytes(
+                                    'photo',
+                                    byteData,
+                                    filename: name,
+                                    contentType: MediaType("image", "jpg"),
+                                );
+
+                                runMutation({"token": widget.token, "image": multipartFile, "imageName": name});
+                                print("path EXIST?????? :");
+                                print(File(path).existsSync());
+                            } catch (e) {
+                                print(e);
+                            }
+                        },
+                    ),
+                    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
+                );
               }
           ),
-          backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
+            backgroundColor: Theme.of(context).primaryColor,
+            // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
       );
     }
 }
+
 
 class DisplayPictureScreen extends StatelessWidget {
     final String imagePath;
@@ -212,7 +238,16 @@ class DisplayPictureScreen extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-            appBar: AppBar(title: Text(imageName)),
+            appBar: AppBar(
+                title: Text(imageName),
+                leading: IconButton(
+                  icon:Icon(
+                      Icons.arrow_back,
+                      color: Colors.black
+                  ),
+                  onPressed:() => Navigator.maybePop(context, false),
+                ),
+            ),
             // The image is stored as a file on the device. Use the `Image.file`
             // constructor with the given path to display the image.
             body: Image.file(File(imagePath)),
