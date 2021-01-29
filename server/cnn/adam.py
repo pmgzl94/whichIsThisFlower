@@ -1,18 +1,19 @@
 import numpy
 
 class AdamConv():
-    def __init__(self, wshape, bshape, alpha=0.001, b1=0.9, b2=0.999, epsilon=1e-08):
+    def __init__(self, alpha=0.001, b1=0.9, b2=0.999, epsilon=1e-08):
         self.t = 1
-        self.mw = numpy.zeros(wshape)
-        self.vw = numpy.zeros(wshape)
-        
-        self.mb = numpy.zeros(bshape)
-        self.vb = numpy.zeros(bshape)
 
         self.b1 = b1
         self.b2 = b2
         self.alpha = alpha
         self.eps = epsilon
+
+    def setMomentumVars(self, ws, bs):
+        self.mw = numpy.zeros(ws.shape)
+        self.vw = numpy.zeros(ws.shape)
+        self.mb = numpy.zeros(bs.shape)
+        self.vb = numpy.zeros(bs.shape)
 
     def generic_update(self, m, v, g, curr_val):
         new_m = self.b1 * m + (1 - self.b1) * g

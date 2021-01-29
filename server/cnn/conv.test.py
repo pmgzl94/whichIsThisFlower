@@ -9,7 +9,9 @@ import pool
 
 import dataloader
 
-class TestFcNetwork(unittest.TestCase):
+import adam
+
+class TestConvNetwork(unittest.TestCase):
     
     def test_sliding_window3d_1(self):
         input = numpy.ndarray((3, 4, 3))
@@ -221,6 +223,37 @@ class TestFcNetwork(unittest.TestCase):
         nabla_b = c1.getNablaB()
 
         self.assertTrue(nabla_b.shape, (32,))
+    
+    def simple_adam_optimizer_test(self):
+        train, test_data = dataloader.load_some_flowers(5, 0, crop_size=(0, 0, 150, 150))
+
+        x = list(train)[0][0]
+        
+        c1 = conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(32, 3, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(3, 150, 150))
+        
+        initFilters, initBiases = c1.getFiltersAndBiases()
+
+        out = c1.compute(x, learn=True)
+
+        false_delta = numpy.random.randn(*(32, 74, 74))
+
+        c1.learn(false_delta)
+
+        c1.modify_weights(learning_rate=0.1, batch_size=1)
+
+        finalFilters, finalBiases = c1.getFiltersAndBiases()
+
+        # print(f"init f {initFilters}")
+        # print(f"final f {finalFilters}")
+
+        self.assertFalse((initFilters == finalFilters).all())
+        self.assertFalse((initBiases == finalBiases).all())
+
+
+
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
