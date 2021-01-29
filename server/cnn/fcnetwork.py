@@ -83,6 +83,7 @@ class FCLayer(LayerInterface):
     # def learn(self, input, expected_res):
     def learn(self, expected_res): #expected res or delta
         # expected_res = expected_res.flatten() #for the mnist dataset
+        
         delta = basic_cost_derivative(expected_res, self.a[-1]) * sigmoid_derivative(self.z[-1])
         
         nabla_w = [np.outer(delta, self.a[-2].T)]
