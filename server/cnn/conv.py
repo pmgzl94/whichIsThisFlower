@@ -40,6 +40,7 @@ class ConvLayer(LayerInterface):
         self.z = None
 
         self.sum_of_nabla_w = numpy.zeros(filtershape)
+        self.sum_of_nabla_b = numpy.zeros(filtershape[0])
 
         if load_path is not None:
             self.load(load_path)
@@ -68,7 +69,9 @@ class ConvLayer(LayerInterface):
                 self.filters = numpy.random.randn(*filtershape) * numpy.sqrt(2/nb_neurons)
 
                 # self.biases = numpy.ndarray((nb_filters,))
-                self.biases = numpy.random.uniform(-1, 1, (nb_filters,))
+                # self.biases = numpy.random.uniform(-1, 1, (nb_filters,))
+                # self.biases = numpy.random.uniform(-1, 1, (filtershape[0],))
+                self.biases = numpy.zeros((filtershape[0],))
 
     def slidingWindow(self, input):
         filtershape = list(self.filters.shape)
@@ -168,7 +171,11 @@ class ConvLayer(LayerInterface):
         
         # get the weight's gradient
         self.nabla_w = numpy.tensordot(delta, self.slicedInput)
-        self.sumUpNablas(self.nabla_w)
+        print(delta.shape)
+        self.nabla_b = numpy.sum(delta, axis=(1, 2))
+
+        self.sumUpNablas(self.nabla_w, self.nabla_b)
+
 
         self.lastDelta = delta
 
@@ -275,11 +282,17 @@ class ConvLayer(LayerInterface):
     def getNablaW(self):
         return self.nabla_w
 
-    def sumUpNablas(self, nabla_w):
+    def getNablaB(self):
+        return self.nabla_b
+
+    def sumUpNablas(self, nabla_w, nabla_b):
         self.sum_of_nabla_w += nabla_w
+        self.sum_of_nabla_b += nabla_b
 
     def modify_weights(self, learning_rate, batch_size):
 
         self.filters -= learning_rate/batch_size * self.sum_of_nabla_w
+        self.biases -= learning_rate/batch_size * self.sum_of_nabla_b
 
         self.sum_of_nabla_w = numpy.zeros(self.filters.shape)
+        self.sum_of_nabla_b = numpy.zeros(self.filters.shape[0])
