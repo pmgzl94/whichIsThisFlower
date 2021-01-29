@@ -6,6 +6,10 @@ def evaluate_test_data(self, test_data):
     test_res = [(numpy.argmax(self.compute(x)), numpy.argmax(exp)) for (x, exp) in test_data]
     return sum([int(idx_got == idx_exp) for (idx_got, idx_exp) in test_res])
 
+def evaluate_test_mnist_data(self, test_data):
+    test_res = [(numpy.argmax(self.compute(x)), y) for (x, y) in test_data]
+    return sum(int(x == y) for (x, y) in test_res)
+
 ##test flower
 
 refTable = ["daisy", "dandelion", "rose", "sunflower", "tulip"]

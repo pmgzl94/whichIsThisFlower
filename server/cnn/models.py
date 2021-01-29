@@ -89,9 +89,7 @@ def model_for_mnist():
 
     modelMnist = model.Model(learning_rate=learning_rate, dataset=None, layerContainer=layerContainer)
 
-    modelMnist.test_learn_mnist(epoch=50)
-
-# model_for_mnist()
+    modelMnist.test_learn_mnist(epoch=50, batch_size=10)
 
 def zf5model(path=example1):
     # from this architecture: 
