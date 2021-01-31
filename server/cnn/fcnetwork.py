@@ -2,7 +2,7 @@ import numpy as np
 from tensor.Tensor import TensorFileManager
 import os
 from layer import LayerInterface
-from activation_functions import sigmoid, sigmoid_derivative
+import activation_functions
 
 from adam import AdamFC
 
@@ -10,19 +10,24 @@ from adam import AdamFC
 def mse(output, expec_o):
     return np.sum((expec_o - output)**2) /len(output)
 
+# def cross_entropy(output, expec_o):
+#     return -np.sum(expec_o * numpy.log(output))
+
 #cost functions
 def basic_cost_derivative(y, a): #where y is the expected result
     return a - y
 
-#cross entropy
-# ...
+# def cross_entropy(output, expec_o):
+#     return -(expec_o * numpy.log(output) + (1 - y) * numpy.log(1 - ))
 
 class FCLayer(LayerInterface):
-    def __init__(self, optimizer=None, arch=[784, 100, 10], load_path=None):
+    def __init__(self, optimizer=None, arch=[784, 100, 10], activation_func="sigmoid", load_path=None):
         self.weights = []
         self.biases  = []
 
         self.optimizer = optimizer
+
+        self.afct, self.dafct = activation_functions.map_function[activation_func]
 
         self.nb_layer = len(arch)
         self.nb_set_of_params = self.nb_layer - 1
@@ -72,7 +77,7 @@ class FCLayer(LayerInterface):
         self.a = [x]
         for i in range(0, self.nb_set_of_params):
             z = np.dot(x, self.weights[i].T) + self.biases[i]
-            x = sigmoid(z)
+            x = self.afct(z)
             if learn == True:
                 self.z.append(z)
                 self.a.append(x)
@@ -84,7 +89,7 @@ class FCLayer(LayerInterface):
     def learn(self, expected_res): #expected res or delta
         # expected_res = expected_res.flatten() #for the mnist dataset
         
-        delta = basic_cost_derivative(expected_res, self.a[-1]) * sigmoid_derivative(self.z[-1])
+        delta = basic_cost_derivative(expected_res, self.a[-1]) * self.dafct(self.z[-1])
         
         nabla_w = [np.outer(delta, self.a[-2].T)]
         # print(nabla_w)
@@ -92,7 +97,7 @@ class FCLayer(LayerInterface):
         nabla_b = [delta]
 
         for index_set_param in range(self.nb_set_of_params - 2, -1, -1):
-            delta = np.dot(delta, self.weights[index_set_param + 1]) * sigmoid_derivative(self.z[index_set_param])
+            delta = np.dot(delta, self.weights[index_set_param + 1]) * self.dafct(self.z[index_set_param])
             
             # print(self.a[index_set_param].T)
             nabla_w.insert(0, np.outer(delta, self.a[index_set_param].T))
