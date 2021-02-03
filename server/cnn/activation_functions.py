@@ -20,13 +20,7 @@ def stable_softmax(X):
     exps = numpy.exp(X - numpy.max(X))
     return exps / numpy.sum(exps)
 
-# def softmax_derivative(X):
-
 map_function = {
     "relu": (relu, relu_derivative),
     "sigmoid": (sigmoid, sigmoid_derivative)
 }
-
-# a = numpy.array([1, 2, 3])
-
-# print(stable_softmax(a))

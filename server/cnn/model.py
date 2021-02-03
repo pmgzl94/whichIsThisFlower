@@ -106,28 +106,28 @@ class Model():
         self.layercontainer[-1].learn(y)
 
     def test_learn(self, epoch=10):
-        training_data, test_data = dataloader.load_some_flowers(500, 100, crop_size=(0, 0, 150, 150))
+        training_data, test_data = dataloader.load_some_flowers(3000, 1000, crop_size=(0, 0, 150, 150))
         
 
         training_data = list(training_data)
         test_data = list(test_data)
 
+
         print(f"len training data = {len(training_data)}")
         print(f"len test data = {len(test_data)}")
-        # print(len(test_data))
 
-        batch_size = 10
+        batch_size = 128
         
         # response_from_net = []
         for ep in range(0, epoch):
             success = 0
             res = []
 
-            for b in range(0, 600, batch_size):
+            for b in range(0, len(training_data), batch_size):
 
                 training_data = random.sample(training_data, len(training_data))
 
-                for input, expec in training_data[b:batch_size]:
+                for input, expec in training_data[b:b+batch_size]:
 
                     res.append(self.compute(input, learn=True))
 
