@@ -11,7 +11,7 @@ def cross_entropy(expected_res, z):
     return np.sum(-expected_res * np.log(z))
 
 class SoftmaxLayer(LayerInterface):
-    def __init__(self, optimizer=None, arch=[784, 100], load_path=None):
+    def __init__(self, optimizer=None, load_path=None, arch=[784, 100]):
         self.weights = []
         self.biases  = []
 

@@ -16,11 +16,13 @@ def basic_cost_derivative(y, a): #where y is the expected result
 
 class FCLayer(LayerInterface):
     # def __init__(self, optimizer=None, arch=[784, 100, 10], load_path=None, is_classifier=True):
-    def __init__(self, optimizer=None, arch=[784, 100, 10], activation_func="sigmoid", load_path=None, is_classifier=True):
+    def __init__(self, optimizer=None, load_path=None, arch=[784, 100, 10], activation_func="sigmoid", is_classifier=True):
         self.weights = []
         self.biases  = []
 
         self.optimizer = optimizer
+
+        self.activation_func = activation_func
 
         self.afct, self.dafct = activation_functions.map_function[activation_func]
         self.is_classifier = is_classifier
