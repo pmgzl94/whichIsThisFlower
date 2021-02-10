@@ -7,6 +7,9 @@ class IsOk(graphene.ObjectType):
 class GetFlowerName(graphene.ObjectType):
     flowerName = graphene.String()
 
+class GetFlowersPic(graphene.ObjectType):
+    flowersPic = graphene.List(graphene.String)
+
 class MessageField(graphene.ObjectType):
     message=graphene.String()
 
@@ -16,7 +19,7 @@ class OtherObject(graphene.ObjectType):
 
 class ProtectedUnion(graphene.Union):
     class Meta:
-        types = (IsOk, GetFlowerName, MessageField, OtherObject, AuthInfoField)
+        types = (IsOk, GetFlowerName, GetFlowersPic, MessageField, OtherObject, AuthInfoField)
 
     @classmethod
     def resolve_type(cls, instance, info):

@@ -13,6 +13,7 @@ class Mutation(graphene.ObjectType):
 
     logout = mutations.LogoutMutation.Field()
     takePicture = mutations.TakePicture.Field()
+    getPicture = mutations.GetPictures.Field()
 
 
 class Query(graphene.ObjectType):

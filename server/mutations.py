@@ -96,8 +96,6 @@ class LogoutMutation(graphene.Mutation):
         SessionManager.session.removeSession(get_jwt_identity())
         return LogoutMutation(ok=ObjectTypes.IsOk(ok=True))
 
-import base64
-
 class TakePicture(graphene.Mutation):
     class Arguments(object):
         token = graphene.String()
@@ -129,17 +127,23 @@ class TakePicture(graphene.Mutation):
         db.dbMan.addImage(imageName, image, username, flowerName, comment)
         return TakePicture(ok=ObjectTypes.IsOk(ok=True), flowerName=ObjectTypes.GetFlowerName(flowerName=flowerName))
 
+class GetPictures(graphene.Mutation):
+    class Arguments(object):
+        token = graphene.String()
 
-# class UploadMutation(graphene.Mutation):
-#     class Arguments:
-#         file = Upload(required=True)
+    ok = graphene.Field(ObjectTypes.ProtectedUnion)
+    flowersPic = graphene.Field(ObjectTypes.ProtectedUnion)
 
-#     success = graphene.Boolean()
+    @classmethod
+    @mutation_jwt_required
+    def mutate(cls, _, info):
+        print("\n[MUTATION]: [GetPictures]: mutate", file=sys.stderr)
+        username = get_jwt_identity()
+        flowersPic = db.dbMan.getUserImages(username)
+        print("images:", flowersPic, file=sys.stderr)
 
-#     def mutate(self, info, file, **kwargs):
-#         # do something with your file
+        return GetPictures(ok=ObjectTypes.IsOk(ok=True), flowersPic=ObjectTypes.GetFlowersPic(flowersPic=flowersPic))
 
-#         return UploadMutation(success=True)
 
 
 

@@ -58,7 +58,7 @@ class dbManager():
         if self.debug == True:
             print("[DBMANAGER]: [deleteUser]: END", file=sys.stderr)
 
-    
+
     def getUser(self, name):
         if self.debug == True:
             print("[DBMANAGER]: [getUser]: user : {}".format(name), file=sys.stderr)
@@ -123,7 +123,7 @@ class dbManager():
         if self.debug == True:
             print("[DBMANAGER]: [deleteImages]: END", file=sys.stderr)
 
-            
+
     def getImage(self, name):
         if self.debug == True:
             print("[DBMANAGER]: [getImage]: image : {}".format(name), file=sys.stderr)
@@ -146,18 +146,22 @@ class dbManager():
                     print (image, file=sys.stderr)
             print("[DBMANAGER]: [getImages]: END", file=sys.stderr)
         return images
-    
+
     def getUserImages(self, name):
         if self.debug == True:
             print("[DBMANAGER]: [getUserImages]: user : {}".format(name), file=sys.stderr)
         images = self.imagePosts.find({"user": name})
+        listImages = []
 
         if self.debug == True:
             if images != None:
                 for image in images:
                     print (image, file=sys.stderr)
+                    listImages.append(image["imageName"])
+                # for image in listImages:
+                #     print (image, file=sys.stderr)
             print("[DBMANAGER]: [getImages]: END", file=sys.stderr)
-        return images
+        return listImages
 
 
     def getNbImage(self):
@@ -173,7 +177,7 @@ class dbManager():
 
 
 
-    
+
 
 # dbMan = dbManager("localhost", 27017)
 dbMan = dbManager("localhost", 27017, True)

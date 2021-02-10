@@ -1,0 +1,8 @@
+flask
+flask_graphql_auth
+flask_jwt
+pymongo
+numpy
+Pillow
+graphene_file_upload
+flask_cors
