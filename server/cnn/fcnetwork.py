@@ -4,6 +4,8 @@ import os
 from layer import LayerInterface
 from activation_functions import sigmoid, sigmoid_derivative
 
+from adam import AdamFC
+
 #mean squared error
 def mse(output, expec_o):
     return np.sum((expec_o - output)**2) /len(output)
@@ -16,23 +18,29 @@ def basic_cost_derivative(y, a): #where y is the expected result
 # ...
 
 class FCLayer(LayerInterface):
-    def __init__(self, arch, load_path=None):
+    def __init__(self, optimizer=None, arch=[784, 100, 10], load_path=None):
         self.weights = []
         self.biases  = []
+
+        self.optimizer = optimizer
 
         self.nb_layer = len(arch)
         self.nb_set_of_params = self.nb_layer - 1
 
         if load_path == None:
             for i in range(0, self.nb_set_of_params):
-                set_of_weights = np.random.randn(*(arch[i+1], arch[i])) * np.sqrt(1/(arch[i]))
+                # set_of_weights = np.random.randn(*(arch[i+1], arch[i])) * np.sqrt(1/(arch[i]))
+                set_of_weights = np.random.randn(*(arch[i+1], arch[i]))
                 self.weights.append(set_of_weights)
-                # self.biases.append(np.random.randn(arch[i+1]))
-                self.biases.append(np.zeros(arch[i+1]))
+                self.biases.append(np.random.randn(arch[i+1]))
+                # self.biases.append(np.zeros(arch[i+1]))
         else:
             self.load(load_path)
         self.inputshape = (self.weights[0].shape[1],)
         
+        if self.optimizer:
+            self.optimizer.setMomentumVars(self.weights, self.biases)
+
         #learning vars: used for backpropagation
         self.a = []
         self.z = []
@@ -75,15 +83,23 @@ class FCLayer(LayerInterface):
     # def learn(self, input, expected_res):
     def learn(self, expected_res): #expected res or delta
         # expected_res = expected_res.flatten() #for the mnist dataset
+        
         delta = basic_cost_derivative(expected_res, self.a[-1]) * sigmoid_derivative(self.z[-1])
         
         nabla_w = [np.outer(delta, self.a[-2].T)]
+        # print(nabla_w)
+
         nabla_b = [delta]
 
         for index_set_param in range(self.nb_set_of_params - 2, -1, -1):
             delta = np.dot(delta, self.weights[index_set_param + 1]) * sigmoid_derivative(self.z[index_set_param])
+            
+            # print(self.a[index_set_param].T)
             nabla_w.insert(0, np.outer(delta, self.a[index_set_param].T))
             nabla_b.insert(0, delta)
+
+        # print(f"first lay = {nabla_w[0]}")
+        # print(f"second lay {nabla_w[1]}")
 
         self.lastDelta = delta
         self.sumUpNablas(nabla_w, nabla_b)
@@ -124,10 +140,19 @@ class FCLayer(LayerInterface):
             self.sum_of_nabla_b[i] = self.sum_of_nabla_b[i] + nabla_b[i]
 
     def modify_weights(self, learning_rate, batch_size):
-        for i in range(0, self.nb_set_of_params):
-            # print("here")
-            self.weights[i] = self.weights[i] - (learning_rate/batch_size) * self.sum_of_nabla_w[i]
-            self.biases[i] = self.biases[i] - (learning_rate/batch_size) * self.sum_of_nabla_b[i]
+        if self.optimizer:
+            mean_gw = []
+            mean_gb = []
+            for i in range(len(self.sum_of_nabla_w)):
+                mean_gw.append(self.sum_of_nabla_w[i] / batch_size)
+                mean_gb.append(self.sum_of_nabla_b[i] / batch_size)
+
+            self.weights, self.biases = self.optimizer.update(self.weights, self.biases, mean_gw, mean_gb)
+
+        else:
+            for i in range(self.nb_set_of_params):
+                self.weights[i] = self.weights[i] - (learning_rate/batch_size) * self.sum_of_nabla_w[i]
+                self.biases[i] = self.biases[i] - (learning_rate/batch_size) * self.sum_of_nabla_b[i]
         
         self.resetLearningVars()
 

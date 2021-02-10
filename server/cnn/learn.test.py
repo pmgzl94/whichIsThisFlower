@@ -7,6 +7,7 @@ import conv
 import pool
 import fcnetwork
 
+import model
 
 class TestFcNetwork(unittest.TestCase):
 
@@ -16,7 +17,7 @@ class TestFcNetwork(unittest.TestCase):
         input = numpy.array([[[0.1, 2, 0.11, 0.3, 1], [0, 0.4, 0.4, 0.36, 1], [0, 0.12, 0.27, 0.34, -3], [0.62, 0.12, 0.11, 10, 1], [0, 56, 11, 23, 44]],
                             [[0.11, 0.58, -1, 2, 0.35], [0.1, 0.36, 0.12, 0.8, 0.27], [0.27, 0, 0.64, 1, 0.12], [1, -1, 0.4, 3, 11], [0, 0.56, 0.11, 0.23, 0.44]],
                             [[1, 3, 0.24, 5, -1], [0.12, 2, 0, 1, 11], [-0.1, 0.2, 0.3, 0.11, 0.22], [12, 0.27, 0.18, 0.2, 0.34], [0, 0.56, 0.11, 0.23, 0.44]]])
-        
+
         pathdir = "./tensorfiles"
         filename = "conv_test_depth_multiple_filter"
         fullypath = pathdir + "/" + filename
@@ -69,6 +70,32 @@ class TestFcNetwork(unittest.TestCase):
 
         self.assertEqual(numpy.isclose(nabla_w[0][0][0][0], 4.1609570961e-09), True)
         self.assertEqual(numpy.isclose(nabla_w[1][1][0][0], 1.8135273233e-09), True)
+
+    def test_learn_with_depth_and_multiple_filter(self):
+        print("al")
+        net = fcnetwork.FCLayer(arch=[784, 100, 10], load_path=None)
+
+        enhancedModel = model.Model(learning_rate=0.1, dataset=None, layerContainer=[net])
+
+
+        net = enhancedModel.getLayerContainer()[0]
+
+        before_w, before_b = net.getWeightsAndBiases()
+
+        enhancedModel.test_learn_mnist(epoch=1, batch_size=30)
+
+        net = enhancedModel.getLayerContainer()[0]
+        
+        after_w, after_b = net.getWeightsAndBiases()
+
+        for b, a in zip(before_w, after_w):
+            print("la")
+            print(b)
+            print(a)
+            self.assertEqual((b == a).all(), False)
+        for b, a in zip(before_b, after_b):
+            print("la")
+            self.assertEqual((b == a).all(), False)
 
     # def test_delta_computation_in_pool_layer(self):
     #     # def reshape_delta_and_compute(derivative, delta, pool_size, stride):

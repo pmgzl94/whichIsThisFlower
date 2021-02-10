@@ -9,6 +9,8 @@ import pickle
 import sys
 import os
 
+import adam
+
 # image getdata return flatter container
 # https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.getdata
 
@@ -24,7 +26,7 @@ class ConvLayer(LayerInterface):
     # if you precise padding, you will only get a padding of 1
 
     ## nb_filter is deprecated
-    def __init__(self, load_path=None, padding=0, nb_filters=1, filtershape=(3, 2, 2), stride_length=1, pool=None, activation_function='relu', ishape=None):
+    def __init__(self, optimizer=None, load_path=None, padding=0, nb_filters=1, filtershape=(3, 2, 2), stride_length=1, pool=None, activation_function='relu', ishape=None):
         self.padding = padding
         self.stride_len = stride_length
         self.activation_function_tag = activation_function
@@ -39,7 +41,10 @@ class ConvLayer(LayerInterface):
 
         self.z = None
 
+        self.optimizer = optimizer
+
         self.sum_of_nabla_w = numpy.zeros(filtershape)
+        self.sum_of_nabla_b = numpy.zeros(filtershape[0])
 
         if load_path is not None:
             self.load(load_path)
@@ -68,7 +73,11 @@ class ConvLayer(LayerInterface):
                 self.filters = numpy.random.randn(*filtershape) * numpy.sqrt(2/nb_neurons)
 
                 # self.biases = numpy.ndarray((nb_filters,))
-                self.biases = numpy.random.uniform(-1, 1, (nb_filters,))
+                # self.biases = numpy.random.uniform(-1, 1, (nb_filters,))
+                # self.biases = numpy.random.uniform(-1, 1, (filtershape[0],))
+                self.biases = numpy.zeros((filtershape[0],))
+        if optimizer:
+            self.optimizer.setMomentumVars(self.filters, self.biases)
 
     def slidingWindow(self, input):
         filtershape = list(self.filters.shape)
@@ -168,7 +177,11 @@ class ConvLayer(LayerInterface):
         
         # get the weight's gradient
         self.nabla_w = numpy.tensordot(delta, self.slicedInput)
-        self.sumUpNablas(self.nabla_w)
+        print(delta.shape)
+        self.nabla_b = numpy.sum(delta, axis=(1, 2))
+
+        self.sumUpNablas(self.nabla_w, self.nabla_b)
+
 
         self.lastDelta = delta
 
@@ -275,11 +288,26 @@ class ConvLayer(LayerInterface):
     def getNablaW(self):
         return self.nabla_w
 
-    def sumUpNablas(self, nabla_w):
+    def getNablaB(self):
+        return self.nabla_b
+    
+    def getFiltersAndBiases(self):
+        return self.filters, self.biases
+
+    def sumUpNablas(self, nabla_w, nabla_b):
         self.sum_of_nabla_w += nabla_w
+        self.sum_of_nabla_b += nabla_b
 
     def modify_weights(self, learning_rate, batch_size):
 
-        self.filters -= learning_rate/batch_size * self.sum_of_nabla_w
+        if self.optimizer != None:
+            gfilters = self.sum_of_nabla_w / batch_size
+            gbs = self.sum_of_nabla_b / batch_size
+            
+            self.filters, self.biases = self.optimizer.update(self.filters, self.biases, gfilters, gbs)
+        else:
+            self.filters -= learning_rate/batch_size * self.sum_of_nabla_w
+            self.biases -= learning_rate/batch_size * self.sum_of_nabla_b
 
         self.sum_of_nabla_w = numpy.zeros(self.filters.shape)
+        self.sum_of_nabla_b = numpy.zeros(self.filters.shape[0])
