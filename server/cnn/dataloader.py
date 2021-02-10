@@ -1,18 +1,18 @@
-from mnist import mnist_loader
+# from mnist import mnist_loader
 import image_loader as iml
 import os
 import numpy
 
-def load_mnist():
-    train_data, validation_data, testdata = mnist_loader.load_data_wrapper("./mnist/")
-    return train_data, testdata
+# def load_mnist():
+#     train_data, validation_data, testdata = mnist_loader.load_data_wrapper("./mnist/")
+#     return train_data, testdata
 
-linker = {  "daisy": numpy.array([1, 0, 0, 0, 0]),
-            "dandelion": numpy.array([0, 1, 0, 0, 0]), 
-            "rose": numpy.array([0, 0, 1, 0, 0]),
-            "sunflower": numpy.array([0, 0, 0, 1, 0]),
-            "tulip": numpy.array([0, 0, 0, 0, 1]),
-            }
+# linker = {  "daisy": numpy.array([1, 0, 0, 0, 0]),
+#             "dandelion": numpy.array([0, 1, 0, 0, 0]), 
+#             "rose": numpy.array([0, 0, 1, 0, 0]),
+#             "sunflower": numpy.array([0, 0, 0, 1, 0]),
+#             "tulip": numpy.array([0, 0, 0, 0, 1]),
+#             }
 
 def load_flowers(crop_size=(0, 0, 224, 224)):
     subdirs = ["daisy", "dandelion", "rose", "sunflower", "tulip"]
