@@ -38,7 +38,8 @@ class MyApp extends StatelessWidget {
       // client: clientFor(uri: "http://10.0.2.2:5000/graphql"),
       client: clientFor(uri: getUri()),
       child: MaterialApp(
-            title: 'What is this Flower',
+      	    debugShowCheckedModeBanner: false,
+  	    title: 'What is this Flower',
             theme: ThemeData(
               primarySwatch: Colors.green,
               // primarySwatch: Colors.white,
