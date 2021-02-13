@@ -162,9 +162,11 @@ class CreateLoginState extends State<CreateLogin>
                       print(resultData.data);
                       if (resultData != null && resultData.data["auth"] != null && resultData.data["auth"]["accessToken"] != null) {
                         print(resultData.data["auth"]["accessToken"]);
+
+			String str = mc1.text;
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Menu(token: resultData.data["auth"]["accessToken"],
+                          MaterialPageRoute(builder: (context) => Menu(token: resultData.data["auth"]["accessToken"], username: str,
                                                      camera: widget.camera
                           )),
                         );

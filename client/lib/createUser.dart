@@ -141,7 +141,7 @@ class CreateUserFormState extends State<CreateUserForm>
               children: <Widget> [
                 Padding(
                     padding: EdgeInsets.only(
-                        left: 25.0, right: 25.0, top: 25.0),
+                        left: 25.0, right: 25.0, top: 50.0),
                     child: new Row(
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
@@ -240,15 +240,20 @@ class CreateUserFormState extends State<CreateUserForm>
                     ),
                     builder: (RunMutation runMutation, QueryResult result) {
                       return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 25),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                primary: Color.fromRGBO(0, 102, 0, 0.6),
+                               shape: RoundedRectangleBorder(
+                                 borderRadius: BorderRadius.circular(20),
+                                 // borderRadius: BorderRadius.circular(10),
+                               ),
+                               minimumSize: Size(350, 40),
+                          //      primary: Color.fromRGBO(0, 102, 0, 0.6),
                             ),
                             onPressed: () {
                               runMutation({"username": mc1.text, "password": mc2.text});
                             },
-                            child: Text('Create Account'),
+                            child: Text('Register'),
                           )
                       );
                     }
@@ -268,8 +273,7 @@ class ButtonCreateUser extends StatelessWidget {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                                shape: RoundedRectangleBorder(
-                                 // borderRadius: BorderRadius.circular(20),
-                                 borderRadius: BorderRadius.circular(7),
+                                 borderRadius: BorderRadius.circular(20),
                                ),
                                primary: Colors.white,
                                onPrimary: Colors.green,

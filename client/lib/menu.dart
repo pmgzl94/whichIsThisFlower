@@ -32,12 +32,15 @@ final String getPicture = """
 class Menu extends StatefulWidget
 {
     final String token;
+    final String username;
     final CameraDescription camera;
 
     Menu({Key key,
                   @required this.token,
+                  @required this.username,
                   @required this.camera,
              }) : super(key: key);
+
 
     @override
     MenuState createState() => MenuState();
@@ -62,7 +65,7 @@ class MenuState extends State<Menu>
       // CreateMenu(token: widget.token, camera: widget.camera),
       CreateMyObs(token: widget.token),
       CreateTakePicture(token: widget.token, camera: widget.camera),
-      CreateProfil(token: widget.token),
+      CreateProfil(token: widget.token, username: widget.username),
     ];
     originalDic = {0: false, 1: true, 2: false};
     listScreens = [originalList[1]];

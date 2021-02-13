@@ -22,11 +22,11 @@ final String logout = """
 class CreateProfil extends StatefulWidget
 {
     final String token;
-    // final CameraDescription camera;
+    final String username;
 
     CreateProfil({Key key,
                   @required this.token,
-                  // @required this.camera,
+                  @required this.username,
              }) : super(key: key);
 
     @override
@@ -120,7 +120,7 @@ class CreateProfilState extends State<CreateProfil>
                 ),
                                     // Align (
                 //   alignment: Alignment(0.0, -0.75),
-                //   child: CreateProfilButton(token: token),
+                //   child: CreateLogoutButton(token: token),
                 // ),
 
 
@@ -182,23 +182,16 @@ class CreateProfilState extends State<CreateProfil>
                             )),
                         Padding(
                             padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 2.0),
+                                left: 25.0, right: 25.0, top: 10.0),
                             child: new Row(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
                                 new Flexible(
-                                  child: new TextField(
-                                    decoration: const InputDecoration(
-                                      // hintText: "Enter your username",
-                                      hintText: "aaa",
-                                    ),
-                                    enabled: !_status,
-                                    autofocus: !_status,
-
-                                  ),
+                                  child: new Text(widget.username),
                                 ),
                               ],
                             )),
+
                         // Padding(
                         //     padding: EdgeInsets.only(
                         //         left: 25.0, right: 25.0, top: 25.0),
@@ -279,7 +272,7 @@ class CreateProfilState extends State<CreateProfil>
             ),
             Align (
               alignment: Alignment(0.0, -0.75),
-              child: CreateProfilButton(token: widget.token),
+              child: CreateLogoutButton(token: widget.token),
             ),
           ]
         ),
@@ -363,16 +356,16 @@ Widget _getEditIcon() {
 
 }
 
-class CreateProfilButton extends StatefulWidget
+class CreateLogoutButton extends StatefulWidget
 {
     final String token;
-    CreateProfilButton({Key key, @required this.token}) : super(key: key);
+    CreateLogoutButton({Key key, @required this.token}) : super(key: key);
 
     @override
-    CreateProfilButtonState createState() => CreateProfilButtonState();
+    CreateLogoutButtonState createState() => CreateLogoutButtonState();
 }
 
-class CreateProfilButtonState extends State<CreateProfilButton>
+class CreateLogoutButtonState extends State<CreateLogoutButton>
 {
     final _id = GlobalKey<FormState>();
     bool state = false;
