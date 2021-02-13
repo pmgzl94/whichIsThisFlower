@@ -169,7 +169,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
                             try {
                                 await _initializeControllerFuture;
 
-                                final name = '${DateTime.now()}.jpg';
+                                final name = '${DateTime.now()}'.substring(0, 19)+ '.jpg';
                                 path = join(
                                         (await getTemporaryDirectory()).path,
                                         name

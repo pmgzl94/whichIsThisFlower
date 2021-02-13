@@ -210,9 +210,7 @@ Mutation(
                     }
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {
-                    return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child:                 IconButton(
+                    return IconButton(
                   icon: Icon(
                     Icons.refresh_outlined,
                     color: Colors.black,
@@ -224,7 +222,6 @@ Mutation(
                             runMutation({"token": widget.token});
 		    print("PRESSED");
                   },
-                ),
             );
                   })
               ],
@@ -236,7 +233,9 @@ Mutation(
               child: GridView.count(
                 crossAxisCount: 1,
                 children: List.generate(pics.length, (index) {
-                  return DisplayPictures(name: pics[index]);
+                  return Padding(
+                            padding: EdgeInsets.only(top: 25),
+        child: DisplayPictures(name: pics[index]));
                 }),
               ),
             )
@@ -247,14 +246,17 @@ Mutation(
 }
 
 
-class DisplayPictures extends StatefulWidget {
-  DisplayPictures({Key key, this.name}) : super(key: key);
+class DisplayPictures extends StatefulWidget
+{
   final String name;
+  DisplayPictures({Key key, this.name}) : super(key: key);
+
   @override
   _DisplayPicturesState createState() => _DisplayPicturesState();
 }
 
-class _DisplayPicturesState extends State<DisplayPictures> {
+class _DisplayPicturesState extends State<DisplayPictures>
+{
   @override
   initState() {
     _asyncMethod();
@@ -262,21 +264,16 @@ class _DisplayPicturesState extends State<DisplayPictures> {
   }
 
   _asyncMethod() async {
-    //comment out the next two lines to prevent the device from getting
-    // the image from the web in order to prove that the picture is 
-    // coming from the device instead of the web.
     String url = getUri();
     url = url.substring(0, url.length - 7) + "download/" + widget.name;
     print(url);
-    var response = await get(url); // <--2
+    var response = await get(url);
     var documentDirectory = await getApplicationDocumentsDirectory();
     var firstPath = documentDirectory.path + "/images";
     var filePathAndName = documentDirectory.path + '/images/pic.jpg'; 
-    //comment out the next three lines to prevent the image from being saved
-    //to the device to show that it's coming from the internet
-    await Directory(firstPath).create(recursive: true); // <-- 1
-    File file2 = new File(filePathAndName);             // <-- 2
-    file2.writeAsBytesSync(response.bodyBytes);         // <-- 3
+    await Directory(firstPath).create(recursive: true);
+    File file2 = new File(filePathAndName);
+    file2.writeAsBytesSync(response.bodyBytes);
     setState(() {
       imageData = filePathAndName;
       dataLoaded = true;
@@ -291,17 +288,37 @@ class _DisplayPicturesState extends State<DisplayPictures> {
   Widget build(BuildContext context) {
     if (dataLoaded) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.name),
-        ),
-        body: Center(
-          child: Column(
+        body: new Container(
+	  alignment: Alignment.center,
+	  margin: EdgeInsets.only(left: 40.0, right: 40.0),
+	  // padding: EdgeInsets.all(30),
+                    decoration: new BoxDecoration(
+                        // color: Colors.black, //Color.fromRGBO(0, 180, 0, 0.6),
+			borderRadius: new BorderRadius.only(
+                    	   topLeft:  const  Radius.circular(40.0),
+                    	   topRight: const  Radius.circular(40.0),
+                    	   bottomLeft:  const  Radius.circular(40.0),
+                    	   bottomRight: const  Radius.circular(40.0)
+		    	)
+                    ),
+                  child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image.file(File(imageData))
+              Image.file(File(imageData)),
+                        Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                                    child: new Text(
+                                      widget.name,
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold,
+					  // color: Colors.white
+					  ),
+                                    ),
+				    )
             ],
-          ),
-        ),
+ 	  ),
+ 	),
       );
     } else {
       return CircularProgressIndicator(
