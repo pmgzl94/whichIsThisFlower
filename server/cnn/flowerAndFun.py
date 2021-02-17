@@ -6,6 +6,7 @@ import softmax
 import conv
 import adam
 import model
+import dropout
 
 import signal
 import sys
@@ -23,7 +24,7 @@ def flowerAndFun2(path=example1):
         pic = iml.ImageLoader.getOutputNpArray(example1, crop=True, crop_size=(0, 0, 150, 150))
 
         y = saveModel.compute(pic)
-        saveModel.saveLayers(["ff2c1", "ff2c2", "ff2c3", "ff2fcn1", "ff2softm"])
+        saveModel.saveLayers(["ff2c1", "d1", "ff2c2", "d2", "ff2c3", "d3", "ff2fcn1", "d4", "ff2softm"])
         print(y)
         sys.exit(0)
     input = iml.ImageLoader.getOutputNpArray(path, crop=True, crop_size=(0, 0, 150, 150))
@@ -31,15 +32,19 @@ def flowerAndFun2(path=example1):
     # layerContainer = [
     #     #3, 150, 150
     #     conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(32, 3, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(3, 150, 150)),
+    #     dropout.DropoutLayer(p=0.2, ishape=(32, 74, 74)),
         
     #     #32, 74, 74
     #     conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(64, 32, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(32, 74, 74)),
+    #     dropout.DropoutLayer(p=0.2, ishape=(64, 36, 36)),
       
     #     #64, 36, 36
     #     conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(128, 64, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(64, 36, 36)),
+    #     dropout.DropoutLayer(p=0.2, ishape=(128, 17, 17)),
         
     #     #128, 17, 17
     #     fcnetwork.FCLayer(optimizer=adam.AdamFC(), arch=[36992, 512, 128], activation_func="relu", is_classifier=False),
+    #     dropout.DropoutLayer(p=0.2, ishape=(128,)),
         
     #     softmax.SoftmaxLayer(optimizer=adam.AdamFC(), arch=[128, 5])
     # ]
@@ -47,15 +52,19 @@ def flowerAndFun2(path=example1):
     layerContainer = [
         #3, 150, 150
         conv.ConvLayer(optimizer=adam.AdamConv(), load_path="ff2c1", filtershape=(32, 3, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(3, 150, 150)),
+        dropout.DropoutLayer(p=0.2, ishape=(32, 74, 74)),
         
         #32, 74, 74
         conv.ConvLayer(optimizer=adam.AdamConv(), load_path="ff2c2", filtershape=(64, 32, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(32, 74, 74)),
+        dropout.DropoutLayer(p=0.2, ishape=(64, 36, 36)),
       
         #64, 36, 36
         conv.ConvLayer(optimizer=adam.AdamConv(), load_path="ff2c3", filtershape=(128, 64, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(64, 36, 36)),
+        dropout.DropoutLayer(p=0.2, ishape=(128, 17, 17)),
         
         #128, 17, 17
         fcnetwork.FCLayer(optimizer=adam.AdamFC(), load_path="ff2fcn1", arch=[36992, 512, 128], activation_func="relu", is_classifier=False),
+        dropout.DropoutLayer(p=0.2, ishape=(128,)),
         
         softmax.SoftmaxLayer(optimizer=adam.AdamFC(), load_path="ff2softm", arch=[128, 5])
     ]

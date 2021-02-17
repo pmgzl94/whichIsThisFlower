@@ -83,28 +83,9 @@ def flowerAndFun(path=example1):
 
 # flowerAndFun()
 
-def flowerAndFun2(path=example1):
-    input = iml.ImageLoader.getOutputNpArray(path, crop=True, crop_size=(0, 0, 150, 150))
+##flower and fun 2 here
 
-    layerContainer = [
-        #3, 150, 150
-        conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(32, 3, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(3, 150, 150)),
-        
-        #32, 74, 74
-        conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(64, 32, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(32, 74, 74)),
-      
-        #64, 36, 36
-        conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(128, 64, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(64, 36, 36)),
-        
-        #128, 17, 17
-        fcnetwork.FCLayer(optimizer=adam.AdamFC(), arch=[36992, 512, 128], activation_func="relu", is_classifier=False),
-        softmax.SoftmaxLayer(optimizer=adam.AdamFC(), arch=[128, 5])
-    ]
-    learning_rate = 0.0001
-    model_FAndF = model.Model(learning_rate=learning_rate, dataset=None, layerContainer=layerContainer)
-    model_FAndF.test_learn(epoch=50)
-
-flowerAndFun2()
+# flowerAndFun2()
 
 def model_for_mnist():
 
@@ -183,7 +164,7 @@ def zf5model(path=example1):
     try:
         output = zf5.compute(input)
     except:
-        print("error occured in zf5 mode")
+        print("error occured in zf5 model")
         return "error"
     # print(return_response(output))
     return return_response(output)

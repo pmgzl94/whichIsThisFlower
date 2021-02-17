@@ -159,17 +159,17 @@ class Model():
 
         print(f"len of data = {len(data)}")
 
-        #for now it will be sgd learning algorithm
+        # for now it will be sgd learning algorithm
         # each layer should be able to give us the delta in order to backpropagate the learning
         # data = random.shuffle(data)
 
-        batch = random.sample(data, len(data))
-        batch_size = 10
-        print(len(data)/10)
+        # batch = random.sample(data, len(data))
+        # batch_size = 10
+        # print(len(data)/10)
 
         # print(f"shape = {batch[0][0].shape}")
         # print(f"shape = {len(batch)}")
-        
+
         # number_of_epoch = 10
         # for i in range(0, number_of_epoch):
         #     batch = random.sample(data, len(data))
