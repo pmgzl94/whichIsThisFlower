@@ -48,7 +48,6 @@ String getUri() {
     return "http://10.0.2.2:5000/graphql";
   } else {
     // return "http://localhost:5000/graphql";
-    // return "http://localhost:5000/graphql";
-    return "http://10.0.0.34:5000/graphql";
+    return "http://10.0.0.31:5000/graphql";
   }
 }

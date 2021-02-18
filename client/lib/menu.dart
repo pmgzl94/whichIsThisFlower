@@ -22,7 +22,8 @@ final String getPicture = """
           },
           flowersPic {
             ... on GetFlowersPic {
-                flowersPic
+                flowersPic,
+                flowerNames
               }
           }
       }
@@ -154,6 +155,10 @@ class CreateMyObs extends StatefulWidget
 class MyObsState extends State<CreateMyObs>
 {
   List<String> pics = [];
+  List<String> flowerNames = [];
+  List<String> imageData = [];
+  bool dataLoaded = false;
+
 
     @override
     void dispose() {
@@ -175,7 +180,7 @@ class MyObsState extends State<CreateMyObs>
             centerTitle: true,
             automaticallyImplyLeading: false,
             actions: <Widget>[
-Mutation(
+              Mutation(
                   options: MutationOptions(
                     documentNode: gql(getPicture),
                     update: (Cache cache, QueryResult result) {
@@ -185,69 +190,117 @@ Mutation(
                       print("error");
                       print(result);
                     },
-                    onCompleted: (dynamic resultData) {
+                    onCompleted: (dynamic resultData) async {
                       print("on completed");
                       print(resultData.data);
-                    if (resultData != null && resultData.data["getPicture"] != null && resultData.data["getPicture"]["flowersPic"] != null) {
-                        print(resultData.data["getPicture"]["flowersPic"]["flowersPic"]);
-			var obj = resultData.data["getPicture"]["flowersPic"]["flowersPic"];
-   			List<String> resultList = [];
-			for (int i = 0; i < obj.length; i++) {
-			    resultList.add(obj[i]);
-			}
-                        print(pics);
-                        print(resultList);
-                        print("REFRESH");
-		      setState(() {
-      			  pics = resultList;
-    		      });
-                    } else {
-                      print("coudn't find picture");
-                      dialog(context, "image not received");
-                      showDialog<AlertDialog>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return dialog(context, "image not received");
-                      });
-                    }
+                      if (resultData != null && resultData.data["getPicture"] != null && resultData.data["getPicture"]["flowersPic"] != null) {
+                          print(resultData.data["getPicture"]["flowersPic"]["flowersPic"]);
+                          var obj = resultData.data["getPicture"]["flowersPic"]["flowersPic"];
+                          var obj2 = resultData.data["getPicture"]["flowersPic"]["flowerNames"];
+                          List<String> resultList = [];
+                          List<String> names = [];
+                          for (int i = 0; i < obj.length; i++) {
+                              resultList.add(obj[i]);
+                              names.add(obj2[i]);
+                          }
+                          print(pics);
+                          print(resultList);
+                          print("REFRESH");
+                          setState(() {
+                              pics = resultList;
+                              flowerNames = names;
+                          });
+                          String url = getUri();
+                          url = url.substring(0, url.length - 7) + "download/";
+
+                          var documentDirectory = await getApplicationDocumentsDirectory();
+                          var firstPath = documentDirectory.path + "/images";
+                          await Directory(firstPath).create(recursive: true);
+
+                          List<String> filepaths = [];
+                          for (var i = 0; i < pics.length; i++) {
+                            var response = await get(url + pics[i]);
+                            var filePathAndName = documentDirectory.path + '/images/pic$i.jpg';
+                            File file2 = new File(filePathAndName);
+                            file2.writeAsBytesSync(response.bodyBytes);
+                            filepaths.add(filePathAndName);
+                          }
+                          setState(() {
+                            imageData= filepaths;
+                            dataLoaded = true;
+                          });
+                          print("done!!");
+                          dataLoaded = true;
+
+                      }
+                      else {
+                        print("coudn't find picture");
+                        dialog(context, "image not received");
+                        showDialog<AlertDialog>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return dialog(context, "image not received");
+                          }
+                        );
+                      }
                     }
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {
                     return IconButton(
-                  icon: Icon(
-                    Icons.refresh_outlined,
-                    color: Colors.black,
-                  ),
-                  onPressed: () async {
-                            print("GET TOKENNNNNNN");
-                            print(widget.token);
-                            print("GET ENDED");
-                            runMutation({"token": widget.token});
-		    print("PRESSED");
-                  },
-            );
+                      icon: Icon(
+                        Icons.refresh_outlined,
+                        color: Colors.black,
+                      ),
+                      onPressed: () async {
+                        print("GET TOKENNNNNNN");
+                        print(widget.token);
+                        print("GET ENDED");
+                        runMutation({"token": widget.token});
+                        print("PRESSED");
+                      },
+                    );
                   })
+            ],
+      ),
+    //  DisplayPictures2(names: pics)
+	    body: dataLoaded ? ListView.builder(
+        // padding: const EdgeInsets.all(8),
+        itemCount: pics.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding( 
+            padding: EdgeInsets.all(20),
+            child: Column(
+              children: <Widget>[
+                Text(flowerNames[index]),
+                // Image.network("https://i.imgur.com/xl0jdfS.jpg"),
+                Image.file(File(imageData[index]))
               ],
             ),
-	    
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 1,
-                children: List.generate(pics.length, (index) {
-                  return Padding(
-                            padding: EdgeInsets.only(top: 25),
-        child: DisplayPictures(name: pics[index]));
-                }),
-              ),
-            )
-          ],
-        ),
+          );
+        }
+      ) 
+      : CircularProgressIndicator(
+        backgroundColor: Colors.cyan,
+        strokeWidth: 5,
+      )
+        // body: Column(
+        //   children: <Widget>[
+        //     Expanded(
+        //       child: GridView.count(
+        //         crossAxisCount: 1,
+        //         children: List.generate(pics.length, (index) {
+        //           return Padding(
+        //                     padding: EdgeInsets.only(top: 25),
+        // child: DisplayPictures(name: pics[index]));
+        //         }),
+        //       ),
+        //     )
+        //   ],
+        // ),
+
     );
   }
 }
-
 
 class DisplayPictures extends StatefulWidget
 {
@@ -290,34 +343,35 @@ class _DisplayPicturesState extends State<DisplayPictures>
   @override
   Widget build(BuildContext context) {
     if (dataLoaded) {
-      return Scaffold(
-        body: new Container(
-	  alignment: Alignment.center,
-	  margin: EdgeInsets.only(left: 40.0, right: 40.0),
-	  // padding: EdgeInsets.all(30),
-                    decoration: new BoxDecoration(
-                        // color: Colors.black, //Color.fromRGBO(0, 180, 0, 0.6),
-			borderRadius: new BorderRadius.only(
-                    	   topLeft:  const  Radius.circular(40.0),
-                    	   topRight: const  Radius.circular(40.0),
-                    	   bottomLeft:  const  Radius.circular(40.0),
-                    	   bottomRight: const  Radius.circular(40.0)
-		    	)
-                    ),
-                  child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image.file(File(imageData)),
-                        Padding(
-                            padding: EdgeInsets.only(top: 10.0),
-                                    child: new Text(
-                                      widget.name,
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold,
-					  // color: Colors.white
-					  ),
-                                    ),
+        return Scaffold(
+            resizeToAvoidBottomPadding: false,
+            body: new Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(left: 40.0, right: 40.0),
+        // padding: EdgeInsets.all(30),
+                        decoration: new BoxDecoration(
+                            // color: Colors.black, //Color.fromRGBO(0, 180, 0, 0.6),
+          borderRadius: new BorderRadius.only(
+                            topLeft:  const  Radius.circular(40.0),
+                            topRight: const  Radius.circular(40.0),
+                            bottomLeft:  const  Radius.circular(40.0),
+                            bottomRight: const  Radius.circular(40.0)
+              )
+                        ),
+                      child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.file(File(imageData)),
+                            Padding(
+                                padding: EdgeInsets.only(top: 10.0),
+                                        child: new Text(
+                                          widget.name,
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold,
+                // color: Colors.white
+                ),
+              ),
 				    )
             ],
  	  ),
