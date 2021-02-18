@@ -133,16 +133,17 @@ class GetPictures(graphene.Mutation):
 
     ok = graphene.Field(ObjectTypes.ProtectedUnion)
     flowersPic = graphene.Field(ObjectTypes.ProtectedUnion)
+    flowerNames = graphene.Field(ObjectTypes.ProtectedUnion)
 
     @classmethod
     @mutation_jwt_required
     def mutate(cls, _, info):
         print("\n[MUTATION]: [GetPictures]: mutate", file=sys.stderr)
         username = get_jwt_identity()
-        flowersPic = db.dbMan.getUserImages(username)
+        flowersPic, flowerNames = db.dbMan.getUserImages(username)
         print("images:", flowersPic, file=sys.stderr)
 
-        return GetPictures(ok=ObjectTypes.IsOk(ok=True), flowersPic=ObjectTypes.GetFlowersPic(flowersPic=flowersPic))
+        return GetPictures(ok=ObjectTypes.IsOk(ok=True), flowersPic=ObjectTypes.GetFlowersPic(flowersPic=flowersPic,flowerNames=flowerNames))
 
 
 

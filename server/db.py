@@ -152,16 +152,19 @@ class dbManager():
             print("[DBMANAGER]: [getUserImages]: user : {}".format(name), file=sys.stderr)
         images = self.imagePosts.find({"user": name})
         listImages = []
+        listFlowerNames = []
 
         if self.debug == True:
             if images != None:
                 for image in images:
                     print (image, file=sys.stderr)
+                    # print(f"id = {image['flowerName']}")
                     listImages.append(image["imageName"])
+                    listFlowerNames.append(image["flowerName"])
                 # for image in listImages:
                 #     print (image, file=sys.stderr)
             print("[DBMANAGER]: [getImages]: END", file=sys.stderr)
-        return listImages
+        return listImages, listFlowerNames
 
 
     def getNbImage(self):
