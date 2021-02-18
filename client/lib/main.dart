@@ -10,15 +10,26 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
-
+import 'package:http/http.dart' as http;
 // void main() {
+
+// Future<http.Response> fetchAlbum() {
+//   return http.get('http://10.41.179.12:5000/graphql%27);
+// }
+
+// Future<http.Response> main() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
   final firstCamera = cameras.first;
-
-  runApp(MyApp(camera: firstCamera));
+  print("hello4");
+  // final reponse = await http.get('http://10.41.179.12:5000/graphql');
+  final reponse = await http.get('http://10.0.0.31:5000/graphql');
+  // final reponse = await http.get('https://jsonplaceholder.typicode.com/albums/');
   print("hello");
+  print(reponse.statusCode);
+  print(reponse);
+  runApp(MyApp(camera: firstCamera));
 }
 
 //carefull alignment is between 1 and -1

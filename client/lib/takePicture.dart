@@ -197,9 +197,9 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                 //     await directory.create(recursive: true);
                                 // }
                                 ///////saving file
-                                final result = await ImageGallerySaver.saveFile(path, isReturnPathOfIOS: true); // check why it's failing
+                                // final result = await ImageGallerySaver.saveFile(path, isReturnPathOfIOS: true); // check why it's failing
                                 print("RESULT HERE :");
-                                print(result);
+                                // print(result);
                                 /////////
 
                                 var multipartFile = MultipartFile.fromBytes(
