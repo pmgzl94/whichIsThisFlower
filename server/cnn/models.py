@@ -169,6 +169,56 @@ def zf5model(path=example1):
     # print(return_response(output))
     return return_response(output)
 
+def flowerAndFunModel(path=example1):
+
+    #it crops by 224x224 by default
+    print(f"Model load this picture as input: {path}")
+    input = iml.ImageLoader.getOutputNpArray(path, crop=True, crop_size=(0, 0, 150, 150))
+    dir = "./tensorfiles"
+
+    if not os.path.exists(dir + "/" + "ff2c1" + ".ws1.npy"):
+        layerContainer = [
+            #3, 150, 150
+            conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(32, 3, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(3, 150, 150)),
+            
+            #32, 74, 74
+            conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(64, 32, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(32, 74, 74)),
+        
+            #64, 36, 36
+            conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(128, 64, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(64, 36, 36)),
+            
+            #128, 17, 17
+            fcnetwork.FCLayer(optimizer=adam.AdamFC(), arch=[36992, 512, 128], activation_func="relu", is_classifier=False),
+            
+            softmax.SoftmaxLayer(optimizer=adam.AdamFC(), arch=[128, 5])
+        ]
+        ffM = model.Model(learning_rate=None, dataset=None, layerContainer=layerContainer)
+        ffM.saveLayers(["ff2c1", "ff2c2", "ff2c3", "ff2fcn1", "ff2softm"])
+
+    layerContainer = [
+        conv.ConvLayer(optimizer=adam.AdamConv(), load_path="ff2c1", filtershape=(32, 3, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(3, 150, 150)),
+        
+        #32, 74, 74
+        conv.ConvLayer(optimizer=adam.AdamConv(), load_path="ff2c2", filtershape=(64, 32, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(32, 74, 74)),
+        
+        #64, 36, 36
+        conv.ConvLayer(optimizer=adam.AdamConv(), load_path="ff2c3", filtershape=(128, 64, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(64, 36, 36)),
+        
+        #128, 17, 17
+        fcnetwork.FCLayer(optimizer=adam.AdamFC(), load_path="ff2fcn1", arch=[36992, 512, 128], activation_func="relu", is_classifier=False),
+        
+        softmax.SoftmaxLayer(optimizer=adam.AdamFC(), load_path="ff2softm", arch=[128, 5])
+    ]
+
+    ffM = model.Model(learning_rate=None, dataset=None, layerContainer=layerContainer)
+
+    try:
+        output = ffM.compute(input)
+    except:
+        print("error occured in zf5 model")
+        return "error"
+    return return_response(output)
+
 # print(zf5model())
 # overfeat()
 # a = numpy.array(

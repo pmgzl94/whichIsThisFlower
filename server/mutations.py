@@ -119,7 +119,7 @@ class TakePicture(graphene.Mutation):
         except:
             print("FAILED TO WRITE IMAGE")
 
-        flowerName = cnn.models.zf5model(fullPath)
+        flowerName = cnn.models.flowerAndFunModel(fullPath)
         # flowerName = "It is not a flower" # remove
         username = get_jwt_identity()
         comment = "none"
