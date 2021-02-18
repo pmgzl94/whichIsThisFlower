@@ -3,9 +3,12 @@ import image_loader as iml
 import model
 import pool
 import fcnetwork
+import softmax
 from evaluation import evaluate_test_data, evaluate_test_flower_verbose
 
 import os
+
+import adam
 
 rp_dataset = "./dataset/"
 
@@ -56,16 +59,16 @@ def flowerAndFun(path=example1):
 
     layerContainer = [
         #3, 150, 150
-        conv.ConvLayer(filtershape=(32, 3, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(3, 150, 150)),
+        conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(32, 3, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(3, 150, 150)),
         
         #32, 74, 74
-        conv.ConvLayer(filtershape=(64, 32, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(32, 74, 74)),
+        conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(64, 32, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(32, 74, 74)),
       
         #64, 36, 36
-        conv.ConvLayer(filtershape=(128, 64, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(64, 36, 36)),
+        conv.ConvLayer(optimizer=adam.AdamConv(), filtershape=(128, 64, 3, 3), stride_length=1, pool=pool.PoolLayer(pool_size=(2, 2), stride_length=2), ishape=(64, 36, 36)),
         
         #128, 17, 17
-        fcnetwork.FCLayer(arch=[36992, 512, 128, 5])
+        fcnetwork.FCLayer(optimizer=adam.AdamFC(), arch=[36992, 512, 128, 5])
     ]
     learning_rate = 0.0001
 
@@ -79,6 +82,10 @@ def flowerAndFun(path=example1):
     # print(f"output = {output}")
 
 # flowerAndFun()
+
+##flower and fun 2 here
+
+# flowerAndFun2()
 
 def model_for_mnist():
 
@@ -157,7 +164,7 @@ def zf5model(path=example1):
     try:
         output = zf5.compute(input)
     except:
-        print("error occured in zf5 mode")
+        print("error occured in zf5 model")
         return "error"
     # print(return_response(output))
     return return_response(output)

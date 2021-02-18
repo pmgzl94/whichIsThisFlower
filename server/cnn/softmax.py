@@ -1,39 +1,29 @@
-import numpy as np
-import os
-
-from tensor.Tensor import TensorFileManager
 from layer import LayerInterface
-import activation_functions
+import numpy as np
+from tensor.Tensor import TensorFileManager
+import os
+from layer import LayerInterface
+from activation_functions import stable_softmax
 from adam import AdamFC
 
-#mean squared error
-def mse(output, expec_o):
-    return np.sum((expec_o - output)**2) /len(output)
 
-#cost functions
-def basic_cost_derivative(y, a): #where y is the expected result
-    return a - y
+def cross_entropy(expected_res, z):
+    return np.sum(-expected_res * np.log(z))
 
-class FCLayer(LayerInterface):
-    # def __init__(self, optimizer=None, arch=[784, 100, 10], load_path=None, is_classifier=True):
-    def __init__(self, optimizer=None, load_path=None, arch=[784, 100, 10], activation_func="sigmoid", is_classifier=True):
+class SoftmaxLayer(LayerInterface):
+    def __init__(self, optimizer=None, load_path=None, arch=[784, 100]):
         self.weights = []
         self.biases  = []
 
         self.optimizer = optimizer
 
-        self.activation_func = activation_func
-
-        self.afct, self.dafct = activation_functions.map_function[activation_func]
-        self.is_classifier = is_classifier
-
-        self.nb_layer = len(arch)
+        self.nb_layer = len(arch) ## has to be equal of 2
         self.nb_set_of_params = self.nb_layer - 1
 
         if load_path == None:
             for i in range(0, self.nb_set_of_params):
-                # set_of_weights = np.random.randn(*(arch[i+1], arch[i])) * np.sqrt(1/(arch[i]))
-                set_of_weights = np.random.randn(*(arch[i+1], arch[i])) * np.sqrt(2/(arch[i]))
+                # set_of_weights = np.random.randn(*(arch[i+1], arch[i])) 
+                set_of_weights = np.random.randn(*(arch[i+1], arch[i])) * np.sqrt(1/arch[i])
                 self.weights.append(set_of_weights)
                 self.biases.append(np.zeros(arch[i+1]))
         else:
@@ -74,38 +64,27 @@ class FCLayer(LayerInterface):
         self.a = [x]
         for i in range(0, self.nb_set_of_params):
             z = np.dot(x, self.weights[i].T) + self.biases[i]
-            x = self.afct(z)
+            x = stable_softmax(z)
             if learn == True:
                 self.z.append(z)
                 self.a.append(x)
         return x
     def getType(self):
-        return "Dense"
+        return "SoftmaxLayer"
 
     def learn(self, expected_res): #expected res or delta
-        # expected_res = expected_res.flatten() #for the mnist dataset
-        nabla_w = []
-        nabla_b = []
-        delta = None
-        if self.is_classifier:
-            delta = basic_cost_derivative(expected_res, self.a[-1]) * self.dafct(self.z[-1])
-            nabla_w = [np.outer(delta, self.a[-2].T)]
-            nabla_b = [delta]
-        else:
-            #expected res = delta . previous_weights
-            delta = expected_res * self.dafct(self.z[-1]) #delta = delta+1. w.T(+1)
-            nabla_w = [np.outer(delta, self.a[-2].T)]
-            nabla_b = [delta]
+        # find the delta according to this video: 
+        # https://www.youtube.com/watch?v=znqbtL0fRA0
 
-        for index_set_param in range(self.nb_set_of_params - 2, -1, -1):
-            delta = np.dot(delta, self.weights[index_set_param + 1]) * self.dafct(self.z[index_set_param])
-            nabla_w.insert(0, np.outer(delta, self.a[index_set_param].T))
-            nabla_b.insert(0, delta)
-        
+        delta = self.a[-1] - expected_res #partial E/ partial zk
+
+        nabla_w = [np.outer(delta, self.a[-2].T)]
+        nabla_b = [delta]
+
         self.lastDelta = delta
         self.sumUpNablas(nabla_w, nabla_b)
         
-        return mse(self.a[-1], expected_res)
+        return cross_entropy(expected_res, self.a[-1])
 
     def resetLearningVars(self):
         self.sum_of_nabla_w = []
@@ -133,7 +112,10 @@ class FCLayer(LayerInterface):
     
     #used for the sgd
     def sumUpNablas(self, nabla_w, nabla_b):
+        #must be divided by the number of training input within the mini batch
         for i in range(0, self.nb_set_of_params):
+            # print(f'shapes {self.sum_of_nabla_w[i].shape}, {nabla_w[i].shape}')
+            # self.sum_of_nabla_w[i] + nabla_w[i]
             self.sum_of_nabla_w[i] = self.sum_of_nabla_w[i] + nabla_w[i]
             self.sum_of_nabla_b[i] = self.sum_of_nabla_b[i] + nabla_b[i]
 
@@ -144,9 +126,7 @@ class FCLayer(LayerInterface):
             for i in range(len(self.sum_of_nabla_w)):
                 mean_gw.append(self.sum_of_nabla_w[i] / batch_size)
                 mean_gb.append(self.sum_of_nabla_b[i] / batch_size)
-
             self.weights, self.biases = self.optimizer.update(self.weights, self.biases, mean_gw, mean_gb)
-
         else:
             for i in range(self.nb_set_of_params):
                 self.weights[i] = self.weights[i] - (learning_rate/batch_size) * self.sum_of_nabla_w[i]
@@ -159,10 +139,3 @@ class FCLayer(LayerInterface):
     
     def getLastDelta(self):
         return np.dot(self.lastDelta, self.weights[0])
-
-    def getNablas(self):
-        return self.sum_of_nabla_w, self.sum_of_nabla_b
-
-# a = FcLayer(arch=[2, 3, 2])
-
-# a.learn(np.array([1, 2]), np.array([1, 0]))

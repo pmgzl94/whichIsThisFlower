@@ -64,13 +64,13 @@ class ConvLayer(LayerInterface):
 
                 nb_neurons = functools.reduce(lambda a,b : a*b,list(ishape))
 
-                self.filters = numpy.random.rand(*filtershape)
+                # self.filters = numpy.random.rand(*filtershape)
                 # if filtershape == (96, 3, 7, 7):
                 #     print(f"filters = {self.filters}")
                 #     TensorFileManager().save("filter1", self.filters)
                 # self.filters = numpy.random.uniform(-1, 1, filtershape)
 
-                self.filters = numpy.random.randn(*filtershape) * numpy.sqrt(2/nb_neurons)
+                self.filters = numpy.random.randn(*filtershape) * numpy.sqrt(2/nb_neurons) # for relu
 
                 # self.biases = numpy.ndarray((nb_filters,))
                 # self.biases = numpy.random.uniform(-1, 1, (nb_filters,))
@@ -131,11 +131,8 @@ class ConvLayer(LayerInterface):
         if self.padding != 0:
             # input = numpy.pad(input, self.padding)
             input = numpy.pad(input, ((0, 0), (1, 1), (1, 1)))
-            # print(f"input shape = {input.shape}")
-
+        
         featuremaps = self.slidingWindow(input)
-
-        # print(featuremaps.shape)
 
         if self.pool is not None:
             res = self.pool.compute(featuremaps)
@@ -177,11 +174,9 @@ class ConvLayer(LayerInterface):
         
         # get the weight's gradient
         self.nabla_w = numpy.tensordot(delta, self.slicedInput)
-        print(delta.shape)
         self.nabla_b = numpy.sum(delta, axis=(1, 2))
 
         self.sumUpNablas(self.nabla_w, self.nabla_b)
-
 
         self.lastDelta = delta
 
