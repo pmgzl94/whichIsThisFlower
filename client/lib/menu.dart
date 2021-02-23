@@ -220,7 +220,7 @@ class MyObsState extends State<CreateMyObs>
                           List<String> filepaths = [];
                           for (var i = 0; i < pics.length; i++) {
                             var response = await get(url + pics[i]);
-                            var filePathAndName = documentDirectory.path + '/images/pic$i.jpg';
+                            var filePathAndName = documentDirectory.path + '/images/${pics[i]}.jpg';
                             File file2 = new File(filePathAndName);
                             file2.writeAsBytesSync(response.bodyBytes);
                             filepaths.add(filePathAndName);
