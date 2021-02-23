@@ -9,6 +9,7 @@ class GetFlowerName(graphene.ObjectType):
 
 class GetFlowersPic(graphene.ObjectType):
     flowersPic = graphene.List(graphene.String)
+    flowerNames = graphene.List(graphene.String)
 
 class MessageField(graphene.ObjectType):
     message=graphene.String()
