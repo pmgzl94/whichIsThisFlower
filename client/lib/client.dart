@@ -42,7 +42,6 @@ ValueNotifier<GraphQLClient> clientFor({ @required String uri, String subscripti
 }
 
 String getUri() {
-  // print("uri is 10.0.0.34:5000/graphql");
   // return "http://10.0.0.34:5000/graphql";
   if (Platform.isAndroid) {
     return "http://10.0.2.2:5000/graphql";

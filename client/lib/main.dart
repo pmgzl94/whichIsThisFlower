@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-// import 'package:image_picker/image_picker.dart';
 import './createUser.dart';
 import './client.dart';
 import './login.dart';
@@ -11,13 +10,8 @@ import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
-// void main() {
 
-// Future<http.Response> fetchAlbum() {
-//   return http.get('http://10.41.179.12:5000/graphql%27);
-// }
 
-// Future<http.Response> main() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
@@ -25,7 +19,6 @@ Future<void> main() async {
   print("hello4");
   // final reponse = await http.get('http://10.41.179.12:5000/graphql');
   final reponse = await http.get('http://10.0.0.31:5000/graphql');
-  // final reponse = await http.get('https://jsonplaceholder.typicode.com/albums/');
   print("hello");
   print(reponse.statusCode);
   print(reponse);
@@ -49,8 +42,8 @@ class MyApp extends StatelessWidget {
       // client: clientFor(uri: "http://10.0.2.2:5000/graphql"),
       client: clientFor(uri: getUri()),
       child: MaterialApp(
-      	    debugShowCheckedModeBanner: false,
-  	    title: 'What is this Flower',
+            debugShowCheckedModeBanner: false,
+            title: 'What is this Flower',
             theme: ThemeData(
               primarySwatch: Colors.green,
               // primarySwatch: Colors.white,
@@ -83,7 +76,6 @@ class MyApp extends StatelessWidget {
               ),
               backgroundColor: Colors.white,
               // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
-              // body: Center(child: RawWords()),
             ),
           )
     );

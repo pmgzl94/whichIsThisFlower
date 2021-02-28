@@ -9,42 +9,6 @@ final String createUser = """
   }
 """;
 
-// class CreateUserQuery extends StatelessWidget {
-//   final String username;
-//   final String password;
-
-//   CreateUserQuery({@required this.username, @required this.password});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Mutation(
-//       options: MutationOptions(
-//           documentNode: gql(createUser),
-//           variables: {"username": username, "password": password}
-//       ),
-//       builder: (RunMutation result, QueryResult,
-//         FetchMore fetchMore}) {
-//         if (result.hasException) {
-//           return Text(result.exception.toString());
-//         }
-//         if (result.loading && result.data == null) {
-//           return const Center(
-//             child: CircularProgressIndicator(),
-//           );
-//         }
-//         if (result.data["ok"] == false) {
-//           return Text("Username already exists");
-//         }
-//         else {
-//           //pop Navigator to get back to login page
-//           return Text("User sucessfully created");
-
-//         }
-//       }
-//     );
-//   }
-// }
-
 AlertDialog a(context, mssg) {
   return AlertDialog(
       title: Text('Error occured'),

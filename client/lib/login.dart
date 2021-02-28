@@ -3,7 +3,6 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:camera/camera.dart';
 import './menu.dart';
 
-//  mutation login(\$username: String!, \$password: String!) {
 final String login = """
   mutation Login(\$username: String!, \$password: String!) {
       auth(username: \$username, password: \$password) {
@@ -163,7 +162,7 @@ class CreateLoginState extends State<CreateLogin>
                       if (resultData != null && resultData.data["auth"] != null && resultData.data["auth"]["accessToken"] != null) {
                         print(resultData.data["auth"]["accessToken"]);
 
-			String str = mc1.text;
+                        String str = mc1.text;
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => Menu(token: resultData.data["auth"]["accessToken"], username: str,
@@ -189,7 +188,6 @@ class CreateLoginState extends State<CreateLogin>
                           style: ElevatedButton.styleFrom(
                                shape: RoundedRectangleBorder(
                                  borderRadius: BorderRadius.circular(20),
-                                 // borderRadius: BorderRadius.circular(10),
                                ),
                                minimumSize: Size(350, 40),
                           //      primary: Color.fromRGBO(0, 102, 0, 0.6),

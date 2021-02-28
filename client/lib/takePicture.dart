@@ -94,20 +94,6 @@ class CreateTakePictureState extends State<CreateTakePicture>
             title: Text('Camera'),
             automaticallyImplyLeading: false,
             centerTitle: true,
-            //   actions: <Widget>[
-            //     IconButton(
-            //       icon: Icon(
-            //         Icons.photo_camera,
-            //         // color: Colors.white,
-            //       ),
-            //       onPressed: () {
-            //         Navigator.push(
-            //           context,
-            //           MaterialPageRoute(builder: (context) => CreateTakePicture()),
-            //         );
-            //       },
-            //     ),
-            //   ],
             ),
           body: Mutation(
             options: MutationOptions(
@@ -199,7 +185,7 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                 ///////saving file
                                 // final result = await ImageGallerySaver.saveFile(path, isReturnPathOfIOS: true); // check why it's failing
                                 print("RESULT HERE :");
-                                // print(result);
+                                print(result);
                                 /////////
 
                                 var multipartFile = MultipartFile.fromBytes(
@@ -248,8 +234,6 @@ class DisplayPictureScreen extends StatelessWidget {
                   onPressed:() => Navigator.maybePop(context, false),
                 ),
             ),
-            // The image is stored as a file on the device. Use the `Image.file`
-            // constructor with the given path to display the image.
             body: Image.file(File(imagePath)),
         );
     }

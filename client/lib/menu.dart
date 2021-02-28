@@ -4,7 +4,6 @@ import 'package:camera/camera.dart';
 import './seePictures.dart';
 import './takePicture.dart';
 import './createUser.dart';
-// import './login.dart';
 import './profil.dart';
 import './client.dart';
 import 'package:http/http.dart' show get;
@@ -99,28 +98,7 @@ void _selectedTab(int index) {
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        // appBar: AppBar(
-        //     title: Text('Menu'),
-        //       actions: <Widget>[
-        //         IconButton(
-        //           icon: Icon(
-        //             Icons.photo_camera,
-        //             // color: Colors.white,
-        //           ),
-        //           onPressed: () {
-        //             Navigator.push(
-        //               context,
-        //               MaterialPageRoute(builder: (context) => CreateTakePicture(token: widget.token,
-        //                                              camera: widget.camera
-        //                   )),
-        //             );
-        //           },
-        //         ),
-        //       ],
-        //     ),
-
         body: originalList[tabIndex],//IndexedStack(index: tabIndex, children: listScreens),
-        // body: CreateMenuButton(token: widget.token),
         bottomNavigationBar: BottomNavigationBar(
             currentIndex: tabIndex,
             onTap: _selectedTab,
@@ -263,11 +241,11 @@ class MyObsState extends State<CreateMyObs>
             ],
       ),
     //  DisplayPictures2(names: pics)
-	    body: dataLoaded ? ListView.builder(
+            body: dataLoaded ? ListView.builder(
         // padding: const EdgeInsets.all(8),
         itemCount: pics.length,
         itemBuilder: (BuildContext context, int index) {
-          return Padding( 
+          return Padding(
             padding: EdgeInsets.all(20),
             child: Column(
               children: <Widget>[
@@ -278,26 +256,11 @@ class MyObsState extends State<CreateMyObs>
             ),
           );
         }
-      ) 
+      )
       : CircularProgressIndicator(
         backgroundColor: Colors.cyan,
         strokeWidth: 5,
       )
-        // body: Column(
-        //   children: <Widget>[
-        //     Expanded(
-        //       child: GridView.count(
-        //         crossAxisCount: 1,
-        //         children: List.generate(pics.length, (index) {
-        //           return Padding(
-        //                     padding: EdgeInsets.only(top: 25),
-        // child: DisplayPictures(name: pics[index]));
-        //         }),
-        //       ),
-        //     )
-        //   ],
-        // ),
-
     );
   }
 }
@@ -326,7 +289,7 @@ class _DisplayPicturesState extends State<DisplayPictures>
     var response = await get(url);
     var documentDirectory = await getApplicationDocumentsDirectory();
     var firstPath = documentDirectory.path + "/images";
-    var filePathAndName = documentDirectory.path + '/images/pic.jpg'; 
+    var filePathAndName = documentDirectory.path + '/images/pic.jpg';
     await Directory(firstPath).create(recursive: true);
     File file2 = new File(filePathAndName);
     file2.writeAsBytesSync(response.bodyBytes);
@@ -372,10 +335,10 @@ class _DisplayPicturesState extends State<DisplayPictures>
                 // color: Colors.white
                 ),
               ),
-				    )
+                                    )
             ],
- 	  ),
- 	),
+          ),
+        ),
       );
     } else {
       return CircularProgressIndicator(
