@@ -157,82 +157,81 @@ class CreateProfilState extends State<CreateProfil>
         ),
         backgroundColor: Colors.white,
         // backgroundColor: Color.fromRGBO(0, 200, 0, 0.6),
-    );
-  }
+      );
+    }
 
 
-  Widget _getActionButtons() {
-    return Padding(
-      padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 45.0),
-      child: new Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Container(
-                  child: new RaisedButton(
-                child: new Text("Save"),
-                textColor: Colors.white,
-                color: Colors.green,
-                onPressed: () {
-                  setState(() {
-                    _status = true;
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  });
-                },
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(20.0)),
-              )),
+    Widget _getActionButtons() {
+      return Padding(
+        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 45.0),
+        child: new Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                child: Container(
+                    child: new RaisedButton(
+                  child: new Text("Save"),
+                  textColor: Colors.white,
+                  color: Colors.green,
+                  onPressed: () {
+                    setState(() {
+                      _status = true;
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    });
+                  },
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20.0)),
+                )),
+              ),
+              flex: 2,
             ),
-            flex: 2,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Container(
-                  child: new RaisedButton(
-                child: new Text("Cancel"),
-                textColor: Colors.white,
-                color: Colors.red,
-                onPressed: () {
-                  setState(() {
-                    _status = true;
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  });
-                },
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(20.0)),
-              )),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 10.0),
+                child: Container(
+                    child: new RaisedButton(
+                  child: new Text("Cancel"),
+                  textColor: Colors.white,
+                  color: Colors.red,
+                  onPressed: () {
+                    setState(() {
+                      _status = true;
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    });
+                  },
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20.0)),
+                )),
+              ),
+              flex: 2,
             ),
-            flex: 2,
-          ),
-        ],
-      ),
-    );
-}
-
-Widget _getEditIcon() {
-    return new GestureDetector(
-      child: new CircleAvatar(
-        // backgroundColor: Colors.red,
-        radius: 14.0,
-        child: new Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 16.0,
+          ],
         ),
-      ),
-      onTap: () {
-        setState(() {
-          _status = false;
-        });
-      },
-);
-}
+      );
+    }
 
-
+    Widget _getEditIcon()
+    {
+        return new GestureDetector(
+          child: new CircleAvatar(
+            // backgroundColor: Colors.red,
+            radius: 14.0,
+            child: new Icon(
+              Icons.edit,
+              color: Colors.white,
+              size: 16.0,
+            ),
+          ),
+          onTap: () {
+            setState(() {
+              _status = false;
+            });
+          },
+        );
+    }
 }
 
 class CreateLogoutButton extends StatefulWidget

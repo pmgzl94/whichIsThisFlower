@@ -124,7 +124,6 @@ class CreateTakePictureState extends State<CreateTakePicture>
                       });
                     }
 
-
                     // to change, add return to picture
                     Navigator.push(
                         context,

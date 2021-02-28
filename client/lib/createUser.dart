@@ -233,28 +233,28 @@ class ButtonCreateUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                               shape: RoundedRectangleBorder(
-                                 borderRadius: BorderRadius.circular(20),
-                               ),
-                               primary: Colors.white,
-                               onPrimary: Colors.green,
-                               textStyle: TextStyle(
-                                    // fontSize: 30,
-                                    fontWeight: FontWeight.bold
-                               ),
-                               minimumSize: Size(350, 40),
-                          ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CreateUser()),
-                );
-              },
-              child: Text('Sign Up'),
-              )
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      primary: Colors.white,
+                      onPrimary: Colors.green,
+                      textStyle: TextStyle(
+                          // fontSize: 30,
+                          fontWeight: FontWeight.bold
+                      ),
+                      minimumSize: Size(350, 40),
+              ),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateUser()),
             );
+          },
+          child: Text('Sign Up'),
+          )
+        );
   }
 }

@@ -211,13 +211,13 @@ class ButtonCreateLogin extends StatelessWidget
   @override
   Widget build(BuildContext context) {
       return ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CreateLogin()),
-                );
-              },
-              child: Text('Login'),
-            );
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateLogin()),
+              );
+            },
+            child: Text('Login'),
+          );
   }
 }
