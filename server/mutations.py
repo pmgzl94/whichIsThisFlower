@@ -1,5 +1,5 @@
+import sys
 import graphene
-import ObjectTypes
 from flask_graphql_auth import (
     get_jwt_identity,
     get_raw_jwt,
@@ -8,22 +8,17 @@ from flask_graphql_auth import (
     mutation_jwt_refresh_token_required,
     mutation_jwt_required,
 )
+from graphql import GraphQLError
+from graphene_file_upload.scalars import Upload
+
+import ObjectTypes
 import SessionManager
 import db
-import sys
 sys.path.insert(1, './cnn/')
 # sys.path.insert(2, './cnn/mnist')
 
 import cnn.models
-
-
-from graphql import GraphQLError
-
-# from cnn.models
 import cnn
-
-from base64 import b64encode, b64decode
-from graphene_file_upload.scalars import Upload
 
 #mutation object
 # https://docs.graphene-python.org/en/latest/types/mutations/
@@ -48,7 +43,6 @@ class CreateUser(graphene.Mutation):
             print(e, file=sys.stderr)
             ok = False
             raise GraphQLError(e)
-        #call db
         return CreateUser(person=person, ok=ok)
 
 
@@ -67,16 +61,13 @@ class AuthMutation(graphene.Mutation):
         try:
             dbUser = db.dbMan.getUser(username)
             if dbUser == None or password != dbUser["password"]:
-                raise GraphQLError("[MUTATION]: [AuthMutation]: wrong password")#raise or print?
+                raise GraphQLError("[MUTATION]: [AuthMutation]: wrong password")
         except Exception as e:
             print(e, file=sys.stderr)
             raise GraphQLError(e)
-        #call db or raise event
         tok = create_access_token(username)
         refrshTok = create_refresh_token(username)
         SessionManager.session.addNewSession(username, tok)
-        # print(info.context["user"])
-        # info.context["username"] = username
         return AuthMutation(
             access_token=tok,
             refresh_token=refrshTok,
@@ -104,7 +95,6 @@ class TakePicture(graphene.Mutation):
 
     ok = graphene.Field(ObjectTypes.ProtectedUnion)
     flowerName = graphene.Field(ObjectTypes.ProtectedUnion)
-    # flowerName = graphene.Field(lambda: ObjectTypes.GetFlowerName)
 
     @classmethod
     @mutation_jwt_required
@@ -120,7 +110,6 @@ class TakePicture(graphene.Mutation):
             print("FAILED TO WRITE IMAGE")
 
         flowerName = cnn.models.flowerAndFunModel(fullPath)
-        # flowerName = "It is not a flower" # remove
         username = get_jwt_identity()
         comment = "none"
 

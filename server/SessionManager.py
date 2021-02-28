@@ -2,7 +2,7 @@ class SessionManager():
     def __init__(self):
         self.refs = {}
         self.expired = {}
-    
+
     def addNewSession(self, username, token):
         print("new registered user: {} = {} ".format(username, token))
         self.refs[username] = token
@@ -16,6 +16,6 @@ class SessionManager():
             self.refs.pop(username, None)
         else:
             raise Exception("token not exists")
-        
+
 
 session = SessionManager()

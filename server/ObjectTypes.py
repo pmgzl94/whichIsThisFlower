@@ -28,7 +28,6 @@ class ProtectedUnion(graphene.Union):
 
 class User(graphene.ObjectType):
     username = graphene.String()
-    # password = graphene.String()
 
 class GetToken(graphene.ObjectType):
     token = graphene.String()

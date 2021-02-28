@@ -14,7 +14,7 @@ import SessionManager
 from schema import schema
 
 app = Flask(__name__)
-app.config["JWT_SECRET_KEY"] = "aaaaaaaaaa"  # change this!
+app.config["JWT_SECRET_KEY"] = "jwt-secret-key"
 app.config["REFRESH_EXP_LENGTH"] = 30
 app.config["ACCESS_EXP_LENGTH"] = 10
 
