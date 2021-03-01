@@ -105,9 +105,9 @@ class TakePicture(graphene.Mutation):
             file = open(fullPath, "wb")
             file.write(image.read())
             file.close()
-            print("IMAGE WRITEN")
+            print("IMAGE WRITEN", file=sys.stderr)
         except:
-            print("FAILED TO WRITE IMAGE")
+            print("FAILED TO WRITE IMAGE", file=sys.stderr)
 
         flowerName = cnn.models.flowerAndFunModel(fullPath)
         username = get_jwt_identity()
@@ -122,17 +122,17 @@ class GetPictures(graphene.Mutation):
 
     ok = graphene.Field(ObjectTypes.ProtectedUnion)
     flowersPic = graphene.Field(ObjectTypes.ProtectedUnion)
-    flowerNames = graphene.Field(ObjectTypes.ProtectedUnion)
+    flowersName = graphene.Field(ObjectTypes.ProtectedUnion)
 
     @classmethod
     @mutation_jwt_required
     def mutate(cls, _, info):
         print("\n[MUTATION]: [GetPictures]: mutate", file=sys.stderr)
         username = get_jwt_identity()
-        flowersPic, flowerNames = db.dbMan.getUserImages(username)
-        print("images:", flowersPic, file=sys.stderr)
+        flowersPic, flowersName = db.dbMan.getUserImages(username)
+        print("images:", flowersPic, "\nnames:", flowersName, file=sys.stderr)
 
-        return GetPictures(ok=ObjectTypes.IsOk(ok=True), flowersPic=ObjectTypes.GetFlowersPic(flowersPic=flowersPic,flowerNames=flowerNames))
+        return GetPictures(ok=ObjectTypes.IsOk(ok=True), flowersPic=ObjectTypes.GetFlowersPic(flowersPic=flowersPic, flowersName=flowersName))
 
 
 
