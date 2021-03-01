@@ -177,16 +177,6 @@ class CreateTakePictureState extends State<CreateTakePicture>
                                 print(File(path).existsSync());
 
 
-                                // Directory directory = await getTemporaryDirectory();
-                                // if (!await directory.exists()) {
-                                //     await directory.create(recursive: true);
-                                // }
-                                ///////saving file
-                                // final result = await ImageGallerySaver.saveFile(path, isReturnPathOfIOS: true); // check why it's failing
-                                print("RESULT HERE :");
-                                print(result);
-                                /////////
-
                                 var multipartFile = MultipartFile.fromBytes(
                                     'photo',
                                     byteData,

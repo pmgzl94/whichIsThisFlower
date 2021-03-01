@@ -16,12 +16,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
   final firstCamera = cameras.first;
-  print("hello4");
-  // final reponse = await http.get('http://10.41.179.12:5000/graphql');
-  final reponse = await http.get('http://10.0.0.31:5000/graphql');
-  print("hello");
-  print(reponse.statusCode);
-  print(reponse);
+
   runApp(MyApp(camera: firstCamera));
 }
 

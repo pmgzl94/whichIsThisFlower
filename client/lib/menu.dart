@@ -22,7 +22,7 @@ final String getPicture = """
           flowersPic {
             ... on GetFlowersPic {
                 flowersPic,
-                flowerNames
+                flowersName
               }
           }
       }
@@ -173,7 +173,7 @@ class MyObsState extends State<CreateMyObs>
                         if (resultData != null && resultData.data["getPicture"] != null && resultData.data["getPicture"]["flowersPic"] != null) {
                             print(resultData.data["getPicture"]["flowersPic"]["flowersPic"]);
                             var obj = resultData.data["getPicture"]["flowersPic"]["flowersPic"];
-                            var obj2 = resultData.data["getPicture"]["flowersPic"]["flowerNames"];
+                            var obj2 = resultData.data["getPicture"]["flowersPic"]["flowersName"];
                             List<String> resultList = [];
                             List<String> names = [];
                             for (int i = 0; i < obj.length; i++) {
@@ -203,18 +203,18 @@ class MyObsState extends State<CreateMyObs>
                               filepaths.add(filePathAndName);
                             }
                             setState(() {
-                              imageData= filepaths;
-                              dataLoaded = true;
+                              imageData = filepaths;
+                              // dataLoaded = true;
                             });
                             print("done!!");
                             dataLoaded = true;
                         } else {
-                          print("coudn't find picture");
-                          dialog(context, "image not received");
+                          print("coudn't find pictures");
+                          dialog(context, "images not received");
                           showDialog<AlertDialog>(
                             context: context,
                             builder: (BuildContext context) {
-                              return dialog(context, "image not received");
+                              return dialog(context, "images not received");
                             }
                           );
                         }
@@ -273,6 +273,9 @@ class DisplayPictures extends StatefulWidget
 
 class _DisplayPicturesState extends State<DisplayPictures>
 {
+    String imageData;
+    bool dataLoaded = false;
+
     @override
     initState() {
       _asyncMethod();
@@ -296,9 +299,6 @@ class _DisplayPicturesState extends State<DisplayPictures>
       });
       dataLoaded = true;
     }
-
-    String imageData;
-    bool dataLoaded = false;
 
     @override
     Widget build(BuildContext context) {
