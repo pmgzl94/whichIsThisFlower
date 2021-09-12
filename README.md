@@ -9,8 +9,8 @@ A mobile app build with flutter. We can save and take picture from that. Mainly 
 
 ## Server
 
-A web server build with python (flask), and **GraphQL** ! Handle request from the client 
-As described before the server will classify the received picture and give a response to the client.
+A web server build with python (flask), and **GraphQL** ! Handles requests from the client.
+As described before the server will classify the received picture and gives a response to the client.
 
 That server can only classify flowers among the following:
 - daisy
